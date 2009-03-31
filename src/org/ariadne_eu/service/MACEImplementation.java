@@ -3,6 +3,7 @@
  */
 package org.ariadne_eu.service;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Iterator;
@@ -21,17 +22,25 @@ import org.ariadne_eu.mace.MACEFaultException;
 import org.ariadne_eu.mace.MACESkeleton;
 import org.ariadne_eu.mace.RemoveRelation;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
+import org.ariadne_eu.metadata.insert.InsertMetadataImpl;
+import org.ariadne_eu.metadata.insert.InsertMetadataLuceneImpl;
 import org.ariadne_eu.metadata.query.QueryMetadataException;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
+import org.ariadne_eu.metadata.query.QueryMetadataImpl;
+import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.ariadne_eu.utils.oai.OAIHarvester;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
+
+import uiuc.oai.OAIException;
 
 import be.cenorm.www.SessionExpiredException;
 import be.cenorm.www.Ticket;
@@ -107,7 +116,7 @@ public class MACEImplementation extends MACESkeleton {
 			
 			InsertMetadataFactory.insertMetadata(createRWO.getResourceId()+"MD", output);
 		} catch (SessionExpiredException e) {
-			log.debug("createRWO: ", e);
+			log.info("createRWO: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("The given session ID is invalid");
@@ -178,7 +187,7 @@ public class MACEImplementation extends MACESkeleton {
 			
 			InsertMetadataFactory.insertMetadata(createLOM.getResourceId()+"MD", output);
 		} catch (SessionExpiredException e) {
-			log.debug("createLOM: ", e);
+			log.info("createLOM: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("The given session ID is invalid");
@@ -274,7 +283,7 @@ public class MACEImplementation extends MACESkeleton {
 			InsertMetadataFactory.insertMetadata(addRelation.getFromResourceId()+"MD", output);
 
 		} catch (QueryMetadataException e) {
-			log.debug("addRelation: ", e);
+			log.info("addRelation: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Query Exception");
@@ -282,7 +291,7 @@ public class MACEImplementation extends MACESkeleton {
             exception.setFaultMessage(fault);
             throw exception;
 		} catch (SessionExpiredException e) {
-			log.debug("addRelation: ", e);
+			log.info("addRelation: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Session Expired");
@@ -291,7 +300,7 @@ public class MACEImplementation extends MACESkeleton {
             throw exception;
 		} 
 		catch (Exception e) {
-			log.debug("addRelation: ", e);
+			log.info("addRelation: ", e);
 	        MACEFault fault = new MACEFault();
 	        fault.setMaceFaultCode(MACEFaultCodeType.value1);
 	        fault.setMessage("Exception");
@@ -356,7 +365,7 @@ public class MACEImplementation extends MACESkeleton {
 				if (flag) {
 					root = doc.getRootElement().getChild("lom", lomNS);
 					boolean temp = root.removeContent(relationElmt);
-					log.debug("removeRelation: " + temp);
+					log.info("removeRelation: " + temp);
 					root.detach();
 					Document newDoc = new Document(root);
 					XMLOutputter outputter = new XMLOutputter();
@@ -368,7 +377,7 @@ public class MACEImplementation extends MACESkeleton {
 			}	
 			
 		} catch (QueryMetadataException e) {
-			log.debug("removeRelation: ", e);
+			log.info("removeRelation: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Query Exception");
@@ -376,7 +385,7 @@ public class MACEImplementation extends MACESkeleton {
             exception.setFaultMessage(fault);
             throw exception;
 		} catch (SessionExpiredException e) {
-			log.debug("removeRelation: ", e);
+			log.info("removeRelation: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Session Expired");
@@ -384,7 +393,7 @@ public class MACEImplementation extends MACESkeleton {
             exception.setFaultMessage(fault);
             throw exception;
 		} catch (Exception e) {
-			log.debug("removeRelation: ", e);
+			log.info("removeRelation: ", e);
 	        MACEFault fault = new MACEFault();
 	        fault.setMaceFaultCode(MACEFaultCodeType.value1);
 	        fault.setMessage("Exception");
@@ -440,7 +449,7 @@ public class MACEImplementation extends MACESkeleton {
 			getRelationsResponse.set_return(outputter.outputString(respDoc));
 			return getRelationsResponse;
 		} catch (SessionExpiredException e) {
-			log.debug("getRelations: ", e);
+			log.info("getRelations: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Session Expired");
@@ -448,7 +457,7 @@ public class MACEImplementation extends MACESkeleton {
             exception.setFaultMessage(fault);
             throw exception;
 		} catch (QueryMetadataException e) {
-			log.debug("getRelations: ", e);
+			log.info("getRelations: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Query Exception");
@@ -456,7 +465,7 @@ public class MACEImplementation extends MACESkeleton {
             exception.setFaultMessage(fault);
             throw exception;
 		} catch (Exception e) {
-			log.debug("getRelations: ", e);
+			log.info("getRelations: ", e);
             MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("Exception");
@@ -467,8 +476,112 @@ public class MACEImplementation extends MACESkeleton {
 	}
 	
 	public void enrichFromAloe(EnrichFromAloe enrichFromAloe) throws MACEFaultException {
-		log.info("enrichFromAloe");
+		try {
+			log.info("enrichFromAloe:resourceID=" + enrichFromAloe.getResourceId());
+			Ticket ticket = Ticket.getTicket(enrichFromAloe.getSessionId()); //throws exception if no valid ticket exists
+			checkValidTicket(ticket);
+			
+			int queryLanguage = 2; //plqlLevel1
+	        int resultsFormat = 0; //lom
+	        int startResult = 1;
+	        int nbResults = 1;
+	        int origXMLResultCount = QueryMetadataFactory.getQueryImpl(queryLanguage).count("lom.metaMetadata.identifier.entry = \""+ enrichFromAloe.getResourceId() +"\"");
+
+			if (origXMLResultCount < 1) {
+				log.error("enrichFromAloe: No such identifier fromResourceID=" + enrichFromAloe.getResourceId());
+				return;
+			} else if (origXMLResultCount > 1) {
+				log.error("enrichFromAloe: Not a unique identifier fromResourceID=" + enrichFromAloe.getResourceId());
+				return;
+			}
+			String orgXML = QueryMetadataFactory.getQueryImpl(queryLanguage).query("lom.metaMetadata.identifier.entry = \""+ enrichFromAloe.getResourceId() +"\"", startResult, nbResults, resultsFormat);
+			orgXML = orgXML.replaceAll("<results>", "").replaceAll("</results>", "");
+			
+			Document aloeDoc = OAIHarvester.getrecord(ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_MDPREFIX));
+			Element aloeRoot = aloeDoc.getRootElement();
+			SAXBuilder builder = new SAXBuilder();
+			
+			Namespace lomNS = Namespace.getNamespace("lom","http://ltsc.ieee.org/xsd/LOM");
+			XPath xpRelation = XPath.newInstance("//lom:general//lom:keyword");
+			xpRelation.addNamespace(lomNS);
+			List keywords = xpRelation.selectNodes(aloeRoot);
+			Element keyword;
+			
+			if (keywords != null) {
+				Reader in = new StringReader(orgXML);
+				Document origDoc = builder.build(in);
+				Element origRoot = origDoc.getRootElement();
+				Element origGeneral = origRoot.getChild("general", lomNS);
+				for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
+					keyword = (Element) iterator.next();
+					origGeneral.addContent(keyword.detach());
+				}
+				origRoot.detach();
+				Document newDoc = new org.jdom.Document(origRoot);
+				XMLOutputter outputter = new XMLOutputter();
+				Format format = Format.getPrettyFormat();
+				outputter.setFormat(format);
+				String output = outputter.outputString(newDoc);
+				insertIntoLucene(enrichFromAloe.getResourceId(),output);
+			}
+			xpRelation = XPath.newInstance("//lom:general//lom:classification");
+			xpRelation.addNamespace(lomNS);
+			List classifications = xpRelation.selectNodes(aloeRoot);
+			Element classification;
+			
+			if (classifications != null) {
+				Reader in = new StringReader(orgXML);
+				Document origDoc = builder.build(in);
+				
+				Element origRoot = origDoc.getRootElement();
+				Element origGeneral = origRoot.getChild("classification", lomNS);
+				for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
+					classification = (Element) iterator.next();
+					origGeneral.addContent(classification.detach());
+				}
+				origRoot.detach();
+				Document newDoc = new org.jdom.Document(origRoot);
+				XMLOutputter outputter = new XMLOutputter();
+				Format format = Format.getPrettyFormat();
+				outputter.setFormat(format);
+				String output = outputter.outputString(newDoc);
+				insertIntoLucene(enrichFromAloe.getResourceId(),output);
+			}
+			
+
+		} catch (OAIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SessionExpiredException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QueryTranslationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QueryMetadataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+	}
+	
+	private void insertIntoLucene(String identifier, String xml) {
+		InsertMetadataImpl[] insertImpls = InsertMetadataFactory.getInsertImpl();
+		InsertMetadataLuceneImpl luceneImpl = null;
+		for (int i = 0; i < insertImpls.length; i++) {
+			InsertMetadataImpl insertImpl = insertImpls[i];
+			if (insertImpl instanceof InsertMetadataLuceneImpl)
+				luceneImpl = (InsertMetadataLuceneImpl) insertImpl;
+		}
+		if (luceneImpl == null)
+			return;
+		luceneImpl.insertMetadata(identifier, xml);
 	}
 	
 	private static void checkValidTicket(Ticket ticket) throws MACEFaultException {

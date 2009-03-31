@@ -13,7 +13,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.ariadne_eu.utils.lucene.indexer.MACEEnrichment;
+import org.ariadne_eu.utils.mace.MACEUtils;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
 import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.eun.lucene.core.indexer.document.HandlerFactory;
@@ -48,7 +48,9 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             
             String luceneHandler = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
-            	String exml = MACEEnrichment.enrichWClassification(insertMetadata);
+            	MACEUtils.getClassification();
+            	String exml = MACEUtils.enrichWClassification(insertMetadata);
+            	exml = exml.substring(38);
             	doc.add(new Field("maceenrichedlom", exml, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             }
 

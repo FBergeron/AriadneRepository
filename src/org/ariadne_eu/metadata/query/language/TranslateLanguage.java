@@ -37,7 +37,6 @@ public class TranslateLanguage {
     public static int getQueryLanguage(String queryLanguage) {
         if (queryLanguage == null)
             return UNDEFINED;
-
         if (queryLanguage.equalsIgnoreCase("vsql")) {
             return VSQL;
         } else if (queryLanguage.equalsIgnoreCase("plql0")) {

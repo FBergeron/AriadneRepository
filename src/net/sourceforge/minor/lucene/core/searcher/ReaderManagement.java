@@ -79,13 +79,17 @@ public class ReaderManagement {
         		
         		if (lReader.size() > 0){
         			log.info("setNewReader :: lReader.size() = " + lReader.size());
-        			ReaderContainer readerContainer = lReader.get(lReader.size()-1);
+        			for (int i = lReader.size() - 1; i > 2 ; i--) {
+//        				ReaderContainer readerContainer = lReader.get(lReader.size()-1);
+        				ReaderContainer readerContainer = lReader.get(i);
+            			
+                    	if (readerContainer.isClosable()){
+                    		log.info("setNewReader :: close = (setNewReader)lreader size = "+lReader.size()+" | reader = "+readerContainer);
+                    		readerContainer.close();
+                    		lReader.remove(readerContainer);
+                    	}
+        			}
         			
-                	if (readerContainer.isClosable()){
-                		log.info("setNewReader :: close = (setNewReader)lreader size = "+lReader.size()+" | reader = "+readerContainer);
-                		readerContainer.close();
-                		lReader.remove(readerContainer);
-                	}
             	}
         	}
         	lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));

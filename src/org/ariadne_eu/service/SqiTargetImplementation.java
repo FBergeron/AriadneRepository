@@ -1,9 +1,14 @@
 package org.ariadne_eu.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.http.TransportHeaders;
+import org.apache.commons.httpclient.Header;
 import org.apache.log4j.Logger;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
@@ -41,7 +46,10 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
        throws _SQIFaultException{
     	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
     	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
-        log.info("GetTotalResultsCountResponse:query="+getTotalResultsCount.getQueryStatement()+",sessionID="+getTotalResultsCount.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP);
+    	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
+    	String userAgent = (String) th.get("user-agent");
+    	String host = (String) th.get("host");
+        log.info("GetTotalResultsCountResponse:query="+getTotalResultsCount.getQueryStatement()+",sessionID="+getTotalResultsCount.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP+",User-Agent="+userAgent+",Host="+host);
         int queryLanguage = getQueryLanguage(getTotalResultsCount.getTargetSessionID());
         if (queryLanguage != TranslateLanguage.UNDEFINED)
             return getTotalResultsCount(getTotalResultsCount, queryLanguage);
@@ -89,9 +97,13 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
        throws _SQIFaultException{
     	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
     	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
-//    	String uA = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.USER_AGENT)).getLocalName();
-    	//+",User Agent="+uA
-        log.info("synchronousQuery:query="+synchronousQuery.getQueryStatement()+",sessionID="+synchronousQuery.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP);
+//    	System.out.println((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.USER_AGENT));;
+    	//AbstractHTTPSender
+    	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
+    	String userAgent = (String) th.get("user-agent");
+    	String host = (String) th.get("host");
+    	
+        log.info("synchronousQuery:query="+synchronousQuery.getQueryStatement()+",sessionID="+synchronousQuery.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP+",User-Agent="+userAgent+",Host="+host);
 
         Ticket ticket = null;
         try {

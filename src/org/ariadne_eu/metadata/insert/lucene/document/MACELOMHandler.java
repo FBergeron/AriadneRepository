@@ -25,7 +25,7 @@ import org.ariadne_eu.metadata.insert.InsertMetadataIBMDB2DbImpl;
 import org.ariadne_eu.utils.Stopwatch;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.ariadne_eu.utils.lucene.indexer.MACEEnrichment;
+import org.ariadne_eu.utils.mace.MACEUtils;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
 import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.jdom.Element;
@@ -176,15 +176,16 @@ public class MACELOMHandler extends DocumentHandler {
 				//GAP: lo a–ado para hacer la prueba con solr
 				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				
-				if (purpose.equalsIgnoreCase("competency"))
-					competency = true;
-				else
-					competency = false;
+				
 				
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
-//				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
+				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
+				if (taxonPathSource.equalsIgnoreCase("MACE Competence Catalogue"))
+					competency = true;
+				else
+					competency = false;
 //				tpSourceFieldName = tmpBranche + ATT_SEPARATOR + "" + taxonPathSource;
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.id")) {
@@ -192,7 +193,7 @@ public class MACELOMHandler extends DocumentHandler {
 				tpIdFieldName = tmpBranche;
 				taxonPathId = elementBuffer.toString();
 				if (competency)
-					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+					doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
 				
@@ -200,7 +201,7 @@ public class MACELOMHandler extends DocumentHandler {
 					doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				}
 				else if (taxonPathId != null) {
-					classificationValues = MACEEnrichment.loadClassification();
+					classificationValues = MACEUtils.getClassification();
 
 					if (classificationValues.containsKey(taxonPathId)) {
 						Element classificationValue = classificationValues.get(taxonPathId);
@@ -217,6 +218,8 @@ public class MACELOMHandler extends DocumentHandler {
 						log.info("The classification value for the id:'"+ taxonPathId + "'was not found!");
 					}
 				} 
+			} else if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf") || tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf")) {
+				doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 			}
 		}
 		// Title
@@ -450,7 +453,7 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-		Document doc = handler.getDocument(new FileInputStream(new File("/Users/gonzalo/Desktop/VocabTest.xml")));
+		Document doc = handler.getDocument(new FileInputStream(new File("/Work/MACE/XMLs/competency/lom2287.xml")));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();

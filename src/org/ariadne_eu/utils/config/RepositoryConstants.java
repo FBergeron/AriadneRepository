@@ -39,6 +39,8 @@ public class RepositoryConstants {
 	public static final String MD_RF_RLOM_URL = "mdstore.rf.rlom.url";
 	public static final String MD_RF_RLOM_RMETRIC = "mdstore.rf.rlom.rankingmetric";
 	public static final String MD_SPIFS_DIR = "mdstore.spifs.dir";
+	public static final String MD_MACE_OAI_ALOE_TARGET = "mdstore.mace.oai.aloe.target";
+	public static final String MD_MACE_OAI_ALOE_MDPREFIX = "mdstore.mace.oai.aloe.mdprefix";
 
 	public static final String CNT_RETREIVE_IMPLEMENTATION = "cntstore.retrieve.implementation";
 	public static final String CNT_INSERT_IMPLEMENTATION = "cntstore.insert.implementation";

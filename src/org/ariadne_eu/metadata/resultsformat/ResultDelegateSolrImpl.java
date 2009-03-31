@@ -110,7 +110,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
 		}
 		
 		QueryResponse rsp = server.query(solrQuery);
-		System.out.println(rsp.getResults().getNumFound());
+//		System.out.println(rsp.getResults().getNumFound());
 		
 		List facetsFields = rsp.getFacetFields();
 		sBuild.append("<facets>\n");
@@ -135,26 +135,16 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
 			}
 		}
 		sBuild.append("</facets>\n");
-		sBuild.append("<results>\n");
-		
-		SolrDocumentList docs = rsp.getResults();
-		SolrDocument doc;
-		for (int i = start-1; i < docs.size() && (max < 0 || i < start-1+max); i++) {
-			doc = docs.get(i);
-			sBuild.append(doc.getFieldValue("lom")+"\n\n");
-		}
-		
-//		for (Iterator iterator = docs.iterator(); iterator.hasNext();) {
-//			doc = (SolrDocument) iterator.next();
-//			sBuild.append(doc.getFieldValue("lom")+"\n\n");
+//		sBuild.append("<results>\n");
+//		
+//		SolrDocumentList docs = rsp.getResults();
+//		SolrDocument doc;
+//		for (int i = start-1; i < docs.size() && (max < 0 || i < start-1+max); i++) {
+//			doc = docs.get(i);
+//			sBuild.append(doc.getFieldValue("maceenrichedlom")+"\n");
 //		}
-		
-//		Document doc;
-//		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
-//	    	doc = hits.doc(i);
-//	    	sBuild.append(doc.get("lom")+"\n\n");
-//	    }
-	    sBuild.append("</results>");
+//
+//	    sBuild.append("</results>");
 	    sBuild.append("</response>");
 	    
 	    conn.close();

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ariadne_eu.utils.lucene.indexer;
+package org.ariadne_eu.utils.mace;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,10 @@ import java.util.Vector;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.search.IndexSearcher;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -30,11 +32,55 @@ import org.jdom.xpath.XPath;
  * @author gonzalo
  *
  */
-public class MACEEnrichment {
+public class MACEUtils {
 	private static HashMap<String, Element> classificationValues;
 	
+	private MACEUtils() {
+		classificationValues = loadClassification();
+	}
+	
+	public static HashMap<String, Element> getClassification() {
+		if (classificationValues == null) {
+			classificationValues = loadClassification();
+			System.out.println("CLASIF CREADA!!!");
+		}
+		return classificationValues;
+	}
+	
+	public static String mergeLOM(String original, String extra) {
+		
+		try {
+			Namespace lomNS = Namespace.getNamespace("lom","http://ltsc.ieee.org/xsd/LOM");
+			SAXBuilder builder = new SAXBuilder();
+			Reader in = new StringReader(original);
+			Document originalLOM = builder.build(in);
+			in = new StringReader(extra);
+			Document extraLOM = builder.build(in);
+			
+			XPath xpKind;
+			xpKind = XPath.newInstance("//lom:general//keyword");
+			xpKind.addNamespace(lomNS);
+			List keywords = xpKind.selectNodes(originalLOM);
+			for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
+				Element keyword = (Element) iterator.next();
+				System.out.println(keyword.getChildText("string"));
+				
+			}
+			
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return "";
+	}
+	
 	public static String enrichWClassification(String xml) {
-		loadClassification();
+//		loadClassification();
 		SAXBuilder builder = new SAXBuilder();
 		Namespace lomNS = Namespace.getNamespace("lom","http://ltsc.ieee.org/xsd/LOM");
 		try {
@@ -99,7 +145,7 @@ public class MACEEnrichment {
 		return "";
 	}
 	
-	public static HashMap<String, Element> loadClassification(){
+	private static HashMap<String, Element> loadClassification(){
 		classificationValues = new HashMap<String, Element>(0);
 		SAXBuilder builder = new SAXBuilder();
 //		File in = new File ("/Sandbox/eclipse/hmdb/repository/jsp/install//MACE_LOM_Category_9_CLASSIFICATION.xml");
