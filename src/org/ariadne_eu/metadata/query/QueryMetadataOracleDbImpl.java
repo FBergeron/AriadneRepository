@@ -6,9 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import oracle.jdbc.OracleResultSet;
+import oracle.xdb.XMLType;
+
 import org.apache.log4j.Logger;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
+import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
@@ -62,26 +66,94 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
         return DriverManager.getConnection(URI,username, password);
     }
     
-
-    public String xQuery(String xQuery) throws QueryMetadataException {
+    public int xQueryCount(String xQuery) throws QueryMetadataException {
         Statement stmt = null;
         Connection con = null;
         try {
             con = getConnection();
             stmt = (Statement) con.createStatement();
             
-            ResultSet rs = stmt.executeQuery(xQuery.replaceAll("version \"1.0\";", "")); //TODO: why doesn't version work for IBM DB2
+            String column_xml = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            String table = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            
+            xQuery = xQuery.replaceAll("\"\"", "\"");
+            xQuery = xQuery.replaceAll("count\\(for","\\(for");
+            
+    		String query = "SELECT COUNT(*) " +
+    		"FROM " + table + " " +
+    		", XMLTable(' " + xQuery + "' passing "+ column_xml +")";
+    		
+    		log.debug(query);
+            ResultSet rs = stmt.executeQuery(query); //TODO: why doesn't version work for IBM DB2
             String result = "";
+            if (rs.next()) {
+				return ((OracleResultSet)rs).getInt(1);
+            }
+            if (result.equals("")){
+            	log.error("xQuery:method didn't return answer, xQuery=" + xQuery);
+               return -2;
+            }
+            return -2;
+          //GAP end
+        } catch (SQLException e) {
+            log.error("xQuery:xQuery=" + xQuery, e);
+            throw new QueryMetadataException(e);
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                log.error("xQuery:xQuery=" + xQuery, e);
+            }
+        }
+        
+        //log.error("xQuery:method didn't return answer, xQuery=" + xQuery);
+        //return null;
+    }
+    
+
+    public String xQuery(String xQuery, int start, int max) throws QueryMetadataException {
+        Statement stmt = null;
+        Connection con = null;
+        try {
+            con = getConnection();
+            stmt = (Statement) con.createStatement();
+            
+            String column_xml = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            String table = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            
+            xQuery = xQuery.replaceAll("\"\"", "\"");
+            xQuery = xQuery.replaceAll("\\<results\\>\\{for \\$x at \\$y in \\(","");
+            xQuery = xQuery.replaceAll("/lom:lom","/lom:lom//\\*");
+            
+            int temp = start+max;
+            xQuery = xQuery.replaceAll("\\) where \\$y \\>= "+start+" and \\$y \\< "+temp+" return \\$x \\}\\</results\\>", "");
+            
+    		String query = "FROM ( " +
+    		"SELECT "+column_xml+" " +
+    		"FROM " + table + " " +
+    		", XMLTable(' " + xQuery + "' passing "+ column_xml +"))";
+            
+			String select =  "SELECT "+column_xml+" from ( select /*+ FIRST_ROWS(n) */ a.*, ROWNUM rnum ";
+			String limitQuery = " a where ROWNUM <= "+ (start+max) +") where rnum  > " + start ;
+    		
+			log.debug(select+query+limitQuery);
+            ResultSet rs = stmt.executeQuery(select+query+limitQuery); //TODO: why doesn't version work for IBM DB2
+    	    StringBuilder result = new StringBuilder();
+    	    result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    				 		"<results>\n");
+
             while (rs.next()) {
-                DB2Xml xml = (DB2Xml) rs.getObject(1);
-                result = result + xml.getDB2String();
-                //return xml.getDB2String();
+				XMLType poxml = XMLType.createXML(((OracleResultSet)rs).getOPAQUE(1));
+                String lomxml = poxml.getStringVal().replaceFirst("\\<\\?xml version=\"1.0\" encoding=\".*\"\\?>\\n","");
+				result.append(lomxml);
             }
             if (result.equals("")){
             	log.error("xQuery:method didn't return answer, xQuery=" + xQuery);
                 return null;
             }
-            return result;
+        		result.append("</results>");
+        	    return result.toString();
           //GAP end
         } catch (SQLException e) {
             log.error("xQuery:xQuery=" + xQuery, e);
@@ -101,12 +173,18 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
     
     public String query(String query, int start, int max, int resultsFormat) throws QueryTranslationException, QueryMetadataException {
         String xQuery = TranslateLanguage.translateToQuery(query, getLanguage(), TranslateLanguage.XQUERY, start, max, resultsFormat);
-        return xQuery(xQuery);
+        return xQuery(xQuery, start, max);
     }
 
     public int count(String query) throws QueryTranslationException, QueryMetadataException {
         String xQuery = TranslateLanguage.translateToCount(query, getLanguage(), TranslateLanguage.XQUERY);
-        return Integer.parseInt(xQuery(xQuery));
+        return xQueryCount(xQuery);
     }
+
+	@Override
+	public String xQuery(String query) throws QueryTranslationException,
+			QueryMetadataException {
+        return xQuery(query, 0, 101);
+	}
 
 }

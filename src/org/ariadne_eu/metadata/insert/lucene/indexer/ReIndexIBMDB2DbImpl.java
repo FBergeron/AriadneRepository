@@ -38,8 +38,7 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
     private static String xmlns ;
     private static String collection ;
     private static int startResult = 1 ;
-//    private static int nbResults = 25 ;
-    private static int nbResults;
+    private static int nbResults = 25 ;
     private static Vector xpathQueries;
     
     private static Logger log = Logger.getLogger(ReIndexIBMDB2DbImpl.class);
@@ -67,13 +66,6 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
                     xpathQueries.add(ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + "." + i));
                     i++;
                 }
-            }
-            String num = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_REINDEX_MAXQRYRESULTS);
-            if(num == null) {
-            	nbResults = 25;
-                log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
-            } else {
-            	nbResults = Integer.parseInt(num);
             }
             createXQuery();
         } catch (Throwable t) {
@@ -112,7 +104,7 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
 						break;
 
 					results = "<results>" + results + "</results>";
-					
+					startResult += nbResults;
 
 					StringReader stringReader = new StringReader(results);
 					InputSource input = new InputSource(stringReader);
@@ -152,7 +144,6 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
 						if (identifier != null) 
 							luceneImpl.insertMetadata(identifier, lom);
 					}
-					startResult += nbResults;
 				} catch (QueryTranslationException e) {
 					log.error("reIndexMetadata: ", e);
 				} catch (QueryMetadataException e) {

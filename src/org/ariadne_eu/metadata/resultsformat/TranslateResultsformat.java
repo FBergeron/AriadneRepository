@@ -117,7 +117,8 @@ public class TranslateResultsformat {
                 return start + end;
             } else
                 return start + result + end;
-        } else
+        }
+        else
             return result;
     }
 }

@@ -1,4 +1,4 @@
-package org.ariadne_eu.oai.server.ibmdb2.catalog;
+package org.ariadne_eu.oai.server.oracle.catalog;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,18 +7,28 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import oracle.jdbc.OracleResultSet;
+import oracle.jdbc.driver.OracleDriver;
+import oracle.xdb.XMLType;
+
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.oai.utils.TargetUtils;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.jdom.Document;
+import org.jdom.input.DOMBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadArgumentException;
 import org.oclc.oai.server.verb.BadResumptionTokenException;
@@ -30,8 +40,6 @@ import org.oclc.oai.server.verb.NoSetHierarchyException;
 import org.oclc.oai.server.verb.OAIInternalServerError;
 import org.oclc.oai.util.OAIUtil;
 
-import com.ibm.db2.jcc.DB2Xml;
-
 /**
  * Created by IntelliJ IDEA.
  * User: stefaan
@@ -39,7 +47,7 @@ import com.ibm.db2.jcc.DB2Xml;
  * Time: 16:50:33
  * To change this template use File | Settings | File Templates.
  */
-public class IbmDb2LomCatalog extends AbstractCatalog {
+public class OracleLomCatalog extends AbstractCatalog {
 
 	/**
 	 * pending resumption tokens
@@ -56,103 +64,106 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	private static String column_datestamp;
 
 
-	public IbmDb2LomCatalog(Properties properties) {
-		String classname = "IbmDb2LomCatalog";
-		String maxListSize = properties.getProperty(classname + ".maxListSize");
+	public OracleLomCatalog(Properties properties) {
+		String classname = "OracleLomCatalog";
+		String maxListSize = properties.getProperty("LomCatalog.maxListSize");
 		if (maxListSize == null) {
-			throw new IllegalArgumentException(classname + ".maxListSize is missing from the properties file");
+			throw new IllegalArgumentException("LomCatalog.maxListSize is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.maxListSize = Integer.parseInt(maxListSize);
+			OracleLomCatalog.maxListSize = Integer.parseInt(maxListSize);
 		}
 		String url = properties.getProperty(RepositoryConstants.MD_DB_URI);
 		if (url == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_URI + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.url = url;
+			OracleLomCatalog.url = url;
 		}
 		String user = properties.getProperty(RepositoryConstants.MD_DB_USERNAME);
 		if (user == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_USERNAME + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.user = user;
+			OracleLomCatalog.user = user;
 		}
 		String passwd = properties.getProperty(RepositoryConstants.MD_DB_PASSWORD);
 		if (passwd == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_PASSWORD + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.passwd = passwd;
+			OracleLomCatalog.passwd = passwd;
 		}
 		String table = properties.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
 		if (table == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.table = table;
+			OracleLomCatalog.table = table;
 		}
 		String column_xml = properties.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
 		if (column_xml == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.column_xml = column_xml;
+			OracleLomCatalog.column_xml = column_xml;
 		}
 		String column_id = properties.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
 		if (column_id == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME + " is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.column_id = column_id;
+			OracleLomCatalog.column_id = column_id;
 		}
 		String column_datestamp = properties.getProperty(classname + ".db.column.datestamp");
 		if (column_datestamp == null) {
 			throw new IllegalArgumentException(classname + ".db.column.datestamp is missing from the properties file");
 		} else {
-			IbmDb2LomCatalog.column_datestamp = column_datestamp;
+			OracleLomCatalog.column_datestamp = column_datestamp;
 		}
 
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		String setList = PropertiesManager.getProperty("sets.list");
-		StringTokenizer tokenizer = new StringTokenizer(setList,";");
-		if(tokenizer.countTokens() == 0) {
-                throw new NoSetHierarchyException();
+
+		String reposIdentifier = "";
+		Hashtable setProperties = PropertiesManager.getPropertyStartingWith("sets.");
+		String[] keys = (String[]) setProperties.keySet().toArray(new String[0]);
+		Arrays.sort(keys);
+		if(keys.length == 0) {
+			throw new NoSetHierarchyException();
 		}
 		else {
-            purge(); // clean out old resumptionTokens
-            Map listSetsMap = new HashMap();
-            ArrayList sets = new ArrayList();
-            
-                while (tokenizer.hasMoreTokens()) {
-                    sets.add(getSetXML(tokenizer.nextToken()));
-                }
-                
-//                /* decide if you're done */
-//                if (count < numRows) {
-//                    String resumptionId = getResumptionId();
-//                    resumptionResults.put(resumptionId, rs);
-//                    
-//                    /*****************************************************************
-//                     * Construct the resumptionToken String however you see fit.
-//                     *****************************************************************/
-//                    StringBuffer resumptionTokenSb = new StringBuffer();
-//                    resumptionTokenSb.append(resumptionId);
-//                    resumptionTokenSb.append("!");
-//                    resumptionTokenSb.append(Integer.toString(count));
-//                    resumptionTokenSb.append("!");
-//                    resumptionTokenSb.append(Integer.toString(numRows));
-//                    
-//                    /*****************************************************************
-//                     * Use the following line if you wish to include the optional
-//                     * resumptionToken attributes in the response. Otherwise, use the
-//                     * line after it that I've commented out.
-//                     *****************************************************************/
-//                    listSetsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-//                            numRows,
-//                            0));
-//                    //          listSetsMap.put("resumptionMap",
-//                    //                                 getResumptionMap(resumptionTokenSb.toString()));
-//                }
-            
-            listSetsMap.put("sets", sets.iterator());
-            return listSetsMap;  
+			purge(); // clean out old resumptionTokens
+			Map listSetsMap = new HashMap();
+			ArrayList sets = new ArrayList();
+			for(String setString : keys) {
+				String set = setString.replaceAll("sets.", "").replaceAll(".repositoryIdentifier", "");
+				sets.add(getSetXML(set));
+			}
+
+			//                /* decide if you're done */
+			//                if (count < numRows) {
+			//                    String resumptionId = getResumptionId();
+			//                    resumptionResults.put(resumptionId, rs);
+			//                    
+			//                    /*****************************************************************
+			//                     * Construct the resumptionToken String however you see fit.
+			//                     *****************************************************************/
+			//                    StringBuffer resumptionTokenSb = new StringBuffer();
+			//                    resumptionTokenSb.append(resumptionId);
+			//                    resumptionTokenSb.append("!");
+			//                    resumptionTokenSb.append(Integer.toString(count));
+			//                    resumptionTokenSb.append("!");
+			//                    resumptionTokenSb.append(Integer.toString(numRows));
+			//                    
+			//                    /*****************************************************************
+			//                     * Use the following line if you wish to include the optional
+			//                     * resumptionToken attributes in the response. Otherwise, use the
+			//                     * line after it that I've commented out.
+			//                     *****************************************************************/
+			//                    listSetsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+			//                            numRows,
+			//                            0));
+			//                    //          listSetsMap.put("resumptionMap",
+			//                    //                                 getResumptionMap(resumptionTokenSb.toString()));
+			//                }
+
+			listSetsMap.put("sets", sets.iterator());
+			return listSetsMap;  
 		}
 	}
 
@@ -173,40 +184,40 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			throw new BadArgumentException();
 		}
 	}
-	
-    /**
-     * Extract &lt;set&gt; XML string from setItem object
-     *
-     * @param setItem individual set instance in native format
-     * @return an XML String containing the XML &lt;set&gt; content
-     */
-    public String getSetXML(String setItem)
-    throws IllegalArgumentException {
-//      try {
-        String setSpec = setItem;
-        String setName = "Metadata originating from " + setItem;
-        String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
-        
-        StringBuffer sb = new StringBuffer();
-        sb.append("<set>");
-        sb.append("<setSpec>");
-        sb.append(OAIUtil.xmlEncode(setSpec));
-        sb.append("</setSpec>");
-        sb.append("<setName>");
-        sb.append(OAIUtil.xmlEncode(setName));
-        sb.append("</setName>");
-        if (setDescription != null) {
-            sb.append("<setDescription>");
-            sb.append(OAIUtil.xmlEncode(setDescription));
-            sb.append("</setDescription>");
-        }
-        sb.append("</set>");
-        return sb.toString();
-//      } catch (SQLException e) {
-//      e.printStackTrace();
-//      throw new IllegalArgumentException(e.getMessage());
-//      }
-    } 
+
+	/**
+	 * Extract &lt;set&gt; XML string from setItem object
+	 *
+	 * @param setItem individual set instance in native format
+	 * @return an XML String containing the XML &lt;set&gt; content
+	 */
+	public String getSetXML(String setItem)
+	throws IllegalArgumentException {
+		//      try {
+		String setSpec = setItem;
+		String setName = "Metadata originating from " + setItem;
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<set>");
+		sb.append("<setSpec>");
+		sb.append(OAIUtil.xmlEncode(setSpec));
+		sb.append("</setSpec>");
+		sb.append("<setName>");
+		sb.append(OAIUtil.xmlEncode(setName));
+		sb.append("</setName>");
+		if (setDescription != null) {
+			sb.append("<setDescription>");
+			sb.append(OAIUtil.xmlEncode(setDescription));
+			sb.append("</setDescription>");
+		}
+		sb.append("</set>");
+		return sb.toString();
+		//      } catch (SQLException e) {
+		//      e.printStackTrace();
+		//      throw new IllegalArgumentException(e.getMessage());
+		//      }
+	} 
 
 	private Map listIdentifiers(String query, int offset, String metadataPrefix)
 	throws CannotDisseminateFormatException, OAIInternalServerError {
@@ -228,8 +239,8 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			nbrOfResults = (int) rs.getFloat(1);
 			rs.close();
 
-			String select =  "SELECT "+column_xml+","+column_id+","+column_datestamp+" ";
-			String limitQuery = "WHERE R > " + offset + " and R <= " + (offset+maxListSize);
+			String select =  "SELECT "+column_xml+","+column_id+","+column_datestamp+" from ( select /*+ FIRST_ROWS(n) */ a.*, ROWNUM rnum ";
+			String limitQuery = " a where ROWNUM <= "+ (offset+maxListSize) +") where rnum  > " + offset ;
 			System.out.println(select + query + limitQuery);// TODO : LOG4J
 			rs = connection.createStatement().executeQuery(select + query + limitQuery);
 
@@ -261,7 +272,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 
 			listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
 					nbrOfResults,
-					offset+maxListSize));
+					offset));
 		}
 
 		listIdentifiersMap.put("headers", headers.iterator());
@@ -270,22 +281,21 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	}
 
 	private String createListQuery(String from, String until, String set) throws ParseException {
-		String[] activeSets = PropertiesManager.getProperty("sets.list").split(";");
 
 		String reposIdentifier = "";
-
-		for(int i = 0; i < activeSets.length; i++) {
-			if(activeSets[i].equals(set)) {
-				reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
-			}
+		try {
+			reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
+		} catch(Exception e) {
+			
 		}
+
 		String newFrom = TargetUtils.convertToLocaleIbmDB2DateTime(from);
 		String newUntil = TargetUtils.convertUNTILToLocaleIbmDB2DateTime(until);
 
 		String query = "FROM ( " +
-		"SELECT ROW_NUMBER() OVER() AS R,"+column_xml+","+column_id+","+column_datestamp+" " +
+		"SELECT "+column_xml+","+column_id+","+column_datestamp+" " +
 		"FROM " + table + " " +
-		"WHERE ("+column_datestamp+" >='" + newFrom + "' AND "+column_datestamp+" <='" + newUntil + "' ";
+		"WHERE ("+column_datestamp+" >= TIMESTAMP'" + newFrom + "' AND "+column_datestamp+" <= TIMESTAMP'" + newUntil + "' ";
 		if(!reposIdentifier.equals("")) {
 			query += "AND " + column_id + " like '%" + reposIdentifier + "%'";
 		}
@@ -294,7 +304,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 				query += "AND " + column_id + " like 'xxxyyyzzz'";
 			}
 		}
-		query += " )) AS N ";
+		query += " ))";
 		return query;
 	}
 
@@ -342,10 +352,11 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 
 	private void connect() throws OAIInternalServerError{
 		try {
-			Class.forName("com.ibm.db2.jcc.DB2Driver");
-			connection = (Connection) DriverManager.getConnection(url,user, passwd);
-		} catch (ClassNotFoundException e) {
-			throw new OAIInternalServerError(e.getMessage());
+			DriverManager.registerDriver(new OracleDriver());
+			Properties props = new Properties();
+			props.put("user", user );
+			props.put("password", passwd );
+			connection = DriverManager.getConnection( url, props );
 		} catch (SQLException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		}
@@ -358,8 +369,8 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			for (int i = 0; i < names.size(); i++) {
 				String name = (String)names.get(i);
 				if (name.equals(column_xml)) {
-					DB2Xml xml = (DB2Xml) rs.getObject(name);
-					nativeItem.put(name, xml.getDB2XmlString());
+					XMLType poxml = XMLType.createXML(((OracleResultSet)rs).getOPAQUE(name));
+					nativeItem.put(name, poxml.getStringVal());
 				}
 				else if (name.equals(column_datestamp)) {
 					Object date = rs.getTimestamp(name,new GregorianCalendar());
@@ -431,14 +442,16 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			nbrOfResults = (int) rs.getFloat(1);
 			rs.close();
 
-			String select =  "SELECT "+column_xml+","+column_id+","+column_datestamp+" ";
-			String limitQuery = "WHERE R > " + offset + " and R <= " + (offset+maxListSize);
+			String select =  "SELECT "+column_xml+","+column_id+","+column_datestamp+" from ( select /*+ FIRST_ROWS(n) */ a.*, ROWNUM rnum ";
+			String limitQuery = " a where ROWNUM <= "+ (offset+maxListSize) +") where rnum  > " + offset ;
 			System.out.println(select + query + limitQuery);// TODO : LOG4J
 			rs = connection.createStatement().executeQuery(select + query + limitQuery);
 			while(rs.next()){
 				try{
 					HashMap item = constructNativeItem(rs);
-					nativeItemResults.add(item);
+//					nativeItemResults.add(item);
+					String record = constructRecord(item, metadataPrefix);
+					records.add(record);
 				}
 				catch (IllegalStateException e) {
 					notFound++;
@@ -449,13 +462,14 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			rs.close();
 			disconnect();
 
-			numRows = nativeItemResults.size();
+			numRows = records.size();
+			count = numRows;
 
-			/* load the records ArrayList */
-			for (count=0; count < maxListSize && count < numRows; ++count) {
-				String record = constructRecord((HashMap)nativeItemResults.elementAt(count), metadataPrefix);
-				records.add(record);
-			}
+//			/* load the records ArrayList */
+//			for (count=0; count < maxListSize && count < numRows; ++count) {
+//				String record = constructRecord((HashMap)nativeItemResults.elementAt(count), metadataPrefix);
+//				records.add(record);
+//			}
 		} catch (SQLException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		}
@@ -473,7 +487,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 
 			listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
 					nbrOfResults,
-					offset+maxListSize));
+					offset));
 		}
 
 		listRecordsMap.put("records", records.iterator());
@@ -607,7 +621,13 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 			System.out.println(query);// TODO : LOG4J
 			rs = connection.createStatement().executeQuery(query);
 			if (rs.next())nativeItem = constructNativeItem(rs);
-			else throw new IdDoesNotExistException(identifier);
+			else {
+				query = "SELECT * FROM "+table+" WHERE "+column_id+"='"+ oaiIdentifier+"'";
+				System.out.println(query);// TODO : LOG4J
+				rs = connection.createStatement().executeQuery(query);
+				if (rs.next())nativeItem = constructNativeItem(rs);
+				else throw new IdDoesNotExistException(identifier);
+			}
 		} catch (SQLException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		} finally {

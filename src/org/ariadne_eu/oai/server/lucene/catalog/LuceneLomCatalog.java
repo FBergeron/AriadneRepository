@@ -57,7 +57,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	private HashMap resumptionResults = new HashMap();
 	private static HashMap<String, String> sets = new HashMap<String, String>();
 
-//	private Searcher searcher;
+	//	private Searcher searcher;
 	private DocumentAnalyzer docAnalyzer;
 
 	private static int maxListSize;
@@ -105,13 +105,13 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		} catch (Exception e) {
 			//NOOP
 		}
-		
+
 	}
-	
+
 	private IndexReader loadIndexReader(File indexDir) {
 		IndexReader reader = null;
 		try {
-//			reader = IndexReader.open(LuceneLomCatalog.lucenePath);
+			//			reader = IndexReader.open(LuceneLomCatalog.lucenePath);
 			reader = ReaderManagement.getInstance().getReader(indexDir);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -121,10 +121,10 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 		return reader;
 	}
-	
+
 	private void closeIndexReader(IndexReader reader) {
 		try {
-//			ReaderManagement.getInstance().unRegister(indexDir, reader);
+			//			ReaderManagement.getInstance().unRegister(indexDir, reader);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,86 +135,86 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		String setList = PropertiesManager.getProperty("sets.list");
 		StringTokenizer tokenizer = new StringTokenizer(setList,";");
 		if(tokenizer.countTokens() == 0) {
-                throw new NoSetHierarchyException();
+			throw new NoSetHierarchyException();
 		}
 		else {
-            purge(); // clean out old resumptionTokens
-            Map listSetsMap = new HashMap();
-            ArrayList sets = new ArrayList();
-            
-                while (tokenizer.hasMoreTokens()) {
-                    sets.add(getSetXML(tokenizer.nextToken()));
-                }
-                
-//                /* decide if you're done */
-//                if (count < numRows) {
-//                    String resumptionId = getResumptionId();
-//                    resumptionResults.put(resumptionId, rs);
-//                    
-//                    /*****************************************************************
-//                     * Construct the resumptionToken String however you see fit.
-//                     *****************************************************************/
-//                    StringBuffer resumptionTokenSb = new StringBuffer();
-//                    resumptionTokenSb.append(resumptionId);
-//                    resumptionTokenSb.append("!");
-//                    resumptionTokenSb.append(Integer.toString(count));
-//                    resumptionTokenSb.append("!");
-//                    resumptionTokenSb.append(Integer.toString(numRows));
-//                    
-//                    /*****************************************************************
-//                     * Use the following line if you wish to include the optional
-//                     * resumptionToken attributes in the response. Otherwise, use the
-//                     * line after it that I've commented out.
-//                     *****************************************************************/
-//                    listSetsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-//                            numRows,
-//                            0));
-//                    //          listSetsMap.put("resumptionMap",
-//                    //                                 getResumptionMap(resumptionTokenSb.toString()));
-//                }
-            
-            listSetsMap.put("sets", sets.iterator());
-            return listSetsMap;  
+			purge(); // clean out old resumptionTokens
+			Map listSetsMap = new HashMap();
+			ArrayList sets = new ArrayList();
+
+			while (tokenizer.hasMoreTokens()) {
+				sets.add(getSetXML(tokenizer.nextToken()));
+			}
+
+			//                /* decide if you're done */
+			//                if (count < numRows) {
+			//                    String resumptionId = getResumptionId();
+			//                    resumptionResults.put(resumptionId, rs);
+			//                    
+			//                    /*****************************************************************
+			//                     * Construct the resumptionToken String however you see fit.
+			//                     *****************************************************************/
+			//                    StringBuffer resumptionTokenSb = new StringBuffer();
+			//                    resumptionTokenSb.append(resumptionId);
+			//                    resumptionTokenSb.append("!");
+			//                    resumptionTokenSb.append(Integer.toString(count));
+			//                    resumptionTokenSb.append("!");
+			//                    resumptionTokenSb.append(Integer.toString(numRows));
+			//                    
+			//                    /*****************************************************************
+			//                     * Use the following line if you wish to include the optional
+			//                     * resumptionToken attributes in the response. Otherwise, use the
+			//                     * line after it that I've commented out.
+			//                     *****************************************************************/
+			//                    listSetsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+			//                            numRows,
+			//                            0));
+			//                    //          listSetsMap.put("resumptionMap",
+			//                    //                                 getResumptionMap(resumptionTokenSb.toString()));
+			//                }
+
+			listSetsMap.put("sets", sets.iterator());
+			return listSetsMap;  
 		}
 	}
 
 	public Map listSets(String resumptionToken) throws BadResumptionTokenException, OAIInternalServerError {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
-	
-    /**
-     * Extract &lt;set&gt; XML string from setItem object
-     *
-     * @param setItem individual set instance in native format
-     * @return an XML String containing the XML &lt;set&gt; content
-     */
-    public String getSetXML(String setItem)
-    throws IllegalArgumentException {
-//      try {
-        String setSpec = setItem;
-        String setName = "Metadata originating from " + setItem;
-        String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
-        
-        StringBuffer sb = new StringBuffer();
-        sb.append("<set>");
-        sb.append("<setSpec>");
-        sb.append(OAIUtil.xmlEncode(setSpec));
-        sb.append("</setSpec>");
-        sb.append("<setName>");
-        sb.append(OAIUtil.xmlEncode(setName));
-        sb.append("</setName>");
-        if (setDescription != null) {
-            sb.append("<setDescription>");
-            sb.append(OAIUtil.xmlEncode(setDescription));
-            sb.append("</setDescription>");
-        }
-        sb.append("</set>");
-        return sb.toString();
-//      } catch (SQLException e) {
-//      e.printStackTrace();
-//      throw new IllegalArgumentException(e.getMessage());
-//      }
-    } 
+
+	/**
+	 * Extract &lt;set&gt; XML string from setItem object
+	 *
+	 * @param setItem individual set instance in native format
+	 * @return an XML String containing the XML &lt;set&gt; content
+	 */
+	public String getSetXML(String setItem)
+	throws IllegalArgumentException {
+		//      try {
+		String setSpec = setItem;
+		String setName = "Metadata originating from " + setItem;
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<set>");
+		sb.append("<setSpec>");
+		sb.append(OAIUtil.xmlEncode(setSpec));
+		sb.append("</setSpec>");
+		sb.append("<setName>");
+		sb.append(OAIUtil.xmlEncode(setName));
+		sb.append("</setName>");
+		if (setDescription != null) {
+			sb.append("<setDescription>");
+			sb.append(OAIUtil.xmlEncode(setDescription));
+			sb.append("</setDescription>");
+		}
+		sb.append("</set>");
+		return sb.toString();
+		//      } catch (SQLException e) {
+		//      e.printStackTrace();
+		//      throw new IllegalArgumentException(e.getMessage());
+		//      }
+	} 
 
 	public Vector getSchemaLocations(String identifier) throws IdDoesNotExistException, NoMetadataFormatsException, OAIInternalServerError {
 		Object nativeItem = getIndexRecord(identifier);
@@ -237,7 +237,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
 
-		
+
 		QueryParser parser = new QueryParser("field", docAnalyzer.getAnalyzer());
 		Query query = null;
 		TermQuery termQuery = new TermQuery(new Term(identifierField, localIdentifier));
@@ -249,7 +249,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 		Hits hits = null;
 		try {
-//			hits = searcher.search(query);
+			//			hits = searcher.search(query);
 			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -299,7 +299,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 		Hits hits = null;
 		try {
-//			hits = searcher.search(query);
+			//			hits = searcher.search(query);
 			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -309,7 +309,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 
 		if(hits.length() == 0) throw new NoItemsMatchException();
-		
+
 		/* Get some records from your database */
 		int count = 0;
 		/* load the records ArrayList */
@@ -443,13 +443,13 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		 * perform the query on your DB according to the given parameters from, until and set
 		 ************************************************************************************/
 
-		if(sets.get(set) != null) {
+		if(set != null) {
 			set = sets.get(set);
+			if (set == null) {
+				set = "";
+			}
 		}
-		else{
-			set = "";
-		}
-		
+
 		QueryParser parser = new QueryParser(dateField, docAnalyzer.getAnalyzer());
 		Query query = null;
 		String fromDate = from.replaceAll("-", "");
@@ -463,30 +463,36 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Term termFrom = new Term(dateField, fromDate);
 		Term termUntil = new Term(dateField, untilDate);
 		RangeQuery rangeQuery = new RangeQuery(termFrom,termUntil,true);
-		
-		 
-		BooleanQuery q = new BooleanQuery();
-		q.add(rangeQuery, Occur.MUST);
-		if (!set.equalsIgnoreCase(""))
-			q.add(new TermQuery(new Term("contents",set)), Occur.MUST);
-		
-		
-		try {
-//			query = parser.parse(rangeQuery.toString());
-			query = parser.parse(q.toString());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
+
+		BooleanQuery q = null;
 		Hits hits = null;
-		try {
-//			hits = searcher.search(query);
-			hits = SingletonIndexSearcher.search(query);
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (set == null || !set.equalsIgnoreCase("")) {
+
+			q = new BooleanQuery();
+
+			q.add(rangeQuery, Occur.MUST);
+			if(set != null)q.add(new TermQuery(new Term("contents",set)), Occur.MUST);
+
+
+			try {
+				//			query = parser.parse(rangeQuery.toString());
+				query = parser.parse(q.toString());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			try {
+				//			hits = searcher.search(query);
+				hits = SingletonIndexSearcher.search(query);
+			} catch (IOException e) {
+				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		/** End Query **/
@@ -499,64 +505,62 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		String record = "empty_string";
 		/* load the records ArrayList */
 		//Object[] nativeItem = new Object[hits.length()];
-//		for (int i = 0; i < hits.length(); i++) {
-//			try {
-//				nativeItem[i] = hits.doc(i);
-//				System.out.println(i);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		//		for (int i = 0; i < hits.length(); i++) {
+		//			try {
+		//				nativeItem[i] = hits.doc(i);
+		//				System.out.println(i);
+		//			} catch (IOException e) {
+		//				// TODO Auto-generated catch block
+		//				e.printStackTrace();
+		//			}
+		//		}
 		/** End Create **/
 
-		for (count=0; count < maxListSize && count < hits.length(); ++count) {
-//			record = constructRecord(nativeItem[count], metadataPrefix);
-			try {
-				record = constructRecord(hits.doc(count), metadataPrefix);
-				records.add(record);
-			} catch (CorruptIndexException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if (hits != null) {
+			for (count = 0; count < maxListSize && count < hits.length(); ++count) {
+				//			record = constructRecord(nativeItem[count], metadataPrefix);
+				try {
+					record = constructRecord(hits.doc(count), metadataPrefix);
+					records.add(record);
+				} catch (CorruptIndexException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			/* decide if you're done */
+			if (count < hits.length()) {
+				String resumptionId = getResumptionId();
+
+				/*****************************************************************
+				 * Store an object appropriate for your database API in the
+				 * resumptionResults Map in place of nativeItems. This object
+				 * should probably encapsulate the information necessary to
+				 * perform the next resumption of ListIdentifiers. It might even
+				 * be possible to encode everything you need in the
+				 * resumptionToken, in which case you won't need the
+				 * resumptionResults Map. Here, I've done a silly combination
+				 * of the two. Stateless resumptionTokens have some advantages.
+				 *****************************************************************/
+				resumptionResults.put(resumptionId, query);
+
+				/*****************************************************************
+				 * Construct the resumptionToken String however you see fit.
+				 *****************************************************************/
+				StringBuffer resumptionTokenSb = new StringBuffer();
+				resumptionTokenSb.append(resumptionId);
+				resumptionTokenSb.append(":");
+				resumptionTokenSb.append(Integer.toString(count));
+				resumptionTokenSb.append(":");
+				resumptionTokenSb.append(metadataPrefix);
+
+				listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(), hits.length(), 0));
 			}
 		}
-
-		/* decide if you're done */
-		if (count < hits.length()) {
-			String resumptionId = getResumptionId();
-
-			/*****************************************************************
-			 * Store an object appropriate for your database API in the
-			 * resumptionResults Map in place of nativeItems. This object
-			 * should probably encapsulate the information necessary to
-			 * perform the next resumption of ListIdentifiers. It might even
-			 * be possible to encode everything you need in the
-			 * resumptionToken, in which case you won't need the
-			 * resumptionResults Map. Here, I've done a silly combination
-			 * of the two. Stateless resumptionTokens have some advantages.
-			 *****************************************************************/
-			resumptionResults.put(resumptionId, query);
-
-			/*****************************************************************
-			 * Construct the resumptionToken String however you see fit.
-			 *****************************************************************/
-			StringBuffer resumptionTokenSb = new StringBuffer();
-			resumptionTokenSb.append(resumptionId);
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(Integer.toString(count));
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(metadataPrefix);
-
-			listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-					hits.length(),
-					0));
-		}
-
 		listRecordsMap.put("records", records.iterator());
-		
+
 		closeIndexReader(reader);
 		return listRecordsMap;
 	}
@@ -609,7 +613,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		st.start();
 		Hits hits = null;
 		try {
-//			hits = searcher.search(query);
+			//			hits = searcher.search(query);
 			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -617,9 +621,9 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		st.stopWPrint();
-		
+
 		/* load the headers and identifiers ArrayLists. */
 		for (count = 0; count < maxListSize && count+oldCount < hits.length(); ++count) {
 			try {
@@ -732,23 +736,23 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	}
 
 
-//	protected String parseToLuceneQuery(String query){
-//		try {
-//			StringTokenizer tokenizer = new StringTokenizer(query, ":");
-//			String result = tokenizer.nextToken();
-//			while(tokenizer.hasMoreElements()){
-//				result = result.concat("\\:" + tokenizer.nextToken());
-//			}
-//			return result;
-//		} catch (Exception e) {
-//			return null;
-//		}
-//	}
+	//	protected String parseToLuceneQuery(String query){
+	//		try {
+	//			StringTokenizer tokenizer = new StringTokenizer(query, ":");
+	//			String result = tokenizer.nextToken();
+	//			while(tokenizer.hasMoreElements()){
+	//				result = result.concat("\\:" + tokenizer.nextToken());
+	//			}
+	//			return result;
+	//		} catch (Exception e) {
+	//			return null;
+	//		}
+	//	}
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
 		IndexReader reader = loadIndexReader(indexDir);
 		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
-//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
+		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
 		String localIdentifier = oaiIdentifier;
 		localIdentifier = localIdentifier.replaceAll("[:]", "\\\\:");
 
@@ -756,8 +760,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Hits hits = null;
 		try {
 			//hits = searcher.search(termQuery);
-//			hits = searcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
-//			hits = SingletonIndexSearcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
+			//			hits = searcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
+			//			hits = SingletonIndexSearcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
 			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
 		} catch (IOException e) {
 			throw new OAIInternalServerError(e.getMessage());
