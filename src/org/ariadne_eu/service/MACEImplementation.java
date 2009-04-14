@@ -3,13 +3,27 @@
  */
 package org.ariadne_eu.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.w3c.util.DateParser;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.ariadne_eu.mace.AddRelation;
 import org.ariadne_eu.mace.CreateLOM;
 import org.ariadne_eu.mace.CreateRWO;
@@ -26,11 +40,21 @@ import org.ariadne_eu.metadata.insert.InsertMetadataImpl;
 import org.ariadne_eu.metadata.insert.InsertMetadataLuceneImpl;
 import org.ariadne_eu.metadata.query.QueryMetadataException;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
-import org.ariadne_eu.metadata.query.QueryMetadataImpl;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
+import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
+import org.ariadne_eu.utils.mace.MACEUtils;
 import org.ariadne_eu.utils.oai.OAIHarvester;
+import org.eun.lucene.core.indexer.document.DocumentHandler;
+import org.eun.lucene.core.indexer.document.DocumentHandlerException;
+import org.eun.lucene.core.indexer.document.HandlerFactory;
+import org.ietf.mimedir.MimeDir;
+import org.ietf.mimedir.impl.MimeDirImpl;
+import org.ietf.mimedir.util.MimeDirUtil;
+import org.ietf.mimedir.vcard.impl.VCardImpl;
+import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -71,11 +95,13 @@ public class MACEImplementation extends MACESkeleton {
 			
 			Element general = new Element("general", lomNS);
 			Element identifier = new Element("identifier", lomNS);
-			Element catalog = new Element("catalog", lomNS).setText("mace:external");
+			Element catalog = new Element("catalog", lomNS).setText("mace:rwo");
 			Element entry1 = new Element("entry", lomNS).setText(createRWO.getResourceId());
 			identifier.addContent(catalog);
 			identifier.addContent(entry1);
 			general.addContent(identifier);
+			Element lang = new Element("language", lomNS).setText("en");
+			general.addContent(lang);
 			Element tit = new Element("title", lomNS);
 			Element str1 = new Element("string", lomNS).setText(createRWO.getResourceTitle());
 			tit.addContent(str1);
@@ -92,12 +118,20 @@ public class MACEImplementation extends MACESkeleton {
 			general.addContent(lok);
 			root.addContent(general);
 			
+			
 			Element metametadata = new Element("metaMetadata", lomNS);
 			Element identifierM = new Element("identifier", lomNS);
+			Element catalogM = new Element("catalog", lomNS).setText("mace:rwo");
 			Element entry2 = new Element("entry", lomNS).setText(createRWO.getResourceId()+"MD");
+			identifierM.addContent(catalogM);
 			identifierM.addContent(entry2);
 			metametadata.addContent(identifierM);
+			Element contribute = createReposContributor("MACE");
+			metametadata.addContent(contribute);
+			Element langM = new Element("language", lomNS).setText("en");
+			metametadata.addContent(langM);
 			root.addContent(metametadata);
+			
 
 			Element educational = new Element("educational", lomNS);
 			Element lrt = new Element("learningResourceType", lomNS);
@@ -105,6 +139,15 @@ public class MACEImplementation extends MACESkeleton {
 			lrt.addContent(value);
 			educational.addContent(lrt);
 			root.addContent(educational);
+			
+			Element rights = new Element("rights",lomNS);
+			Element cor = new Element("copyrightAndOtherRestrictions",lomNS);
+			Element src2 = new Element("source",lomNS).setText("LOMv1.0");
+			Element str4 = new Element("value",lomNS).setText("yes");
+			cor.addContent(src2);
+			cor.addContent(str4);
+			rights.addContent(cor);
+			root.addContent(rights);
 
 			doc.setRootElement(root);
 			
@@ -148,6 +191,8 @@ public class MACEImplementation extends MACESkeleton {
 			identifier.addContent(catalog);
 			identifier.addContent(entry1);
 			general.addContent(identifier);
+			Element lang = new Element("language", lomNS).setText("en");
+			general.addContent(lang);
 			Element tit = new Element("title", lomNS);
 			Element str1 = new Element("string", lomNS).setText(createLOM.getResourceTitle());
 			tit.addContent(str1);
@@ -166,9 +211,15 @@ public class MACEImplementation extends MACESkeleton {
 			
 			Element metametadata = new Element("metaMetadata", lomNS);
 			Element identifierM = new Element("identifier", lomNS);
+			Element catalogM = new Element("catalog", lomNS).setText("mace:external");
 			Element entry2 = new Element("entry", lomNS).setText(createLOM.getResourceId()+"MD");
+			identifierM.addContent(catalogM);
 			identifierM.addContent(entry2);
 			metametadata.addContent(identifierM);
+			Element contribute = createReposContributor("MACE");
+			metametadata.addContent(contribute);
+			Element langM = new Element("language", lomNS).setText("en");
+			metametadata.addContent(langM);
 			root.addContent(metametadata);
 
 			Element educational = new Element("educational", lomNS);
@@ -177,6 +228,20 @@ public class MACEImplementation extends MACESkeleton {
 			lrt.addContent(value);
 			educational.addContent(lrt);
 			root.addContent(educational);
+			
+			Element technical = new Element("technical", lomNS);
+			Element location = new Element("location", lomNS).setText(createLOM.getUrl());
+			technical.addContent(location);
+			root.addContent(technical);
+			
+			Element rights = new Element("rights",lomNS);
+			Element cor = new Element("copyrightAndOtherRestrictions",lomNS);
+			Element src2 = new Element("source",lomNS).setText("LOMv1.0");
+			Element str4 = new Element("value",lomNS).setText("yes");
+			cor.addContent(src2);
+			cor.addContent(str4);
+			rights.addContent(cor);
+			root.addContent(rights);
 
 			doc.setRootElement(root);
 			
@@ -505,49 +570,59 @@ public class MACEImplementation extends MACESkeleton {
 			XPath xpRelation = XPath.newInstance("//lom:general//lom:keyword");
 			xpRelation.addNamespace(lomNS);
 			List keywords = xpRelation.selectNodes(aloeRoot);
+			List strKeywords = new ArrayList();
 			Element keyword;
 			
 			if (keywords != null) {
-				Reader in = new StringReader(orgXML);
-				Document origDoc = builder.build(in);
-				Element origRoot = origDoc.getRootElement();
-				Element origGeneral = origRoot.getChild("general", lomNS);
+//				Reader in = new StringReader(orgXML);
+//				Document origDoc = builder.build(in);
+//				Element origRoot = origDoc.getRootElement();
+//				Element origGeneral = origRoot.getChild("general", lomNS);
 				for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
 					keyword = (Element) iterator.next();
-					origGeneral.addContent(keyword.detach());
+//					origGeneral.addContent(keyword.detach());
+					strKeywords.add(keyword.getChildText("string", lomNS));
 				}
-				origRoot.detach();
-				Document newDoc = new org.jdom.Document(origRoot);
-				XMLOutputter outputter = new XMLOutputter();
-				Format format = Format.getPrettyFormat();
-				outputter.setFormat(format);
-				String output = outputter.outputString(newDoc);
-				insertIntoLucene(enrichFromAloe.getResourceId(),output);
+//				origRoot.detach();
+//				Document newDoc = new org.jdom.Document(origRoot);
+//				XMLOutputter outputter = new XMLOutputter();
+//				Format format = Format.getPrettyFormat();
+//				outputter.setFormat(format);
+//				String output = outputter.outputString(newDoc);
+//				insertIntoLucene(enrichFromAloe.getResourceId(),output);
+				
 			}
+			
 			xpRelation = XPath.newInstance("//lom:general//lom:classification");
 			xpRelation.addNamespace(lomNS);
 			List classifications = xpRelation.selectNodes(aloeRoot);
 			Element classification;
-			
+			List strClassifications = new ArrayList();
 			if (classifications != null) {
-				Reader in = new StringReader(orgXML);
-				Document origDoc = builder.build(in);
-				
-				Element origRoot = origDoc.getRootElement();
-				Element origGeneral = origRoot.getChild("classification", lomNS);
-				for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
+//				Reader in = new StringReader(orgXML);
+//				Document origDoc = builder.build(in);
+//				
+//				Element origRoot = origDoc.getRootElement();
+//				Element origGeneral = origRoot.getChild("classification", lomNS);
+				for (Iterator iterator = classifications.iterator(); iterator.hasNext();) {
 					classification = (Element) iterator.next();
-					origGeneral.addContent(classification.detach());
+//					origGeneral.addContent(classification.detach());
+					String id = ((classification.getChild("taxonPath", lomNS)).getChild("taxon", lomNS)).getChildText("id",lomNS);
+					String entry = (((classification.getChild("taxonPath", lomNS)).getChild("taxon", lomNS)).getChild("entry",lomNS)).getChildText("string",lomNS);
+					List strClassification = new ArrayList();
+					strClassification.add(id);
+					strClassification.add(entry);
+					strClassifications.add(strClassification);
 				}
-				origRoot.detach();
-				Document newDoc = new org.jdom.Document(origRoot);
-				XMLOutputter outputter = new XMLOutputter();
-				Format format = Format.getPrettyFormat();
-				outputter.setFormat(format);
-				String output = outputter.outputString(newDoc);
-				insertIntoLucene(enrichFromAloe.getResourceId(),output);
+//				origRoot.detach();
+//				Document newDoc = new org.jdom.Document(origRoot);
+//				XMLOutputter outputter = new XMLOutputter();
+//				Format format = Format.getPrettyFormat();
+//				outputter.setFormat(format);
+//				String output = outputter.outputString(newDoc);
+//				insertIntoLucene(enrichFromAloe.getResourceId(),output);
 			}
-			
+			insertIntoLucenewEnrichments(enrichFromAloe.getResourceId(),orgXML,strKeywords, strClassifications);
 
 		} catch (OAIException e) {
 			// TODO Auto-generated catch block
@@ -564,24 +639,138 @@ public class MACEImplementation extends MACESkeleton {
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
 	}
 	
-	private void insertIntoLucene(String identifier, String xml) {
-		InsertMetadataImpl[] insertImpls = InsertMetadataFactory.getInsertImpl();
-		InsertMetadataLuceneImpl luceneImpl = null;
-		for (int i = 0; i < insertImpls.length; i++) {
-			InsertMetadataImpl insertImpl = insertImpls[i];
-			if (insertImpl instanceof InsertMetadataLuceneImpl)
-				luceneImpl = (InsertMetadataLuceneImpl) insertImpl;
+	private void insertIntoLucenewEnrichments(String identifier, String metadata, List keywords, List classifications) {
+		IndexWriter writer = null;
+		try {
+			InsertMetadataImpl[] insertImpls = InsertMetadataFactory.getInsertImpl();
+			InsertMetadataLuceneImpl luceneImpl = null;
+			for (int i = 0; i < insertImpls.length; i++) {
+				InsertMetadataImpl insertImpl = insertImpls[i];
+				if (insertImpl instanceof InsertMetadataLuceneImpl)
+					luceneImpl = (InsertMetadataLuceneImpl) insertImpl;
+			}
+
+			if (luceneImpl == null)
+				return;
+
+			boolean create = !(IndexReader.indexExists(luceneImpl.getIndexDir()));
+			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
+			DocumentHandler handler = HandlerFactory.getDocumentHandlerImpl();
+			org.apache.lucene.document.Document doc = null;
+			
+			// first delete!
+            writer = new IndexWriter(FSDirectory.getDirectory(luceneImpl.getIndexDir()), analyzer.getAnalyzer());
+            Term term = new Term("key", identifier);
+    		writer.deleteDocuments(term);
+    		writer.close();
+    		
+			// now insert!
+            writer = new IndexWriter(FSDirectory.getDirectory(luceneImpl.getIndexDir()), analyzer.getAnalyzer(), create);
+
+			String insertMetadata = metadata;
+			if (metadata.startsWith("<?")) 
+				insertMetadata = metadata.substring(metadata.indexOf("?>") + 2);
+
+			doc = handler.getDocument(new ByteArrayInputStream(metadata.getBytes("UTF-8")));
+			doc.add(new Field("key", identifier, Field.Store.YES,Field.Index.UN_TOKENIZED));
+			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND),Field.Store.YES, Field.Index.UN_TOKENIZED));
+			doc.add(new Field("lom", insertMetadata, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("lom.solr", "all", Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			
+			//keywords
+			for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
+				String keyword = (String) iterator.next();
+				doc.add(new Field("lom.general.keyword.string", keyword, Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", keyword, Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			}
+			
+			//classifications
+			for (Iterator iterator = classifications.iterator(); iterator.hasNext();) {
+				List classification = (List) iterator.next();
+				doc.add(new Field("lom.classification.taxonPath.taxon.id", (String) classification.get(0), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("lom.classification.taxonPath.taxon.entry.string", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", (String) classification.get(0), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			}
+			
+			String luceneHandler = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_HANDLER);
+			if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
+				MACEUtils.getClassification();
+				String exml = MACEUtils.enrichWClassification(insertMetadata);
+				exml = exml.substring(38);
+				doc.add(new Field("maceenrichedlom", exml, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			}
+			writer.addDocument(doc);
+			
+		} catch (DocumentHandlerException e) {
+			e.printStackTrace();
+		} catch (CorruptIndexException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LockObtainFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (CorruptIndexException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		if (luceneImpl == null)
-			return;
-		luceneImpl.insertMetadata(identifier, xml);
+
+	}
+	
+	private static Element createReposContributor(String name) {
+		Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
+
+		final MimeDir.ContentLine fn = new MimeDirImpl.ContentLine(null, "FN",null, new MimeDirImpl.TextValueType(new String[] { name }));
+		final MimeDir.ContentLine n = new MimeDirImpl.ContentLine(null, "N",null, new MimeDirImpl.TextValueType(new String[] { name }));
+		final MimeDir.ContentLine org = new MimeDirImpl.ContentLine(null,"ORG", null, new MimeDirImpl.TextValueType(new String[] { name }));
+		final MimeDir.ContentLine version = new MimeDirImpl.ContentLine(null,"VERSION", null, new MimeDirImpl.TextValueType(new String[] { "3.0" }));
+
+			
+		// contribute
+		Element contribute = new Element("contribute", lomNS);
+		
+		// contribute.entity
+		Element entity = new Element("entity", lomNS);
+		VCardImpl vcard = new VCardImpl(new MimeDir.ContentLine[] { fn, n,org, version });
+		CDATA cdata = new CDATA(MimeDirUtil.toString(vcard));
+		entity.addContent(cdata);
+		contribute.addContent(entity);
+		// contribute.role
+		Element role = new Element("role", lomNS);
+		contribute.addContent(role);
+		Element value = new Element("value", lomNS);
+		String valueString = "provider";
+		value.setText(valueString);
+		role.addContent(value);
+		Element source = new Element("source", lomNS);
+		String sourceString = "LOMv1.0";
+		source.setText(sourceString);
+		role.addContent(source);
+		// contribute.date
+		Element date = new Element("date", lomNS);
+		contribute.addContent(date);
+		Element dateTime = new Element("dateTime", lomNS);
+		Calendar dateCalendar = Calendar.getInstance();
+		dateCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+		// String time = Calendar.getInstance().getTime().toString();
+		dateTime.setText(DateParser.getIsoDate(dateCalendar));
+		date.addContent(dateTime);
+		return contribute;
+
 	}
 	
 	private static void checkValidTicket(Ticket ticket) throws MACEFaultException {

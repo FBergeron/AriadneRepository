@@ -100,4 +100,8 @@ public class InsertMetadataLuceneImpl extends InsertMetadataImpl {
 			}
 		}
 	}
+
+	public File getIndexDir() {
+		return indexDir;
+	}
 }

@@ -88,7 +88,8 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
 	    SolrCore core = SolrCore.getSolrCore();
 		SolrServer server = new EmbeddedSolrServer(core);
 		
-		SolrQuery solrQuery = new  SolrQuery().setQuery(lQuery).setFacet(true).setFacetMinCount(1);
+		SolrQuery solrQuery = new  SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(1).setFacetSort(true);
+
 		ModifiableSolrParams params = new ModifiableSolrParams();
 		params.set("queryResultWindowSize", Integer.toString(max));
 		solrQuery.add(params);

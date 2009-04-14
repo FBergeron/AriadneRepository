@@ -55,7 +55,11 @@ public class MACELOMHandler extends DocumentHandler {
 	private final String EQUAL_SEPARATOR = "=";
 	private HashMap<String, Element> classificationValues;
 	private Vector<Element> taxonPath; 
-	private boolean competency;
+	private boolean isCompetency;
+	private String competencyID = "";
+	private int count = 0;
+	private int maxEQF = 0;
+	private int minEQF = 0;
 
 	public Document getDocument(InputStream is) throws DocumentHandlerException {
 
@@ -139,8 +143,7 @@ public class MACELOMHandler extends DocumentHandler {
 		String tmp2Branche = "";
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
-			branche = branche.substring(0, branche.length() - qName.length()
-					- 1);
+			branche = branche.substring(0, branche.length() - qName.length() - 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
@@ -168,37 +171,45 @@ public class MACELOMHandler extends DocumentHandler {
 		// Hardcoded for LOM XML specifications -->
 		// Classification ...
 		if (tmpBranche.matches(".*classification\\.((purpose)|(taxonpath)).*")) {
+			
+			
 			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
 			if (tmpBranche.endsWith("classification.purpose.source")) {
 			} else if (tmpBranche.endsWith("classification.purpose.value")) {
-				purpose = elementBuffer.toString().trim().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
-				purposeFieldName = tmpBranche + ATT_SEPARATOR + "" + purpose;
+//				purpose = elementBuffer.toString().trim().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
+//				purposeFieldName = tmpBranche + ATT_SEPARATOR + "" + purpose;
 				//GAP: lo a–ado para hacer la prueba con solr
-				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
+//				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				
-				
-				
+				purpose = elementBuffer.toString();
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
-				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
+//				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
+				taxonPathSource = elementBuffer.toString().trim();
 				if (taxonPathSource.equalsIgnoreCase("MACE Competence Catalogue"))
-					competency = true;
+					isCompetency = true;
 				else
-					competency = false;
-//				tpSourceFieldName = tmpBranche + ATT_SEPARATOR + "" + taxonPathSource;
+					isCompetency = false;
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.id")) {
-//				taxonPathId = elementBuffer.toString().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				tpIdFieldName = tmpBranche;
 				taxonPathId = elementBuffer.toString();
-				if (competency)
-					doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				if (isCompetency) {
+					if (count == 0) {
+						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						count++;
+					} else if (count == 1){
+						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						competencyID = elementBuffer.toString();
+						count++;
+					}
+				}
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
 				
-				if (competency) {
-					doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				if (isCompetency) {
+					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				}
 				else if (taxonPathId != null) {
 					classificationValues = MACEUtils.getClassification();
@@ -208,10 +219,10 @@ public class MACELOMHandler extends DocumentHandler {
 						getMaceClassTaxonPath(classificationValue);
 						for (Iterator iterator = taxonPath.iterator(); iterator.hasNext();) {
 							Element item = (Element) iterator.next();
-							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id"), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id"), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 							doc.add(new Field(tmpBranche, item.getChildText("label"), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 							doc.add(new Field(tmpBranche + ".exact", (item.getChildText("label")).trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-							contents = contents.concat(" "+ (item.getChildText("label")).trim().toLowerCase());
+							contents = contents.concat(" "+ (item.getChildText("label")).trim());
 						}
 
 					} else {
@@ -219,18 +230,32 @@ public class MACELOMHandler extends DocumentHandler {
 					}
 				} 
 			} else if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf") || tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf")) {
-				doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				System.out.println("test");
+				if (count == 2) {
+					if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf"))
+						minEQF = Integer.parseInt(elementBuffer.toString());
+					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
+						maxEQF = Integer.parseInt(elementBuffer.toString());
+					count++;
+				} else if (count == 3) {
+					if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf"))
+						minEQF = Integer.parseInt(elementBuffer.toString());
+					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
+						maxEQF = Integer.parseInt(elementBuffer.toString());
+					for (int i = minEQF; i <= maxEQF; i++) {
+						doc.add(new Field(tmpBranche, Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "competency.eqf", competencyID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+					}
+					count = 0;
+				}
+				
 			}
 		}
 		// Title
 		else if (tmpBranche.matches(".*title.*")) {
 			if (tmpBranche.endsWith("title.string")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().trim(), Field.Store.YES,
-						Field.Index.TOKENIZED));// XXX
-				doc.add(new Field(tmpBranche.toLowerCase() + ".exact",
-						elementBuffer.toString().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase() + ".exact",elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -239,41 +264,27 @@ public class MACELOMHandler extends DocumentHandler {
 				.matches(".*contribute\\.((role)|(entity)|(date)).*")) {
 			if (tmpBranche.endsWith("contribute.role.source")) {
 				source = elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), source
-						.toLowerCase(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), source.toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.role.value")) {
-				source += EQUAL_SEPARATOR + ""
-						+ elementBuffer.toString().trim();// TODO
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				source += EQUAL_SEPARATOR + "" + elementBuffer.toString().trim();// TODO
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.entity")) {
-				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + ""
-						+ source;
-				doc.add(new Field(fieldName.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.TOKENIZED));// XXX
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.TOKENIZED));// XXX
+				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + ""+ source;
+				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.date.datetime")) {
-				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + ""
-						+ source;
-				doc.add(new Field(fieldname.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + "" + source;
+				doc.add(new Field(fieldname.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 				// para poder soportar busquedas con rangos
 				String date = elementBuffer.toString().toLowerCase().trim().replaceAll("-", "").replaceAll("t", "").replaceAll(":", "").replaceAll("\\.", "").replaceAll("z","");
 				if (date.length() > 15)
 					date = date.substring(0, 15);
 				//				
-				doc.add(new Field(tmp2Branche.toLowerCase(), date,
-						Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmp2Branche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -286,8 +297,7 @@ public class MACELOMHandler extends DocumentHandler {
 			Iterator iter = attributeMap.keySet().iterator();
 			while (iter.hasNext()) {
 				String attName = ((String) iter.next()).toLowerCase();
-				String attValue = ((String) attributeMap.get(attName))
-						.toLowerCase();
+				String attValue = ((String) attributeMap.get(attName)).toLowerCase();
 
 				if (!attValue.equalsIgnoreCase("x-t-lre"))
 					continue;
@@ -295,38 +305,29 @@ public class MACELOMHandler extends DocumentHandler {
 				String[] ageRange = elementBuffer.toString().trim().split("-");
 
 				if (ageRange.length <= 2) {
-
 					for (int z = 0; z < ageRange.length; z++) {
-
 						if (ageRange[z].matches("(\\d)*")) {
-
 							if (ageRange[z].length() == 1) {
 								ageRange[z] = "00" + ageRange[z];
-
 							} else if (ageRange[z].length() == 2) {
 								ageRange[z] = "0" + ageRange[z];
 							}
 						}
 						String fieldName = tmp2Branche + "." + MIN_MAX[z];
-						doc.add(new Field(fieldName.toLowerCase(), ageRange[z]
-								.toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), ageRange[z].toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 					}
 				}
 			}
 
 		}
 		// resource. Catalog + entry
-		else if (tmpBranche
-				.matches(".*resource.identifier\\.((catalog)|(entry))")) {
+		else if (tmpBranche.matches(".*resource.identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
 				identifier = "catalog" + EQUAL_SEPARATOR + "" + elementBuffer.toString().trim();
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 				// doc.add(new
 				// Field(tmp2Branche+""+BRANCH_SEPARATOR+""+indentifier+""+BRANCH_SEPARATOR+"entry",elementBuffer.toString().trim(),
 				// Field.Store.YES, Field.Index.UN_TOKENIZED));//XXX
@@ -339,23 +340,12 @@ public class MACELOMHandler extends DocumentHandler {
 			if (tmpBranche.endsWith("identifier.catalog")) {
 				// indentifier =
 				// "catalog"+EQUAL_SEPARATOR+""+elementBuffer.toString().trim();
-				catalog = elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				catalog = elementBuffer.toString().trim().replace("\n", "");
+				doc.add(new Field(tmpBranche.toLowerCase(), catalog, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-				
 				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-
-				// doc.add(new
-				// Field(tmp2Branche+""+BRANCH_SEPARATOR+""+indentifier+""+BRANCH_SEPARATOR+"entry",elementBuffer.toString().trim(),
-				// Field.Store.YES, Field.Index.UN_TOKENIZED));//XXX
-				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR+ "catalog" + BRANCH_SEPARATOR + "entry";
-				// GAP
-				// doc.add(new
-				// Field(fieldName.toLowerCase(),indentifier+""+elementBuffer.toString().toLowerCase().trim(),
-				// Field.Store.YES, Field.Index.UN_TOKENIZED));//XXX
-				doc.add(new Field(fieldName.toLowerCase(), catalog + ":"+ elementBuffer.toString().toLowerCase().trim(),Field.Store.YES, Field.Index.TOKENIZED));
 			}
 		}
 		// technical.format
@@ -390,28 +380,18 @@ public class MACELOMHandler extends DocumentHandler {
 		// !
 		else if (tmpBranche.matches(".*((source)|(value))")) {
 			if (tmpBranche.endsWith("source")) {
-				source = "source" + EQUAL_SEPARATOR
-						+ elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				source = "source" + EQUAL_SEPARATOR + elementBuffer.toString().trim();
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("value")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
-				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR + ""
-						+ source + BRANCH_SEPARATOR + "value";
-				doc.add(new Field(fieldName.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR + "" + source + BRANCH_SEPARATOR + "value";
+				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 			}
 		}
 		// In all the other cases add a field !
 		else {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-					.toString().toLowerCase(), Field.Store.YES,
-					Field.Index.UN_TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 		}
 		// <---
 		// to store the contents without metatags

@@ -22,12 +22,9 @@ public class ReaderManagement {
 	}
 
     public static ReaderManagement getInstance(){
-        if ( instance == null )
-        {
-            synchronized( ReaderManagement.class )
-            {
-                if ( instance == null )
-                {
+        if ( instance == null ){
+            synchronized( ReaderManagement.class ){
+                if ( instance == null ){
                     instance = new ReaderManagement();
                 }
             }
@@ -72,27 +69,28 @@ public class ReaderManagement {
         	List<ReaderContainer> lReader;
         	if (!mReaders.containsKey(indexDir)){
         		lReader = new ArrayList<ReaderContainer>();
+        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
         		mReaders.put(indexDir, lReader);
-        		
         	} else {
         		lReader = mReaders.get(indexDir);
         		
         		if (lReader.size() > 0){
-        			log.info("setNewReader :: lReader.size() = " + lReader.size());
-        			for (int i = lReader.size() - 1; i > 2 ; i--) {
+        			log.info("setNewReader-STEP1 :: lReader.size() = " + lReader.size());
+        			for (int i = lReader.size() - 1; i >= 0 ; i--) {
 //        				ReaderContainer readerContainer = lReader.get(lReader.size()-1);
         				ReaderContainer readerContainer = lReader.get(i);
             			
                     	if (readerContainer.isClosable()){
-                    		log.info("setNewReader :: close = (setNewReader)lreader size = "+lReader.size()+" | reader = "+readerContainer);
                     		readerContainer.close();
                     		lReader.remove(readerContainer);
                     	}
         			}
         			
             	}
+        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
+        		log.info("setNewReader-STEP2 :: lReader.size() = " + lReader.size());
         	}
-        	lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
+        	
     		} catch(Exception ex){
         		log.fatal("setNewReader :: mReaders.containsKey(indexDir)" +mReaders.containsKey(indexDir)+" indexDir "+indexDir.getCanonicalPath()+" ERR:"+ex);
         	}
@@ -109,16 +107,18 @@ public class ReaderManagement {
     	synchronized (mReaders) {
 	    	List<ReaderContainer> lReader = mReaders.get(indexDir);
 	    	//
-	    	log.info("unRegister :: lReader size = "+lReader.size()+" | reader = "+reader+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
+	    	log.info("unRegister-STEP1 :: lReader size = "+lReader.size()+" | reader = "+reader+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
 	    	//
 	    	ReaderContainer readerContainer = lReader.get(lReader.indexOf(new ReaderContainer(reader)));
 	    	readerContainer.decNbSearch();
-	    	if (lReader.size() > 1 && !lReader.get(lReader.size()-1).equals(reader) && readerContainer.isClosable()){
+//	    	if (lReader.size() > 1 && !lReader.get(lReader.size()-1).equals(reader) && readerContainer.isClosable()){
+	    	if (lReader.size() > 1 && readerContainer.isClosable()){
 	    		log.info("unRegister :: close = (unRegister) size lreader = "+lReader.size()+" | reader = "+reader);
 	    		readerContainer.close();
 	    		lReader.remove(readerContainer);
 	    		
 	    	}
+	    	log.info("unRegister-STEP2 :: lReader size = "+lReader.size()+" | reader = "+reader+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
     	}
     	
     }
