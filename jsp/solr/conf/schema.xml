@@ -259,16 +259,19 @@
    <field name="lom.general.language" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.general.learningobjectkind.value" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.metametadata.identifier.catalog" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="lom.lifecycle.contribute.entity" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.educational.learningresourcetype.value" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.educational.interactivitytype.value" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="lom.educational.context.value" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="lom.technical.format" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.rights.cost.value" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.rights.copyrightAndOtherRestrictions.value" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.classification.taxonpath.taxon.id" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.classification.taxonpath.taxon.id.competency" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="lom.classification.taxonpath.taxon.maxeqf" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="lom.classification.taxonpath.taxon.mineqf" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.classification.taxonpath.taxon.id.domain" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.classification.taxonpath.taxon.competency.eqf" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="lom.classification.taxonpath.taxon.domain.eqf" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="lom.classification.taxonpath.taxon.eqf" type="string" indexed="true" stored="true" multiValued="true"/>
 
 
    <!-- Dynamic field definitions.  If a field name is not found, dynamicFields

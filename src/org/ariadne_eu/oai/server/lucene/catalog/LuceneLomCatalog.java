@@ -37,7 +37,7 @@ import org.ariadne_eu.utils.Stopwatch;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
+//import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadArgumentException;
 import org.oclc.oai.server.verb.BadResumptionTokenException;
@@ -234,7 +234,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	private Object getIndexRecord(String identifier) {
 		IndexReader reader = loadIndexReader(indexDir);
-		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
+//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
 
 
@@ -244,24 +245,21 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		try {
 			query = parser.parse(termQuery.toString());
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		Hits hits = null;
 		try {
-			//			hits = searcher.search(query);
-			hits = SingletonIndexSearcher.search(query);
+			hits = searcher.search(query);
+//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+			e.printStackTrace();  
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Document resultDoc = null;
 		try {
 			resultDoc = hits.doc(0);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		closeIndexReader(reader);
@@ -271,7 +269,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
 		IndexReader reader = loadIndexReader(indexDir);
-		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
+//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
 		Map listIdentifiersMap = new HashMap();
 		ArrayList headers = new ArrayList();
@@ -299,8 +298,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 		Hits hits = null;
 		try {
-			//			hits = searcher.search(query);
-			hits = SingletonIndexSearcher.search(query);
+			hits = searcher.search(query);
+//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -434,7 +433,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public Map listRecords(String from, String until, String set, String metadataPrefix)
 	throws CannotDisseminateFormatException {
 		IndexReader reader = loadIndexReader(indexDir);
-		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
+//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
 		Map listRecordsMap = new HashMap();
 		ArrayList records = new ArrayList();
@@ -485,8 +485,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			}
 
 			try {
-				//			hits = searcher.search(query);
-				hits = SingletonIndexSearcher.search(query);
+				hits = searcher.search(query);
+//				hits = SingletonIndexSearcher.search(query);
 			} catch (IOException e) {
 				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 			} catch (Exception e) {
@@ -579,7 +579,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public Map listRecords(String resumptionToken)
 	throws BadResumptionTokenException {
 		IndexReader reader = loadIndexReader(indexDir);
-		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
+//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		Map listRecordsMap = new HashMap();
 		ArrayList records = new ArrayList();
 		purge(); // clean out old resumptionTokens
@@ -613,8 +614,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		st.start();
 		Hits hits = null;
 		try {
-			//			hits = searcher.search(query);
-			hits = SingletonIndexSearcher.search(query);
+			hits = searcher.search(query);
+//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (Exception e) {
@@ -751,7 +752,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
 		IndexReader reader = loadIndexReader(indexDir);
-		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		IndexSearcher searcher = new IndexSearcher(reader);
+//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
 		String localIdentifier = oaiIdentifier;
 		localIdentifier = localIdentifier.replaceAll("[:]", "\\\\:");
@@ -759,10 +761,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		//TermQuery termQuery = new TermQuery(new Term(identifierField, localIdentifier)); 
 		Hits hits = null;
 		try {
-			//hits = searcher.search(termQuery);
-			//			hits = searcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
-			//			hits = SingletonIndexSearcher.search(new QueryParser("contents", new KeywordAnalyzer()).parse(identifierField + ":" + localIdentifier));
-			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
+			hits = searcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
+//			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
 		} catch (IOException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		} catch (ParseException e) {

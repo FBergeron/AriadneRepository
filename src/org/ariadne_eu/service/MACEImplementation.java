@@ -126,7 +126,7 @@ public class MACEImplementation extends MACESkeleton {
 			identifierM.addContent(catalogM);
 			identifierM.addContent(entry2);
 			metametadata.addContent(identifierM);
-			Element contribute = createReposContributor("MACE");
+			Element contribute = createReposContributor(createRWO.getContributorVCard());
 			metametadata.addContent(contribute);
 			Element langM = new Element("language", lomNS).setText("en");
 			metametadata.addContent(langM);
@@ -216,7 +216,7 @@ public class MACEImplementation extends MACESkeleton {
 			identifierM.addContent(catalogM);
 			identifierM.addContent(entry2);
 			metametadata.addContent(identifierM);
-			Element contribute = createReposContributor("MACE");
+			Element contribute = createReposContributor(createLOM.getContributorVCard());
 			metametadata.addContent(contribute);
 			Element langM = new Element("language", lomNS).setText("en");
 			metametadata.addContent(langM);
@@ -731,13 +731,13 @@ public class MACEImplementation extends MACESkeleton {
 
 	}
 	
-	private static Element createReposContributor(String name) {
+	private static Element createReposContributor(String vCard) {
 		Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
 
-		final MimeDir.ContentLine fn = new MimeDirImpl.ContentLine(null, "FN",null, new MimeDirImpl.TextValueType(new String[] { name }));
-		final MimeDir.ContentLine n = new MimeDirImpl.ContentLine(null, "N",null, new MimeDirImpl.TextValueType(new String[] { name }));
-		final MimeDir.ContentLine org = new MimeDirImpl.ContentLine(null,"ORG", null, new MimeDirImpl.TextValueType(new String[] { name }));
-		final MimeDir.ContentLine version = new MimeDirImpl.ContentLine(null,"VERSION", null, new MimeDirImpl.TextValueType(new String[] { "3.0" }));
+//		final MimeDir.ContentLine fn = new MimeDirImpl.ContentLine(null, "FN",null, new MimeDirImpl.TextValueType(new String[] { name }));
+//		final MimeDir.ContentLine n = new MimeDirImpl.ContentLine(null, "N",null, new MimeDirImpl.TextValueType(new String[] { name }));
+//		final MimeDir.ContentLine org = new MimeDirImpl.ContentLine(null,"ORG", null, new MimeDirImpl.TextValueType(new String[] { name }));
+//		final MimeDir.ContentLine version = new MimeDirImpl.ContentLine(null,"VERSION", null, new MimeDirImpl.TextValueType(new String[] { "3.0" }));
 
 			
 		// contribute
@@ -745,8 +745,9 @@ public class MACEImplementation extends MACESkeleton {
 		
 		// contribute.entity
 		Element entity = new Element("entity", lomNS);
-		VCardImpl vcard = new VCardImpl(new MimeDir.ContentLine[] { fn, n,org, version });
-		CDATA cdata = new CDATA(MimeDirUtil.toString(vcard));
+//		VCardImpl vcard = new VCardImpl(new MimeDir.ContentLine[] { fn, n,org, version });
+//		CDATA cdata = new CDATA(MimeDirUtil.toString(vcard));
+		CDATA cdata = new CDATA(vCard);
 		entity.addContent(cdata);
 		contribute.addContent(entity);
 		// contribute.role

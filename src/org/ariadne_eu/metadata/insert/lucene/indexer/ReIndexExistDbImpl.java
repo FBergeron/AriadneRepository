@@ -5,6 +5,8 @@ package org.ariadne_eu.metadata.insert.lucene.indexer;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,10 +24,18 @@ import org.ariadne_eu.metadata.query.QueryMetadataImpl;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.jdom.Text;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.jdom.xpath.XPath;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
@@ -44,7 +54,7 @@ public class ReIndexExistDbImpl extends ReIndexImpl {
     private static Logger log = Logger.getLogger(ReIndexExistDbImpl.class);
 	
 	public ReIndexExistDbImpl(){
-		
+		initialize();
 	}
 	
 	void initialize() {
@@ -99,48 +109,95 @@ public class ReIndexExistDbImpl extends ReIndexImpl {
 					createXQuery();
 					results = xqueryImpl.xQuery(xquery);
 
-					if (results == null)
+					if (results == null || results.equalsIgnoreCase("<results/>"))
 						break;
-
+					
 					startResult += nbResults;
 
 					StringReader stringReader = new StringReader(results);
 					InputSource input = new InputSource(stringReader);
-					Document doc = null;
-					try {
-						doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					Node result = doc.getFirstChild();
-					NodeList nl = result.getChildNodes();
-
-					log.info("startResult:" + startResult + "NodeListLength:"+ nl.getLength());
-
-					if (nl.getLength() == 0)
-						break;
-
-					for (int i = 0; i < nl.getLength(); i++) {
-						Element theNode = ((Element) nl.item(i));
-						String identifier = null;
-						for (int j = 0; j < xpathQueries.size()
-								&& identifier == null; j++) {
-							String xpathQuery = (String) xpathQueries.elementAt(j);
-
-							try {
-								identifier = XPathAPI.selectSingleNode(theNode,xpathQuery).getNodeValue();
-							} catch (Exception e) {
-							}
+					
+					Document doc;
+					SAXBuilder builder = new SAXBuilder();
+					doc = builder.build(input);
+					
+					Element resultsNode = doc.getRootElement();
+					Namespace ns = null;
+					List mdNodes;
+					if (resultsNode != null) {
+						
+						if (xmlns != null) {
+							ns = Namespace.getNamespace("http://ltsc.ieee.org/xsd/LOM");
+							mdNodes = resultsNode.getChildren("identifier",ns);
+						} else {
+							mdNodes = resultsNode.getChildren("lom");
 						}
+						log.info("startResult:" + startResult + "NodeListLength:"+ mdNodes.size());
+						if (mdNodes.size() == 0)
+							break;
+						for (Iterator iterator = mdNodes.iterator(); iterator.hasNext();) {
+							Element mdNode = (Element) iterator.next();
+							String identifier = null;
 
-						StringWriter out = new StringWriter();
-						XMLSerializer serializer = new XMLSerializer(out,new OutputFormat(doc));
-						serializer.serialize(theNode);
-						String lom = out.toString();
+							for (int j = 0; j < xpathQueries.size()&& identifier == null; j++) {
+								String xpathQuery = (String) xpathQueries.elementAt(j);
 
-						if (identifier != null) 
-							luceneImpl.insertMetadata(identifier, lom);
+								try {
+									XPath xpIdentifier = XPath.newInstance("/lom/"+ xpathQuery);
+									if (ns != null)
+										xpIdentifier.addNamespace(ns);
+									identifier = ((Text) xpIdentifier.selectSingleNode(mdNode)).getText();
+									System.out.println(identifier);
+								} catch (Exception e) {
+								}
+							}
+							Document newMD = new org.jdom.Document((Element) mdNode.clone());
+							XMLOutputter outputter = new XMLOutputter();
+							Format format = Format.getPrettyFormat();
+							outputter.setFormat(format);
+							String output = outputter.outputString(newMD);
+							if (identifier != null)
+								luceneImpl.insertMetadata(identifier, output);
+						}
+						
 					}
+					
+					
+					
+//					Document doc = null;
+//					try {
+//						doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//					Node result = doc.getFirstChild();
+//					NodeList nl = result.getChildNodes();
+//
+//					log.info("startResult:" + startResult + "NodeListLength:"+ nl.getLength());
+//
+//					if (nl.getLength() == 0)
+//						break;
+//
+//					for (int i = 0; i < nl.getLength(); i++) {
+//						Element theNode = ((Element) nl.item(i));
+//						String identifier = null;
+//						for (int j = 0; j < xpathQueries.size() && identifier == null; j++) {
+//							String xpathQuery = (String) xpathQueries.elementAt(j);
+//
+//							try {
+//								identifier = XPathAPI.selectSingleNode(theNode,xpathQuery).getNodeValue();
+//							} catch (Exception e) {
+//							}
+//						}
+//
+//						StringWriter out = new StringWriter();
+//						XMLSerializer serializer = new XMLSerializer(out,new OutputFormat(doc));
+//						serializer.serialize(theNode);
+//						String lom = out.toString();
+//
+//						if (identifier != null) 
+//							luceneImpl.insertMetadata(identifier, lom);
+//					}
 				} catch (QueryTranslationException e) {
 					log.error("reIndexMetadata: ", e);
 				} catch (QueryMetadataException e) {
@@ -160,7 +217,7 @@ public class ReIndexExistDbImpl extends ReIndexImpl {
 	        (xmlns == null ? "" : "declare namespace lom=\"" + xmlns + "\";\n") +
 	        "<results>" +
 	        "{for $x at $y in " +
-	        "(for $lom in " + collection + "/lom:lom" +
+	        "(for $lom in " + collection + (xmlns == null ? "/lom" : "/lom:lom") +
 	        "\n  return $lom )" +
 	        " where $y >= " + startResult + ( nbResults != 0 ? " and $y < " + (startResult + nbResults) : "") +
 	        " return $x }</results>";

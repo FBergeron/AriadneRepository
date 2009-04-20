@@ -42,19 +42,23 @@ public class ReaderManagement {
     	}
     	synchronized (mReaders) {
     		try{
+    			
     		List<ReaderContainer> lReader = mReaders.get(indexDir);
     		log.info("getReader :: lReader size = "+lReader.size()+" | nb index files= "+indexDir.listFiles().length);
     		
-        	ReaderContainer readerContainer = lReader.get(lReader.size()-1);
-        	readerContainer.incNbSearch();
-        	return readerContainer.getReader();
+    		if (lReader.size() == 0) 
+    			setNewReader(indexDir);
+    		
+    		ReaderContainer readerContainer = lReader.get(lReader.size()-1);
+            readerContainer.incNbSearch();
+    		return readerContainer.getReader();
+    		
     		} catch(Exception ex){
         		log.fatal("getReader :: mReaders.containsKey(indexDir)" +mReaders.containsKey(indexDir)+" ERR:"+ex);
         		if (mReaders.containsKey(indexDir)){
         			List<ReaderContainer> lReader = mReaders.get(indexDir);
         			log.fatal("getReader :: size reader for this index : "+lReader.size() +" index: "+indexDir.getCanonicalPath());
             	}
-        		
         		return null;
         	}
 		}
@@ -107,18 +111,18 @@ public class ReaderManagement {
     	synchronized (mReaders) {
 	    	List<ReaderContainer> lReader = mReaders.get(indexDir);
 	    	//
-	    	log.info("unRegister-STEP1 :: lReader size = "+lReader.size()+" | reader = "+reader+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
+	    	log.info("unRegister-STEP1 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
 	    	//
 	    	ReaderContainer readerContainer = lReader.get(lReader.indexOf(new ReaderContainer(reader)));
 	    	readerContainer.decNbSearch();
 //	    	if (lReader.size() > 1 && !lReader.get(lReader.size()-1).equals(reader) && readerContainer.isClosable()){
-	    	if (lReader.size() > 1 && readerContainer.isClosable()){
+	    	if (readerContainer.isClosable()){
 	    		log.info("unRegister :: close = (unRegister) size lreader = "+lReader.size()+" | reader = "+reader);
 	    		readerContainer.close();
 	    		lReader.remove(readerContainer);
 	    		
 	    	}
-	    	log.info("unRegister-STEP2 :: lReader size = "+lReader.size()+" | reader = "+reader+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
+	    	log.info("unRegister-STEP2 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
     	}
     	
     }

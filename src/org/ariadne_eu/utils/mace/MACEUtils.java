@@ -18,7 +18,6 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.search.IndexSearcher;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;

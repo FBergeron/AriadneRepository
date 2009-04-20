@@ -95,21 +95,21 @@ public class RetrieveContentIBMDB2DbImpl extends RetrieveContentImpl {
         return new DataHandler(new FileDataSource(file));
     }
     
-    public String retrieveFileName(String identifier) {
-    	String metadata = getMetadataForID(identifier);
-        if (metadata == null)
-            return null;
-        String fileName = getFileNameFromMetadata(metadata);
-        return fileName;
-    }
-    
-    public String retrieveFileType(String identifier) {
-    	String metadata = getMetadataForID(identifier);
-        if (metadata == null)
-            return null;
-        String fileType = getFileTypeFromMetadata(metadata);
-        return fileType;
-    }
+//    public String retrieveFileName(String identifier) {
+//    	String metadata = getMetadataForID(identifier);
+//        if (metadata == null)
+//            return null;
+//        String fileName = getFileNameFromMetadata(metadata);
+//        return fileName;
+//    }
+//    
+//    public String retrieveFileType(String identifier) {
+//    	String metadata = getMetadataForID(identifier);
+//        if (metadata == null)
+//            return null;
+//        String fileType = getFileTypeFromMetadata(metadata);
+//        return fileType;
+//    }
 
     private String getMetadataForID(String identifier) {
         PreparedStatement pstmt = null;
@@ -137,89 +137,35 @@ public class RetrieveContentIBMDB2DbImpl extends RetrieveContentImpl {
         return null;
     }
 
-//    private static File getFileFromMetadata(String metadata) {
-//        int start = metadata.indexOf("<fullpath>") + "<fullpath>".length();
-//        int end = metadata.indexOf("</fullpath>");
-//        String filename = metadata.substring(start, end);
-//        return new File(filename);
-//    }
-    
     private static File getFileFromMetadata(String metadata) {
-      int start = metadata.indexOf("<fullpath>") + "<fullpath>".length();
-      int end = metadata.indexOf("</fullpath>");
-      String filename = metadata.substring(start, end);
-      
-      return new File(filename);
-      }
-    
-    private static String getFileNameFromMetadata(String metadata) {
-        int start = metadata.indexOf("<filename>") + "<filename>".length();
-        int end = metadata.indexOf("</filename>");
-        String fileName = metadata.substring(start, end);
-        
-        return fileName;
+        int start = metadata.indexOf("<fullpath>") + "<fullpath>".length();
+        int end = metadata.indexOf("</fullpath>");
+        String filename = metadata.substring(start, end);
+        return new File(filename);
     }
     
-    private static String getFileTypeFromMetadata(String metadata) {
-        int start = metadata.indexOf("<filetype>") + "<filetype>".length();
-        int end = metadata.indexOf("</filetype>");
-        String fileType = metadata.substring(start, end);
-        
-        return fileType;
-    }
-    
-    
-//    private static void getFileFromZip(String inFilename) {
-//    	FileInputStream fis = null;
-//		ZipInputStream zis;
-//		FileOutputStream fos = null;
-//		BufferedOutputStream bos;
-//		ZipEntry zipEntry = null;
-//		String entryName = null;
-//
-//		try {
-//			fis = new FileInputStream(inFilename);
-//			zis = new ZipInputStream(fis);
-//			
-//			while ((zipEntry = zis.getNextEntry()) != null) {
-//				entryName = zipEntry.getName();
-//				try {
-//					fos = new FileOutputStream(entryName);
-//				} catch (FileNotFoundException e) {
-//					// the directory is not created...so let's build it!
-//					buildDirectory(entryName);
-//					fos = new FileOutputStream(entryName);
-//				}
-//				bos = new BufferedOutputStream(fos, DATA_BLOCK_SIZE);
-//				int byteCount;
-//				byte data[] = new byte[DATA_BLOCK_SIZE];
-//				while ( (byteCount = zis.read(data, 0, DATA_BLOCK_SIZE)) != -1) {
-//					bos.write(data, 0, byteCount);
-//				}
-//				bos.flush();
-//				bos.close();
-//			}
-//			zis.close();
-//		} catch (IOException e) {
-//			log.error("getFileFromZip:inFileName=" + inFilename, e);
-//		}
-//
-//	}
-    
-//    private static void buildDirectory(String entryName) throws IOException {
-//      StringTokenizer st = new StringTokenizer(entryName, "/");
-//
-//      int levels = st.countTokens() - 1;
-//      StringBuffer directory = new StringBuffer();
-//      File newDir;
-//
-//      for (int i=0; i < levels; i++) {
-//    	  directory.append(st.nextToken() + "/");
+//    private static File getFileFromMetadata(String metadata) {
+//      int start = metadata.indexOf("<fullpath>") + "<fullpath>".length();
+//      int end = metadata.indexOf("</fullpath>");
+//      String filename = metadata.substring(start, end);
+//      
+//      return new File(filename);
 //      }
-//
-//      newDir = new File(directory.toString());
-//      newDir.mkdirs();
-//
+    
+//    private static String getFileNameFromMetadata(String metadata) {
+//        int start = metadata.indexOf("<filename>") + "<filename>".length();
+//        int end = metadata.indexOf("</filename>");
+//        String fileName = metadata.substring(start, end);
+//        
+//        return fileName;
+//    }
+//    
+//    private static String getFileTypeFromMetadata(String metadata) {
+//        int start = metadata.indexOf("<filetype>") + "<filetype>".length();
+//        int end = metadata.indexOf("</filetype>");
+//        String fileType = metadata.substring(start, end);
+//        
+//        return fileType;
 //    }
 
 

@@ -74,7 +74,6 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
     }
 	
 	public void reIndexMetadata() {
-		
 		QueryMetadataImpl xqueryImpl = (QueryMetadataImpl) QueryMetadataFactory.getQueryImpl(-1);
 		InsertMetadataImpl[] insertImpls = InsertMetadataFactory.getInsertImpl();
 		InsertMetadataLuceneImpl luceneImpl = null;

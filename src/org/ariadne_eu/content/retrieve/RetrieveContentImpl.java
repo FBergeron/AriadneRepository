@@ -13,9 +13,9 @@ public abstract class RetrieveContentImpl {
 
     public abstract DataHandler retrieveContent(String identifier);
     
-    public abstract String retrieveFileName(String identifier);
-    
-    public abstract String retrieveFileType(String identifier);
+//    public abstract String retrieveFileName(String identifier);
+//    
+//    public abstract String retrieveFileType(String identifier);
 
 
 //    public int getNumber() {

@@ -36,17 +36,17 @@ public class COIImplementation extends COISkeleton {
     
     public GetResourceNameResponse getResourceName(org.ariadne_eu.coi.GetResourceName getResourceName) throws COIFaultException {
         log.info("getResourceName:identifier="+getResourceName.getIdentifier()+",sessionID="+getResourceName.getTargetSessionID());
-        String fileName = RetrieveContentFactory.retrieveFileName(getResourceName.getIdentifier());
+//        String fileName = RetrieveContentFactory.retrieveFileName(getResourceName.getIdentifier());
         GetResourceNameResponse getResourceNameResponse = new GetResourceNameResponse();
-        getResourceNameResponse.setName(fileName);
+//        getResourceNameResponse.setName(fileName);
         return getResourceNameResponse;
     }
     
     public GetResourceExtensionResponse getResourceExtension(GetResourceExtension getResourceExtension) throws COIFaultException {
         log.info("getResourceExtension:identifier="+getResourceExtension.getIdentifier()+",sessionID="+getResourceExtension.getTargetSessionID());
-        String fileExtension = RetrieveContentFactory.retrieveFileType(getResourceExtension.getIdentifier());
+//        String fileExtension = RetrieveContentFactory.retrieveFileType(getResourceExtension.getIdentifier());
         GetResourceExtensionResponse getResourceExtensionResponse = new GetResourceExtensionResponse();
-        getResourceExtensionResponse.setExtension(fileExtension);
+//        getResourceExtensionResponse.setExtension(fileExtension);
         return getResourceExtensionResponse;
     }
 }

@@ -27,6 +27,8 @@
 							nillable="true" type="xs:string" />
 						<xs:element minOccurs="0" name="resourceType"
 							nillable="true" type="xs:string" />
+						<xs:element minOccurs="0" name="contributorVCard"
+							nillable="true" type="xs:string" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -44,6 +46,8 @@
 							<xs:element minOccurs="0" name="url"
 							nillable="true" type="xs:string" />
 						<xs:element minOccurs="0" name="resourceType"
+							nillable="true" type="xs:string" />
+						<xs:element minOccurs="0" name="contributorVCard"
 							nillable="true" type="xs:string" />
 					</xs:sequence>
 				</xs:complexType>

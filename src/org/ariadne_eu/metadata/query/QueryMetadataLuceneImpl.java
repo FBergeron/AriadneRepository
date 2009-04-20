@@ -15,6 +15,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateLomImpl;
@@ -27,7 +28,7 @@ import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
+//import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
 
 /**
  * Created by ben
@@ -111,7 +112,6 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 //    	    }
             
             
-            
             return searchResult;
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -119,7 +119,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         } finally {
 			try {
 				//GAP: too many open files solution!
-//				ReaderManagement.getInstance().unRegister(indexDir, reader);
+				ReaderManagement.getInstance().unRegister(indexDir, reader);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -135,7 +135,15 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return -1;
-        }
+        } finally {
+			try {
+				//GAP: too many open files solution!
+				ReaderManagement.getInstance().unRegister(indexDir, reader);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
     }
 
     private Hits getHits(String lQuery) {
@@ -145,8 +153,8 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 			//Directory fsDir = FSDirectory.getDirectory(indexDir);
 			
 			//singleton to have only one instance of IndexSearcher to avoid open too many files!!
-			//IndexSearcher is = new IndexSearcher(reader);
-			SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+			IndexSearcher is = new IndexSearcher(reader);
+//			SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 
 			//XXX Note that QueryParser is not thread-safe.
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
@@ -155,10 +163,12 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);//TODO "contents"
 
 			
-			Hits hits = SingletonIndexSearcher.search(query);
+//			Hits hits = SingletonIndexSearcher.search(query);
+//			return hits;
 			
-			//return is.search(query);
-			return hits;
+			return is.search(query);
+			
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,5 +1,10 @@
 package org.ariadne_eu.service;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.http.TransportHeaders;
 import org.apache.log4j.Logger;
 import org.ariadne_eu.content.insert.InsertContentFactory;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
@@ -82,10 +87,15 @@ public class SPIImplementation extends SPISkeleton {
         }
     }
 
-    public void submitResource(SubmitResource submitResource)
-            throws SpiFaultException {
+    public void submitResource(SubmitResource submitResource) throws SpiFaultException {
         try {
-            log.info("submitResource:identifier="+submitResource.getGlobalIdentifier()+",sessionID="+submitResource.getTargetSessionID());
+        	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
+        	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
+        	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
+        	String userAgent = (String) th.get("user-agent");
+        	String host = (String) th.get("host");        	
+        	
+            log.info("submitResource:identifier="+submitResource.getGlobalIdentifier()+",sessionID="+submitResource.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP+",User-Agent="+userAgent+",Host="+host);
             Ticket ticket = Ticket.getTicket(submitResource.getTargetSessionID()); //throws exception if no valid ticket exists
             checkValidTicket(ticket);
 
@@ -111,10 +121,15 @@ public class SPIImplementation extends SPISkeleton {
         }
     }
 
-    public void submitMetadataRecord(SubmitMetadataRecord submitMetadataRecord)
-            throws SpiFaultException {
+    public void submitMetadataRecord(SubmitMetadataRecord submitMetadataRecord) throws SpiFaultException {
         try {
-            log.info("submitMetadataRecord:identifier="+submitMetadataRecord.getGlobalIdentifier()+",sessionID="+submitMetadataRecord.getTargetSessionID());
+        	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
+        	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
+        	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
+        	String userAgent = (String) th.get("user-agent");
+        	String host = (String) th.get("host");   
+        	
+            log.info("submitMetadataRecord:identifier="+submitMetadataRecord.getGlobalIdentifier()+",sessionID="+submitMetadataRecord.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP+",User-Agent="+userAgent+",Host="+host);
             Ticket ticket = Ticket.getTicket(submitMetadataRecord.getTargetSessionID()); //throws exception if no valid ticket exists
             checkValidTicket(ticket);
             InsertMetadataFactory.insertMetadata(submitMetadataRecord.getGlobalIdentifier(), submitMetadataRecord.getMetadata());
@@ -149,6 +164,19 @@ public class SPIImplementation extends SPISkeleton {
             exception.setFaultMessage(fault);
             throw exception;
         }
+    }
+    
+    private String remoteAddr(HttpServletRequest request) {
+        String remoteAddr = request.getRemoteAddr();
+        String x;
+        if ((x = request.getHeader(RepositoryConstants.HEADER_X_FORWARDED_FOR)) != null) {
+            remoteAddr = x;
+            int idx = remoteAddr.indexOf(',');
+            if (idx > -1) {
+                remoteAddr = remoteAddr.substring(0, idx);
+            }
+        }
+        return remoteAddr;
     }
 
 }

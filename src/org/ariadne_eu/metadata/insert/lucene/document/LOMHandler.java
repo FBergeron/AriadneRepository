@@ -12,6 +12,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import net.sf.vcard4j.java.type.N;
+import net.sf.vcard4j.java.type.VERSION;
+import net.sf.vcard4j.parser.VCardException;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
@@ -77,24 +81,15 @@ public class LOMHandler extends DocumentHandler {
 				attributeMap.put(atts.getQName(i), atts.getValue(i));
 
 				if (!atts.getQName(i).equals("uniqueElementName")) {
-					if (atts.getQName(i).equalsIgnoreCase("xmlns")
-							|| atts.getQName(i).equalsIgnoreCase(
-									"xsi:schemaLocation")) {
+					if (atts.getQName(i).equalsIgnoreCase("xmlns")|| atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
 						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + ""
-								+ atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						String fieldName = branche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}
 				}
@@ -238,48 +233,30 @@ public class LOMHandler extends DocumentHandler {
 			}
 		}
 		// Contribute
-		else if (tmpBranche
-				.matches(".*contribute\\.((role)|(entity)|(date)).*")) {
+		else if (tmpBranche.matches(".*contribute\\.((role)|(entity)|(date)).*")) {
 			if (tmpBranche.endsWith("contribute.role.source")) {
 				source = elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), source
-						.toLowerCase(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), source.toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.role.value")) {
-				source += EQUAL_SEPARATOR + ""
-						+ elementBuffer.toString().trim();// TODO
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				source += EQUAL_SEPARATOR + ""+ elementBuffer.toString().trim();// TODO
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.entity")) {
-				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + ""
-						+ source;
-				doc.add(new Field(fieldName.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.TOKENIZED));// XXX
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.TOKENIZED));// XXX
+				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + "" + source;
+				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.date.datetime")) {
-				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + ""
-						+ source;
-				doc.add(new Field(fieldname.toLowerCase(), elementBuffer
-						.toString().toLowerCase().trim(), Field.Store.YES,
-						Field.Index.UN_TOKENIZED));// XXX
+				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + ""+ source;
+				doc.add(new Field(fieldname.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 				// para poder soportar busquedas con rangos
-				String date = elementBuffer.toString().toLowerCase().trim()
-						.replaceAll("-", "").replaceAll("t", "").replaceAll(
-								":", "").replaceAll("\\.", "").replaceAll("z",
-								"");
+				String date = elementBuffer.toString().toLowerCase().trim().replaceAll("-", "").replaceAll("t", "").replaceAll(":", "").replaceAll("\\.", "").replaceAll("z","");
 				if (date.length() > 15)
 					date = date.substring(0, 15);
 				//				
-				doc.add(new Field(tmp2Branche.toLowerCase(), date,
-						Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmp2Branche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -323,8 +300,7 @@ public class LOMHandler extends DocumentHandler {
 
 		}
 		// resource. Catalog + entry
-		else if (tmpBranche
-				.matches(".*resource.identifier\\.((catalog)|(entry))")) {
+		else if (tmpBranche.matches(".*resource.identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
 				identifier = "catalog" + EQUAL_SEPARATOR + "" + elementBuffer.toString().trim();
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
@@ -425,6 +401,8 @@ public class LOMHandler extends DocumentHandler {
 				.concat(" " + elementBuffer.toString().toLowerCase());
 		elementBuffer.setLength(0);
 	}
+	
+	
 
 	public static void main(String args[]) throws Exception {
 		LOMHandler handler = new LOMHandler();

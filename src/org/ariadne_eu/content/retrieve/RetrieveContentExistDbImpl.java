@@ -79,6 +79,7 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
 
 
     public DataHandler retrieveContent(String identifier) {
+    	initialize();
         String metadata = getMetadataForID(identifier);
         if (metadata == null)
             return null;
@@ -89,21 +90,21 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
         return new DataHandler(new FileDataSource(file));
     }
     
-    public String retrieveFileName(String identifier) {
-    	String metadata = getMetadataForID(identifier);
-        if (metadata == null)
-            return null;
-        String fileName = getFileNameFromMetadata(metadata);
-        return fileName;
-    }
-    
-    public String retrieveFileType(String identifier) {
-    	String metadata = getMetadataForID(identifier);
-        if (metadata == null)
-            return null;
-        String fileType = getFileTypeFromMetadata(metadata);
-        return fileType;
-    }
+//    public String retrieveFileName(String identifier) {
+//    	String metadata = getMetadataForID(identifier);
+//        if (metadata == null)
+//            return null;
+//        String fileName = getFileNameFromMetadata(metadata);
+//        return fileName;
+//    }
+//    
+//    public String retrieveFileType(String identifier) {
+//    	String metadata = getMetadataForID(identifier);
+//        if (metadata == null)
+//            return null;
+//        String fileType = getFileTypeFromMetadata(metadata);
+//        return fileType;
+//    }
 
     private String getMetadataForID(String identifier) {
         String metadata = null;
@@ -127,19 +128,19 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
         return new File(filename);
     }
     
-    private static String getFileNameFromMetadata(String metadata) {
-        int start = metadata.indexOf("<filename>") + "<filename>".length();
-        int end = metadata.indexOf("</filename>");
-        String fileName = metadata.substring(start, end);
-        
-        return fileName;
-    }
-    
-    private static String getFileTypeFromMetadata(String metadata) {
-        int start = metadata.indexOf("<filetype>") + "<filetype>".length();
-        int end = metadata.indexOf("</filetype>");
-        String fileType = metadata.substring(start, end);
-        
-        return fileType;
-    }
+//    private static String getFileNameFromMetadata(String metadata) {
+//        int start = metadata.indexOf("<filename>") + "<filename>".length();
+//        int end = metadata.indexOf("</filename>");
+//        String fileName = metadata.substring(start, end);
+//        
+//        return fileName;
+//    }
+//    
+//    private static String getFileTypeFromMetadata(String metadata) {
+//        int start = metadata.indexOf("<filetype>") + "<filetype>".length();
+//        int end = metadata.indexOf("</filetype>");
+//        String fileType = metadata.substring(start, end);
+//        
+//        return fileType;
+//    }
 }

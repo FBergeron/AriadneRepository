@@ -57,6 +57,7 @@ public class MACELOMHandler extends DocumentHandler {
 	private Vector<Element> taxonPath; 
 	private boolean isCompetency;
 	private String competencyID = "";
+	private String domainID = "";
 	private int count = 0;
 	private int maxEQF = 0;
 	private int minEQF = 0;
@@ -171,8 +172,6 @@ public class MACELOMHandler extends DocumentHandler {
 		// Hardcoded for LOM XML specifications -->
 		// Classification ...
 		if (tmpBranche.matches(".*classification\\.((purpose)|(taxonpath)).*")) {
-			
-			
 			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
 			if (tmpBranche.endsWith("classification.purpose.source")) {
 			} else if (tmpBranche.endsWith("classification.purpose.value")) {
@@ -198,6 +197,7 @@ public class MACELOMHandler extends DocumentHandler {
 				if (isCompetency) {
 					if (count == 0) {
 						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						domainID = elementBuffer.toString();
 						count++;
 					} else if (count == 1){
 						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
@@ -243,8 +243,10 @@ public class MACELOMHandler extends DocumentHandler {
 					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
 						maxEQF = Integer.parseInt(elementBuffer.toString());
 					for (int i = minEQF; i <= maxEQF; i++) {
-						doc.add(new Field(tmpBranche, Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
-						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "competency.eqf", competencyID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+//						doc.add(new Field(tmpBranche, Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
+						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "eqf", Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
+						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "competency.eqf", competencyID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
+						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "domain.eqf", domainID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 					}
 					count = 0;
 				}
