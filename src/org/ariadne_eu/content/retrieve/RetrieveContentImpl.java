@@ -9,22 +9,12 @@ import javax.activation.DataHandler;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class RetrieveContentImpl {
-//    private int number;
 
     public abstract DataHandler retrieveContent(String identifier);
     
-//    public abstract String retrieveFileName(String identifier);
-//    
-//    public abstract String retrieveFileType(String identifier);
-
-
-//    public int getNumber() {
-//        return number;
-//    }
-//
-//    void setNumber(int number) {
-//        this.number = number;
-//    }
+    public abstract String retrieveFileName(String identifier);
+    
+    public abstract String retrieveFileType(String identifier);
 
     void initialize() {
 

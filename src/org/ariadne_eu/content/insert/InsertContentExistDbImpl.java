@@ -143,7 +143,9 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 			//identifier doesn't exist yet
 			return createUniqueFile(identifier, fileName, fileType);
 		} else {
-			return getFileFromMetadata(metadata);
+			File temp = getFileFromMetadata(metadata);
+			storeIdentifierPath(identifier,temp.getName(),fileName,fileType,temp);
+			return temp;
 		}
 	}
 	

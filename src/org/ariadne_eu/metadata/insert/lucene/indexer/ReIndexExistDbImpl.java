@@ -24,18 +24,18 @@ import org.ariadne_eu.metadata.query.QueryMetadataImpl;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.Text;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
+//import org.jdom.Document;
+//import org.jdom.Element;
+//import org.jdom.Namespace;
+//import org.jdom.Text;
+//import org.jdom.input.SAXBuilder;
+//import org.jdom.output.Format;
+//import org.jdom.output.XMLOutputter;
+//import org.jdom.xpath.XPath;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
@@ -112,92 +112,98 @@ public class ReIndexExistDbImpl extends ReIndexImpl {
 					if (results == null || results.equalsIgnoreCase("<results/>"))
 						break;
 					
-					startResult += nbResults;
+					
 
 					StringReader stringReader = new StringReader(results);
 					InputSource input = new InputSource(stringReader);
 					
-					Document doc;
-					SAXBuilder builder = new SAXBuilder();
-					doc = builder.build(input);
+//					Document doc;
+//					SAXBuilder builder = new SAXBuilder();
+//					doc = builder.build(input);
+//					
+//					Element resultsNode = doc.getRootElement();
+//					Namespace ns = null;
+//					List mdNodes;
+//					if (resultsNode != null) {
+//						
+//						if (xmlns != null) {
+//							ns = Namespace.getNamespace("http://ltsc.ieee.org/xsd/LOM");
+//							mdNodes = resultsNode.getChildren("identifier",ns);
+//						} else {
+//							mdNodes = resultsNode.getChildren("lom");
+//						}
+//						log.info("startResult:" + startResult + "NodeListLength:"+ mdNodes.size());
+//						if (mdNodes.size() == 0)
+//							break;
+//						for (Iterator iterator = mdNodes.iterator(); iterator.hasNext();) {
+//							Element mdNode = (Element) iterator.next();
+//							String identifier = null;
+//
+//							for (int j = 0; j < xpathQueries.size()&& identifier == null; j++) {
+//								String xpathQuery = (String) xpathQueries.elementAt(j);
+//
+//								try {
+//									XPath xpIdentifier = XPath.newInstance("/lom/"+ xpathQuery);
+//									if (ns != null)
+//										xpIdentifier.addNamespace(ns);
+//									identifier = ((Text) xpIdentifier.selectSingleNode(mdNode)).getText();
+//									System.out.println(identifier);
+//								} catch (Exception e) {
+//								}
+//							}
+//							Document newMD = new org.jdom.Document((Element) mdNode.clone());
+//							XMLOutputter outputter = new XMLOutputter();
+//							Format format = Format.getPrettyFormat();
+//							outputter.setFormat(format);
+//							String output = outputter.outputString(newMD);
+//							if (identifier != null)
+//								luceneImpl.insertMetadata(identifier, output);
+//						}
+//						
+//					}
 					
-					Element resultsNode = doc.getRootElement();
-					Namespace ns = null;
-					List mdNodes;
-					if (resultsNode != null) {
-						
-						if (xmlns != null) {
-							ns = Namespace.getNamespace("http://ltsc.ieee.org/xsd/LOM");
-							mdNodes = resultsNode.getChildren("identifier",ns);
-						} else {
-							mdNodes = resultsNode.getChildren("lom");
-						}
-						log.info("startResult:" + startResult + "NodeListLength:"+ mdNodes.size());
-						if (mdNodes.size() == 0)
-							break;
-						for (Iterator iterator = mdNodes.iterator(); iterator.hasNext();) {
-							Element mdNode = (Element) iterator.next();
+					
+					
+					Document doc = null;
+					try {
+						doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					Node result = doc.getFirstChild();
+					NodeList nl = result.getChildNodes();
+
+					log.info("startResult:" + startResult + "NodeListLength:"+ nl.getLength());
+
+					if (nl.getLength() == 0)
+						break;
+
+					for (int i = 0; i < nl.getLength(); i++) {
+						Object obj = nl.item(i);
+						if (obj.getClass().getCanonicalName().equalsIgnoreCase("org.apache.xerces.dom.DeferredElementImpl")) {
+							Element theNode = (Element) obj;
 							String identifier = null;
-
-							for (int j = 0; j < xpathQueries.size()&& identifier == null; j++) {
+							for (int j = 0; j < xpathQueries.size() && identifier == null; j++) {
 								String xpathQuery = (String) xpathQueries.elementAt(j);
-
+	
 								try {
-									XPath xpIdentifier = XPath.newInstance("/lom/"+ xpathQuery);
-									if (ns != null)
-										xpIdentifier.addNamespace(ns);
-									identifier = ((Text) xpIdentifier.selectSingleNode(mdNode)).getText();
-									System.out.println(identifier);
+									identifier = XPathAPI.selectSingleNode(theNode,xpathQuery).getNodeValue();
 								} catch (Exception e) {
 								}
 							}
-							Document newMD = new org.jdom.Document((Element) mdNode.clone());
-							XMLOutputter outputter = new XMLOutputter();
-							Format format = Format.getPrettyFormat();
-							outputter.setFormat(format);
-							String output = outputter.outputString(newMD);
-							if (identifier != null)
-								luceneImpl.insertMetadata(identifier, output);
+	
+							StringWriter out = new StringWriter();
+							XMLSerializer serializer = new XMLSerializer(out,new OutputFormat(doc));
+							serializer.serialize(theNode);
+							String lom = out.toString();
+	
+							if (identifier != null) 
+								luceneImpl.insertMetadata(identifier, lom);
 						}
 						
+//						
 					}
-					
-					
-					
-//					Document doc = null;
-//					try {
-//						doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//					Node result = doc.getFirstChild();
-//					NodeList nl = result.getChildNodes();
-//
-//					log.info("startResult:" + startResult + "NodeListLength:"+ nl.getLength());
-//
-//					if (nl.getLength() == 0)
-//						break;
-//
-//					for (int i = 0; i < nl.getLength(); i++) {
-//						Element theNode = ((Element) nl.item(i));
-//						String identifier = null;
-//						for (int j = 0; j < xpathQueries.size() && identifier == null; j++) {
-//							String xpathQuery = (String) xpathQueries.elementAt(j);
-//
-//							try {
-//								identifier = XPathAPI.selectSingleNode(theNode,xpathQuery).getNodeValue();
-//							} catch (Exception e) {
-//							}
-//						}
-//
-//						StringWriter out = new StringWriter();
-//						XMLSerializer serializer = new XMLSerializer(out,new OutputFormat(doc));
-//						serializer.serialize(theNode);
-//						String lom = out.toString();
-//
-//						if (identifier != null) 
-//							luceneImpl.insertMetadata(identifier, lom);
-//					}
+					startResult += nbResults;
 				} catch (QueryTranslationException e) {
 					log.error("reIndexMetadata: ", e);
 				} catch (QueryMetadataException e) {

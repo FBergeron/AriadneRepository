@@ -32,7 +32,6 @@
   <!--
   <dataDir>./solr/data</dataDir>
   -->
-  <!--dataDir>/Sandbox/temp/AriadneWS/mace/</dataDir-->
 
   <indexDefaults>
    <!-- Values here affect all index writers and act as a default unless overridden. -->

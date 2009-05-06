@@ -41,7 +41,7 @@ public class MACEUtils {
 	public static HashMap<String, Element> getClassification() {
 		if (classificationValues == null) {
 			classificationValues = loadClassification();
-			System.out.println("CLASIF CREADA!!!");
+//			System.out.println("CLASIF CREADA!!!");
 		}
 		return classificationValues;
 	}

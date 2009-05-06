@@ -71,8 +71,6 @@ public class QueryMetadataIBMDB2DbImpl extends QueryMetadataImpl {
             stmt = (Statement) con.createStatement();
             
             ResultSet rs = stmt.executeQuery(xQuery.replaceAll("version \"1.0\";", "")); //TODO: why doesn't version work for IBM DB2
-            //Cambie el return fuera del while para que devolviera mas de 1 resultado.
-          //GAP start
             String result = "";
             while (rs.next()) {
                 DB2Xml xml = (DB2Xml) rs.getObject(1);
@@ -84,7 +82,6 @@ public class QueryMetadataIBMDB2DbImpl extends QueryMetadataImpl {
                 return null;
             }
             return result;
-          //GAP end
         } catch (SQLException e) {
             log.error("xQuery:xQuery=" + xQuery, e);
             throw new QueryMetadataException(e);

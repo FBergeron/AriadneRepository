@@ -129,7 +129,9 @@ public class InsertContentIBMDB2DbImpl extends InsertContentImpl {
             //identifier doesn't exist yet
             return createUniqueFile(identifier, fileName, fileType);
         } else {
-            return getFileFromMetadata(metadata);
+        	File temp = getFileFromMetadata(metadata); 
+        	storeIdentifierPath(identifier, temp.getName(), fileName, fileType, temp);
+            return temp;
         }
 
     }
@@ -193,8 +195,7 @@ public class InsertContentIBMDB2DbImpl extends InsertContentImpl {
 
         random.nextBytes(junk);
 
-        String input = new StringBuffer().append(vmid).append(
-                new java.util.Date()).append(junk).append(counter++).append(identifier).toString();
+        String input = new StringBuffer().append(vmid).append(new java.util.Date()).append(junk).append(counter++).append(identifier).toString();
 
         byte[] bytes = getMD5Bytes(input.getBytes());
         String relativePath = new BigInteger(bytes).abs().toString();

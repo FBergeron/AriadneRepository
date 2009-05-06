@@ -16,7 +16,6 @@ public class RepositoryConstants {
 	public static final String MD_INSERT_IMPLEMENTATION = "mdstore.insert.implementation";
 	public static final String MD_INSERT_XMLNS_XSD = "mdstore.insert.xmlns.xsd";
 	public static final String MD_DB_URI = "mdstore.db.uri";
-//	public static final String MD_DB_DRIVER = "mdstore.db.driver";
 	public static final String MD_DB_USERNAME = "mdstore.db.username";
 	public static final String MD_DB_PASSWORD = "mdstore.db.password";
 	public static final String MD_DB_XMLDB_LOC = "mdstore.db.xmldb.loc";
@@ -45,7 +44,6 @@ public class RepositoryConstants {
 	public static final String CNT_RETREIVE_IMPLEMENTATION = "cntstore.retrieve.implementation";
 	public static final String CNT_INSERT_IMPLEMENTATION = "cntstore.insert.implementation";
 	public static final String CNT_DB_URI = "cntstore.db.uri";
-//	public static final String CNT_DB_DRIVER = "cntstore.db.driver";
 	public static final String CNT_DB_USERNAME = "cntstore.db.username";
 	public static final String CNT_DB_PASSWORD = "cntstore.db.password";
 	public static final String CNT_DB_XMLDB_SQL_TABLENAME = "cntstore.db.xmldb.sql.tablename";
@@ -56,6 +54,7 @@ public class RepositoryConstants {
 	public static final String CNT_SPIFWD_SPI_URL = "cntstore.spiforward.spi.url";
 	public static final String CNT_SPIFWD_SM_USERNAME = "cntstore.spiforward.sm.username";
 	public static final String CNT_SPIFWD_SM_PASSWORD = "cntstore.spiforward.sm.password";
+	public static final String CNT_MD_XPATHQRY_LOCATION = "cntstore.md.xpathquery.location";
 	
 	public static final String REPO_USERNAME = "repository.username";
 	public static final String REPO_PASSWORD = "repository.password";

@@ -4,10 +4,8 @@ import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
 import org.ariadne_eu.metadata.insert.InsertMetadataExistDbImpl;
-//import org.ariadne_eu.service.SPIStub;
-//import org.ariadne_eu.service.SqiSessionManagementBindingServiceStub;
-import org.ariadne_eu.spi.SPIStub;
-import org.ariadne_eu.spi.SubmitResource;
+import org.ariadne_eu.spidev.SPIDevStub;
+import org.ariadne_eu.spidev.SubmitResource;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.w3.www._2005._05.xmlmime.Base64Binary;
@@ -79,8 +77,6 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
 //    }
     
     public void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
-    	
-    	//TODO: use the new SPIDev
         try {
             SqiSessionManagementStub sm = new SqiSessionManagementStub(smURI);
             CreateSession createSession = new CreateSession();
@@ -88,7 +84,7 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
             createSession.setPassword(password);
             CreateSessionResponse sessionM = sm.createSession(createSession);
 
-            SPIStub spi = new SPIStub(spiURI);
+            SPIDevStub spi = new SPIDevStub(spiURI);
 
             SubmitResource resource = new SubmitResource();
             resource.setGlobalIdentifier(identifier);
@@ -96,6 +92,8 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
             Base64Binary binary = new Base64Binary();
             binary.setBase64Binary(dataHandler);
             resource.setBinaryData(binary);
+            resource.setFileName(fileName);
+            resource.setFileType(fileType);
             spi.submitResource(resource);
         } catch (Exception e) {
             log.error("insertContent failed, identifier: \""+identifier+"\"", e);

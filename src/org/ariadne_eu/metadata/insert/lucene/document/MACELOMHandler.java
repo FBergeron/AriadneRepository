@@ -55,10 +55,10 @@ public class MACELOMHandler extends DocumentHandler {
 	private final String EQUAL_SEPARATOR = "=";
 	private HashMap<String, Element> classificationValues;
 	private Vector<Element> taxonPath; 
-	private boolean isCompetency;
+	private boolean isCompetency = false;
 	private String competencyID = "";
 	private String domainID = "";
-	private int count = 0;
+	private int competencyCount = 0;
 	private int maxEQF = 0;
 	private int minEQF = 0;
 
@@ -68,22 +68,22 @@ public class MACELOMHandler extends DocumentHandler {
 		try {
 			SAXParser parser = spf.newSAXParser();
 			parser.parse(is, this);
-			
+			return doc;
 		} catch (IOException e) {
+			log.error("getDocument: ", e);
 			throw new DocumentHandlerException("Cannot parse XML document", e);
 		} catch (ParserConfigurationException e) {
+			log.error("getDocument: ", e);
 			throw new DocumentHandlerException("Cannot parse XML document", e);
 		} catch (SAXException e) {
+			log.error("getDocument: ", e);
 			throw new DocumentHandlerException("Cannot parse XML document", e);
 		} 
-
-		return doc;
 	}
 
 	public void startDocument() {
 		doc = new Document();
 		contents = new String();
-		
 	}
 
 	/*
@@ -98,7 +98,7 @@ public class MACELOMHandler extends DocumentHandler {
 		branche += qName.toLowerCase();
 
 		elementBuffer.setLength(0);
-		attributeMap.clear();// No need for a map :D
+		attributeMap.clear();// No need for a map 
 
 		if (atts.getLength() > 0) {
 			attributeMap = new HashMap<String, String>();
@@ -107,24 +107,15 @@ public class MACELOMHandler extends DocumentHandler {
 				attributeMap.put(atts.getQName(i), atts.getValue(i));
 
 				if (!atts.getQName(i).equals("uniqueElementName")) {
-					if (atts.getQName(i).equalsIgnoreCase("xmlns")
-							|| atts.getQName(i).equalsIgnoreCase(
-									"xsi:schemaLocation")) {
+					if (atts.getQName(i).equalsIgnoreCase("xmlns")|| atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
 						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+//						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+//						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + ""
-								+ atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						String fieldName = branche + "" + ATT_SEPARATOR + ""+ atts.getQName(i);
+//						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}
 				}
@@ -137,10 +128,14 @@ public class MACELOMHandler extends DocumentHandler {
 		elementBuffer.append(text, start, length);
 	}
 
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
-
+	public void endElement(String uri, String localName, String qName) throws SAXException {
+		
 		String tmpBranche = branche.substring(0, branche.length() - 1);
+		
+		//remove the NS+colons on any element		
+		if (tmpBranche.contains(":")) {
+			tmpBranche = tmpBranche.replaceAll("\\.(\\w+):", ".");
+		}
 		String tmp2Branche = "";
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
@@ -163,16 +158,15 @@ public class MACELOMHandler extends DocumentHandler {
 			while (iter.hasNext()) {
 				String attName = ((String) iter.next()).toLowerCase();
 				String attValue = ((String) attributeMap.get(attName)).toLowerCase();
-				String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + attName + "" + EQUAL_SEPARATOR + "" + attValue;
-				//GAP: elimino esto de los iguales en el field name proq no puedo hacerlo con plql
-				//doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+//				String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + attName + "" + EQUAL_SEPARATOR + "" + attValue;
+				String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + attValue;
+				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 			}
 		}
 
 		// Hardcoded for LOM XML specifications -->
 		// Classification ...
 		if (tmpBranche.matches(".*classification\\.((purpose)|(taxonpath)).*")) {
-			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
 			if (tmpBranche.endsWith("classification.purpose.source")) {
 			} else if (tmpBranche.endsWith("classification.purpose.value")) {
 //				purpose = elementBuffer.toString().trim().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
@@ -181,6 +175,8 @@ public class MACELOMHandler extends DocumentHandler {
 //				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				
 				purpose = elementBuffer.toString();
+				if (purpose.equalsIgnoreCase("competency"))
+					isCompetency = true;
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
@@ -188,26 +184,22 @@ public class MACELOMHandler extends DocumentHandler {
 				taxonPathSource = elementBuffer.toString().trim();
 				if (taxonPathSource.equalsIgnoreCase("MACE Competence Catalogue"))
 					isCompetency = true;
-				else
-					isCompetency = false;
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.id")) {
 				tpIdFieldName = tmpBranche;
 				taxonPathId = elementBuffer.toString();
 				if (isCompetency) {
-					if (count == 0) {
+					if (competencyCount == 0) {
 						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 						domainID = elementBuffer.toString();
-						count++;
-					} else if (count == 1){
+						competencyCount++;
+					} else if (competencyCount == 1){
 						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 						competencyID = elementBuffer.toString();
-						count++;
+						competencyCount++;
 					}
 				}
-				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
-				
 				if (isCompetency) {
 					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				}
@@ -230,27 +222,26 @@ public class MACELOMHandler extends DocumentHandler {
 					}
 				} 
 			} else if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf") || tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf")) {
-				System.out.println("test");
-				if (count == 2) {
+				if (competencyCount == 2 || competencyCount == 3) {
 					if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf"))
 						minEQF = Integer.parseInt(elementBuffer.toString());
 					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
 						maxEQF = Integer.parseInt(elementBuffer.toString());
-					count++;
-				} else if (count == 3) {
+					competencyCount++;
+				} else if (competencyCount == 4) {
 					if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf"))
 						minEQF = Integer.parseInt(elementBuffer.toString());
 					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
 						maxEQF = Integer.parseInt(elementBuffer.toString());
+					doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "eqf.range", minEQF+ "_" + maxEQF, Field.Store.YES,Field.Index.UN_TOKENIZED));
 					for (int i = minEQF; i <= maxEQF; i++) {
-//						doc.add(new Field(tmpBranche, Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "eqf", Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "competency.eqf", competencyID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "domain.eqf", domainID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 					}
-					count = 0;
+					competencyCount = 0;
 				}
-				
+				isCompetency = false;
 			}
 		}
 		// Title
@@ -262,8 +253,7 @@ public class MACELOMHandler extends DocumentHandler {
 			}
 		}
 		// Contribute
-		else if (tmpBranche
-				.matches(".*contribute\\.((role)|(entity)|(date)).*")) {
+		else if (tmpBranche.matches(".*contribute\\.((role)|(entity)|(date)).*")) {
 			if (tmpBranche.endsWith("contribute.role.source")) {
 				source = elementBuffer.toString().trim();
 				doc.add(new Field(tmpBranche.toLowerCase(), source.toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
@@ -435,7 +425,10 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-		Document doc = handler.getDocument(new FileInputStream(new File("/Work/MACE/XMLs/competency/lom2287.xml")));
+//		String filePath = "/Work/MACE/XMLs/10436.content.1.xml"
+//		String filePath = "/Work/MACE/XMLs/2006091001020.xml"; 
+		String filePath = "/Work/MACE/XMLs/katja/problematicXML.xml";
+		Document doc = handler.getDocument(new FileInputStream(new File(filePath)));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();

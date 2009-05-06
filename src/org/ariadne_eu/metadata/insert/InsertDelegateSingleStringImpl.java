@@ -6,11 +6,13 @@ import java.util.Date;
 
 import net.sourceforge.minor.lucene.core.indexer.IndexInserterDelegate;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.mace.MACEUtils;
@@ -19,6 +21,8 @@ import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.eun.lucene.core.indexer.document.HandlerFactory;
 
 public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
+	private static Logger log = Logger.getLogger(InsertDelegateSingleStringImpl.class);
+	
 	private String metadata;
 	private String key;
 
@@ -58,7 +62,7 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
 //            writer.deleteDocuments(term);
 			writer.addDocument(doc);
 		} catch (DocumentHandlerException e) {
-			e.printStackTrace();
+			log.error("insert: ", e);
 		}
 	}
 

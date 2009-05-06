@@ -61,21 +61,21 @@ public class RetrieveContentFactory {
         return null;
     }
     
-//    public static String retrieveFileName(String identifier) {
-//        RetrieveContentImpl[] impls = getRetrieveImpl();
-//        for (int i = 0; i < impls.length; i++) {
-//            RetrieveContentImpl impl = impls[i];
-//            return impl.retrieveFileName(identifier);
-//        }
-//        return null;
-//    }
-//    
-//    public static String retrieveFileType(String identifier) {
-//        RetrieveContentImpl[] impls = getRetrieveImpl();
-//        for (int i = 0; i < impls.length; i++) {
-//            RetrieveContentImpl impl = impls[i];
-//            return impl.retrieveFileType(identifier);
-//        }
-//        return null;
-//    }
+    public static String retrieveFileName(String identifier) {
+        RetrieveContentImpl[] impls = getRetrieveImpl();
+        for (int i = 0; i < impls.length; i++) {
+            RetrieveContentImpl impl = impls[i];
+            return impl.retrieveFileName(identifier);
+        }
+        return null;
+    }
+    
+    public static String retrieveFileType(String identifier) {
+        RetrieveContentImpl[] impls = getRetrieveImpl();
+        for (int i = 0; i < impls.length; i++) {
+            RetrieveContentImpl impl = impls[i];
+            return impl.retrieveFileType(identifier);
+        }
+        return null;
+    }
 }

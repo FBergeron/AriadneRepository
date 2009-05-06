@@ -37,6 +37,10 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 
 	private int start;
     private int max;
+    
+//    # Ranking Services
+//    mdstore.rf.rlom.url = http://localhost:2481/MetricServiceInterface/services/RankingMetrics
+//    mdstore.rf.rlom.rankingmetric = nofDownloadsperObject
 
     public ResultDelegateRLomImpl(int start, int max) {
         this.start = start;

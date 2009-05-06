@@ -86,7 +86,7 @@ public class MACEImplementation extends MACESkeleton {
 			checkValidTicket(ticket);
 			
 			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
-			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.org/xsd/LOM");
+			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.eu/xsd/LOM");
 			Namespace lomxsiNS = Namespace.getNamespace("xsi" , "http://www.w3.org/2001/XMLSchema-instance");
 			Element root = new Element("lom", lomNS);
 			root.addNamespaceDeclaration(lomNSM);
@@ -177,7 +177,7 @@ public class MACEImplementation extends MACESkeleton {
 			checkValidTicket(ticket);
 			
 			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
-			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.org/xsd/LOM");
+			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.eu/xsd/LOM");
 			Namespace lomxsiNS = Namespace.getNamespace("xsi" , "http://www.w3.org/2001/XMLSchema-instance");
 			Element root = new Element("lom", lomNS);
 			root.addNamespaceDeclaration(lomNSM);
@@ -296,7 +296,7 @@ public class MACEImplementation extends MACESkeleton {
 				return;
 			}
 			
-			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.org/xsd/LOM");
+			Namespace lomNSM = Namespace.getNamespace("mace","http://www.mace-project.eu/xsd/LOM");
 			XPath xp = XPath.newInstance("//mace:learningObjectKind");
 			xp.addNamespace(lomNSM);
 			Element lokElement = (Element) xp.selectSingleNode(doc);
@@ -707,25 +707,20 @@ public class MACEImplementation extends MACESkeleton {
 			writer.addDocument(doc);
 			
 		} catch (DocumentHandlerException e) {
-			e.printStackTrace();
+			log.error("insertIntoLucenewEnrichments:",e);
 		} catch (CorruptIndexException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("insertIntoLucenewEnrichments:",e);
 		} catch (LockObtainFailedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("insertIntoLucenewEnrichments:",e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("insertIntoLucenewEnrichments:",e);
 		} finally {
 			try {
 				writer.close();
 			} catch (CorruptIndexException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("insertIntoLucenewEnrichments:",e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("insertIntoLucenewEnrichments:",e);
 			}
 		}
 

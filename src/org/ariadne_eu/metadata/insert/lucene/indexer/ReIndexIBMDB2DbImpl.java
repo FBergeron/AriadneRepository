@@ -125,8 +125,7 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
 					for (int i = 0; i < nl.getLength(); i++) {
 						Element theNode = ((Element) nl.item(i));
 						String identifier = null;
-						for (int j = 0; j < xpathQueries.size()
-								&& identifier == null; j++) {
+						for (int j = 0; j < xpathQueries.size() && identifier == null; j++) {
 							String xpathQuery = (String) xpathQueries.elementAt(j);
 
 							try {
