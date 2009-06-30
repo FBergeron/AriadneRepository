@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.w3c.util.DateParser;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
@@ -50,10 +49,6 @@ import org.ariadne_eu.utils.oai.OAIHarvester;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
 import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.eun.lucene.core.indexer.document.HandlerFactory;
-import org.ietf.mimedir.MimeDir;
-import org.ietf.mimedir.impl.MimeDirImpl;
-import org.ietf.mimedir.util.MimeDirUtil;
-import org.ietf.mimedir.vcard.impl.VCardImpl;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -63,9 +58,9 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
+import org.w3c.util.DateParser;
 
 import uiuc.oai.OAIException;
-
 import be.cenorm.www.SessionExpiredException;
 import be.cenorm.www.Ticket;
 
@@ -560,7 +555,7 @@ public class MACEImplementation extends MACESkeleton {
 				return;
 			}
 			String orgXML = QueryMetadataFactory.getQueryImpl(queryLanguage).query("lom.metaMetadata.identifier.entry = \""+ enrichFromAloe.getResourceId() +"\"", startResult, nbResults, resultsFormat);
-			orgXML = orgXML.replaceAll("<results>", "").replaceAll("</results>", "");
+			orgXML = orgXML.replaceAll("<results cardinality=\"(.)*\">", "").replaceAll("</results>", "");
 			
 			Document aloeDoc = OAIHarvester.getrecord(ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_MDPREFIX));
 			Element aloeRoot = aloeDoc.getRootElement();
@@ -625,20 +620,45 @@ public class MACEImplementation extends MACESkeleton {
 			insertIntoLucenewEnrichments(enrichFromAloe.getResourceId(),orgXML,strKeywords, strClassifications);
 
 		} catch (OAIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("enrichFromAloe: ", e);
+            MACEFault fault = new MACEFault();
+            fault.setMaceFaultCode(MACEFaultCodeType.value1);
+            fault.setMessage("OAIException");
+            MACEFaultException exception = new MACEFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
 		} catch (SessionExpiredException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("enrichFromAloe: ", e);
+            MACEFault fault = new MACEFault();
+            fault.setMaceFaultCode(MACEFaultCodeType.value1);
+            fault.setMessage("SessionExpiredException");
+            MACEFaultException exception = new MACEFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
 		} catch (QueryTranslationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("enrichFromAloe: ", e);
+            MACEFault fault = new MACEFault();
+            fault.setMaceFaultCode(MACEFaultCodeType.value1);
+            fault.setMessage("QueryTranslationException");
+            MACEFaultException exception = new MACEFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
 		} catch (QueryMetadataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("enrichFromAloe: ", e);
+            MACEFault fault = new MACEFault();
+            fault.setMaceFaultCode(MACEFaultCodeType.value1);
+            fault.setMessage("QueryMetadataException");
+            MACEFaultException exception = new MACEFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("enrichFromAloe: ", e);
+            MACEFault fault = new MACEFault();
+            fault.setMaceFaultCode(MACEFaultCodeType.value1);
+            fault.setMessage("JDOMException");
+            MACEFaultException exception = new MACEFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
 		} 
 		
 	}

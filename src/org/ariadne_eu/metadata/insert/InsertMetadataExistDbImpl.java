@@ -85,7 +85,7 @@ public class InsertMetadataExistDbImpl extends InsertMetadataImpl {
 //        }
 //    }
 
-    public void insertMetadata(String identifier, String metadata) {
+    public synchronized void insertMetadata(String identifier, String metadata) {
         try {
         	//exist cant handle ":" on the identifier
         	identifier = identifier.replaceAll(":", "_");

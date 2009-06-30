@@ -54,7 +54,7 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
             	MACEUtils.getClassification();
             	String exml = MACEUtils.enrichWClassification(insertMetadata);
-            	exml = exml.substring(38);
+            	exml = exml.substring(38); //to remove the opening xml element
             	doc.add(new Field("maceenrichedlom", exml, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             }
 

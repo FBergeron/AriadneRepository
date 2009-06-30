@@ -48,7 +48,7 @@ public class InsertMetadataFSImpl extends InsertMetadataImpl {
 	}
 	
 	@Override
-	public void insertMetadata(String identifier, String metadata) {
+	public synchronized void insertMetadata(String identifier, String metadata) {
 		Reader in = new StringReader(metadata);
 		SAXBuilder builder = new SAXBuilder();
 		
@@ -65,11 +65,9 @@ public class InsertMetadataFSImpl extends InsertMetadataImpl {
 		    writeStringToFileInEncodingUTF8(output, dirString + name + ".xml");
 
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("insertMetadata:id=" + identifier, e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("insertMetadata:id=" + identifier, e);
 		}
 		
 	}

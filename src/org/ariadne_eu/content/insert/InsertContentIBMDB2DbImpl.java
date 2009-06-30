@@ -93,7 +93,7 @@ public class InsertContentIBMDB2DbImpl extends InsertContentImpl {
 //        }
 //    }
     
-    public void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
+    public synchronized void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
         try {
             File file = getFileForID(identifier, fileName, fileType);
             if (!file.getParentFile().exists()) {

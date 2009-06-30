@@ -17,18 +17,16 @@ public class ResultDelegateLomImpl implements IndexSearchDelegate {
     }
 
     public String result(Hits hits) throws Exception {
-    	Stopwatch sw = new Stopwatch();
-    	sw.start();
 	    Document doc;
 
 	    StringBuilder sBuild = new StringBuilder();
 	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 	    	doc = hits.doc(i);
+	    	System.out.println(doc.get("key") + " = " + hits.score(i));
 	    	sBuild.append(doc.get("lom"));
 	    }
 	    sBuild.append("</results>");
-	    sw.stopWPrint();
     	return sBuild.toString();
 	}
 

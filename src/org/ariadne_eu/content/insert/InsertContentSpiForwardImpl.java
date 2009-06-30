@@ -76,7 +76,7 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
 //        }
 //    }
     
-    public void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
+    public synchronized void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
         try {
             SqiSessionManagementStub sm = new SqiSessionManagementStub(smURI);
             CreateSession createSession = new CreateSession();

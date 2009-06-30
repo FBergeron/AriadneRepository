@@ -75,7 +75,7 @@ public class InsertMetadataIBMDB2DbImpl extends InsertMetadataImpl {
         return DriverManager.getConnection(URI,username, password);
     }
 
-    public void insertMetadata(String identifier, String metadata) {
+    public synchronized void insertMetadata(String identifier, String metadata) {
         try {
             Connection con = getConnection();
             PreparedStatement pstmt;

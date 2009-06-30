@@ -79,7 +79,7 @@ public class ReaderManagement {
         		lReader = mReaders.get(indexDir);
         		
         		if (lReader.size() > 0){
-        			log.info("setNewReader-STEP1 :: lReader.size() = " + lReader.size());
+        			log.debug("setNewReader-STEP1 :: lReader.size() = " + lReader.size());
         			for (int i = lReader.size() - 1; i >= 0 ; i--) {
 //        				ReaderContainer readerContainer = lReader.get(lReader.size()-1);
         				ReaderContainer readerContainer = lReader.get(i);
@@ -92,7 +92,7 @@ public class ReaderManagement {
         			
             	}
         		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
-        		log.info("setNewReader-STEP2 :: lReader.size() = " + lReader.size());
+        		log.debug("setNewReader-STEP2 :: lReader.size() = " + lReader.size());
         	}
         	
     		} catch(Exception ex){
@@ -111,7 +111,7 @@ public class ReaderManagement {
     	synchronized (mReaders) {
 	    	List<ReaderContainer> lReader = mReaders.get(indexDir);
 	    	//
-	    	log.info("unRegister-STEP1 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
+	    	log.debug("unRegister-STEP1 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
 	    	//
 	    	ReaderContainer readerContainer = lReader.get(lReader.indexOf(new ReaderContainer(reader)));
 	    	readerContainer.decNbSearch();
@@ -122,7 +122,7 @@ public class ReaderManagement {
 	    		lReader.remove(readerContainer);
 	    		
 	    	}
-	    	log.info("unRegister-STEP2 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
+	    	log.debug("unRegister-STEP2 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
     	}
     	
     }

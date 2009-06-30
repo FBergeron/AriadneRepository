@@ -79,23 +79,29 @@ public class MACEUtils {
 	}
 	
 	public static String enrichWClassification(String xml) {
-//		loadClassification();
+		// loadClassification();
+		boolean competence = false;
 		SAXBuilder builder = new SAXBuilder();
 		Namespace lomNS = Namespace.getNamespace("lom","http://ltsc.ieee.org/xsd/LOM");
+		
+		List labels;
+		
 		try {
 			Reader in = new StringReader(xml);
 			Document enrichedDoc = builder.build(in);
-			
+
 			Element enrichedRoot = enrichedDoc.getRootElement();
-			
+
 			XPath xpKind;
 			xpKind = XPath.newInstance("//lom:classification//lom:taxonPath");
 			xpKind.addNamespace(lomNS);
 			List taxonPathElmts = xpKind.selectNodes(enrichedRoot);
 			Vector newTaxonToAdd = new Vector();
 
-				for (Iterator iterator2 = taxonPathElmts.iterator(); iterator2.hasNext();) {
-					Element taxonPath = (Element) iterator2.next();
+			for (Iterator iterator2 = taxonPathElmts.iterator(); iterator2.hasNext();) {
+				Element taxonPath = (Element) iterator2.next();
+				String source = taxonPath.getChild("source", lomNS).getChildText("string", lomNS); 
+				if (!(source.contains("Competence") || source.contains("competence"))) {
 					List taxonElmts = taxonPath.getChildren("taxon", lomNS);
 					Element taxon = new Element("t");
 					for (Iterator iterator = taxonElmts.iterator(); iterator.hasNext();) {
@@ -104,19 +110,27 @@ public class MACEUtils {
 						if (classificationValues.containsKey(id)) {
 							Element classificationValue = classificationValues.get(id);
 							Vector newClasifValues = getMaceClassTaxonPath(classificationValue);
-							for (Iterator iterator3 = newClasifValues.iterator(); iterator3.hasNext();) {
-								Element clasif = (Element) iterator3.next();
-								Element newTaxon = new Element("taxon", lomNS);
-								Element newTaxonId = new Element("id", lomNS).setText(clasif.getAttributeValue("id"));
-								Element newTaxonEntry = new Element("entry", lomNS);
-								Element newTaxonStr = new Element("string", lomNS).setText(clasif.getChildText("label"));
-								newTaxonEntry.addContent(newTaxonStr);
+//							for (Iterator iterator3 = newClasifValues.iterator(); iterator3.hasNext();) {
+							for (int i = newClasifValues.size() -1; i >=0; i--) {
+//								Element clasif = (Element) iterator3.next();
+								Element clasif = (Element) newClasifValues.get(i);
+								Element newTaxon = new Element("taxon", enrichedRoot.getNamespace());
+								Element newTaxonId = new Element("id",enrichedRoot.getNamespace()).setText(clasif.getAttributeValue("id"));
+								Element newTaxonEntry = new Element("entry",enrichedRoot.getNamespace());
+								labels = clasif.getChildren("label");
+								for (Iterator iterator3 = labels.iterator(); iterator3.hasNext();) {
+									Element label = (Element) iterator3.next();
+									Element newTaxonStr = new Element("string",enrichedRoot.getNamespace()).setText(label.getText()).setAttribute("language", label.getAttributeValue("lang"));
+									newTaxonEntry.addContent(newTaxonStr);
+								}
+//								Element newTaxonStr = new Element("string",enrichedRoot.getNamespace()).setText(clasif.getChildText("label")).setAttribute("language", clasif.getchi);
+//								newTaxonEntry.addContent(newTaxonStr);
 								newTaxon.addContent(newTaxonId);
 								newTaxon.addContent(newTaxonEntry);
-								newTaxonToAdd.add(newTaxon);
+								newTaxonToAdd.add(newTaxon);	
 							}
 						}
-						
+
 					}
 					taxonPath.removeContent(taxon);
 					for (Iterator iterator = newTaxonToAdd.iterator(); iterator.hasNext();) {
@@ -124,8 +138,8 @@ public class MACEUtils {
 						taxonPath.addContent(newTaxon);
 					}
 					newTaxonToAdd.clear();
-
 				}
+			}
 			enrichedRoot.detach();
 			Document newEnrichedDoc = new org.jdom.Document(enrichedRoot);
 			XMLOutputter outputter = new XMLOutputter();
@@ -140,14 +154,14 @@ public class MACEUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 	
 	private static HashMap<String, Element> loadClassification(){
 		classificationValues = new HashMap<String, Element>(0);
 		SAXBuilder builder = new SAXBuilder();
-//		File in = new File ("/Sandbox/eclipse/hmdb/repository/jsp/install//MACE_LOM_Category_9_CLASSIFICATION.xml");
+//		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
 		File in = new File (ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_ANALYZER_MACE_CLASSIFICATION));
 		
 		org.jdom.Document xmlDoc;
@@ -188,7 +202,7 @@ public class MACEUtils {
 		LineIterator it;
 		File file = new File(filePath);
 		try {
-			it = FileUtils.lineIterator(file, "UTF-8");
+			it = FileUtils.lineIterator(file, "ISO-8859-1");
 			while (it.hasNext()) {
 				String line = it.nextLine();
 				content = content + line + "\n";
@@ -202,12 +216,11 @@ public class MACEUtils {
 		
 	}
 	
-	private static Vector getMaceClassTaxonPath(Element item) {
+	private static Vector<Element> getMaceClassTaxonPath(Element item) {
 		Element parent;
-		Vector taxonPath = new Vector();
+		Vector<Element> taxonPath = new Vector<Element>();
 		taxonPath.add(item);
 		while (((item.getParentElement()).getParentElement()) != null) {
-//		while (!((((item.getParentElement()).getParentElement())).getAttributeValue("id").substring(0, 5)).equalsIgnoreCase("group") ) {
 			parent = item.getParentElement().getParentElement();
 			taxonPath.add(parent);
 			item = parent;
@@ -216,8 +229,9 @@ public class MACEUtils {
 	}
 	
 	public static void main(String[] args) {
-		String xml = readFile("/Users/gonzalo/Desktop/Untitled7.xml");
-		enrichWClassification(xml);
+		String xml = readFile("/Work/MACE/XMLs/14470.lo.1.xml");
+		loadClassification();
+		System.out.println(enrichWClassification(xml));;
 	}
 
 }

@@ -44,7 +44,7 @@ public class InsertMetadataSpiForwardImpl extends InsertMetadataImpl {
             password = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
     }
 
-    public void insertMetadata(String identifier, String metadata) {
+    public synchronized void insertMetadata(String identifier, String metadata) {
         try {
         	SqiSessionManagementStub sm = new SqiSessionManagementStub(smURI);
             CreateSession createSession = new CreateSession();

@@ -109,8 +109,7 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
 					InputSource input = new InputSource(stringReader);
 					Document doc = null;
 					try {
-						doc = DocumentBuilderFactory.newInstance()
-								.newDocumentBuilder().parse(input);
+						doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

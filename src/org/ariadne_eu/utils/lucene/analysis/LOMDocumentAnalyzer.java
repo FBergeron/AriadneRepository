@@ -45,6 +45,13 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("lom.technical.format", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.purpose.value.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.entry.string.exact", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.competency.eqf", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.domain.eqf", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.eqf", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.eqf.range", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id.competency", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id.domain", new KeywordAnalyzer());
 	}
 
 	public PerFieldAnalyzerWrapper getAnalyzer() {

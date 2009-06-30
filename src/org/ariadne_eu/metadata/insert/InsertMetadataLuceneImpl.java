@@ -54,7 +54,7 @@ public class InsertMetadataLuceneImpl extends InsertMetadataImpl {
 		}
 	}
 
-	public void insertMetadata(String identifier, String metadata) {
+	public synchronized void insertMetadata(String identifier, String metadata) {
 		try {
 			InsertDelegateSingleStringImpl indexInserterDelegate = new InsertDelegateSingleStringImpl(identifier, metadata);
 			DeleteDelegateSingleStringImpl indexDeleterDelegate = new DeleteDelegateSingleStringImpl(identifier);

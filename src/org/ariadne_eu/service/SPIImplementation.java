@@ -53,7 +53,6 @@ public class SPIImplementation extends SPISkeleton {
             throws SpiFaultException {
         log.info("deleteMetadataRecord:identifier="+deleteMetadataRecord.getGlobalIdentifier()+",sessionID="+deleteMetadataRecord.getTargetSessionID());
         SpiFault fault = new SpiFault();
-//        fault.setSpiFaultCode(SpiFaultCodeType.SPI_00000);
         fault.setSpiFaultCode(FaultCodeType.SPI_00000);
         fault.setMessage("Method not supported: deleteMetadataRecord");
         SpiFaultException exception = new SpiFaultException();
@@ -133,12 +132,9 @@ public class SPIImplementation extends SPISkeleton {
             Ticket ticket = Ticket.getTicket(submitMetadataRecord.getTargetSessionID()); //throws exception if no valid ticket exists
             checkValidTicket(ticket);
             InsertMetadataFactory.insertMetadata(submitMetadataRecord.getGlobalIdentifier(), submitMetadataRecord.getMetadata());
-//        } catch (XMLDBException e) {
-//            log.error("submitMetadataRecord: ", e);
         } catch (SessionExpiredException e) {
             log.debug("submitMetadataRecord: ", e);
             SpiFault fault = new SpiFault();
-//            fault.setSpiFaultCode(SpiFaultCodeType.SPI_00000);
             fault.setSpiFaultCode(FaultCodeType.SPI_00000);
             fault.setMessage("The given session ID is invalid");
             SpiFaultException exception = new SpiFaultException();

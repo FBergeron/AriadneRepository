@@ -116,7 +116,7 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 //		}
 //	}
 
-	public void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
+	public synchronized void insertContent(String identifier, DataHandler dataHandler, String fileName, String fileType) {
 		//exist cant handle ":" on the identifier
 		identifier = identifier.replaceAll(":", "_");
 		try {

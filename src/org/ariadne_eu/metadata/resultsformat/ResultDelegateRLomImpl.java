@@ -49,8 +49,6 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 
     public String result(Hits hits) throws Exception {
     	
-    	Stopwatch sw = new Stopwatch();
-    	sw.start();
 	    Document doc;
 	    HashMap lRank = new HashMap();
 
@@ -67,12 +65,9 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
     		loms.add(new RankedLom(doc.get("key"),hits.score(i)));
     		lRank.put(doc.get("key"), i);
     	}
-		sw.stopWPrint();
-		sw.start();
-		List<RankedLom> results = rankingService.rankLoms(loms, events);
-		sw.stopWPrint();
+		List<RankedLom> results = rankingService.rankLoms(loms, events,0.6);
 		
-		sw.start();
+
 		//build the resultset
     	StringBuilder sBuild = new StringBuilder();
 	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results>\n");
@@ -80,10 +75,11 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 	    for (RankedLom rankedLom : results) {
 //	    	sBuild.append("<result rank=\""+ rankedLom.getRankingValue() +"\">\n");
 	    	sBuild.append((hits.doc((Integer)lRank.get(rankedLom.getId()))).get("lom"));
+//	    	System.out.println((Integer)lRank.get(rankedLom.getId()));
+	    	System.out.println(rankedLom.getId()+":"+rankedLom.getRankingValue());
 //	    	sBuild.append("</result>\n");
 		}
 	    sBuild.append("</results>");
-	    sw.stopWPrint();
 	    
 	    return sBuild.toString();
 	    

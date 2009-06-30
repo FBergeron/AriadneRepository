@@ -17,24 +17,13 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.ariadne_eu.metadata.insert.InsertMetadataIBMDB2DbImpl;
-import org.ariadne_eu.utils.Stopwatch;
-import org.ariadne_eu.utils.config.ConfigManager;
-import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.mace.MACEUtils;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
 import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -129,7 +118,7 @@ public class MACELOMHandler extends DocumentHandler {
 	}
 
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		
+		List labels;
 		String tmpBranche = branche.substring(0, branche.length() - 1);
 		
 		//remove the NS+colons on any element		
@@ -190,18 +179,21 @@ public class MACELOMHandler extends DocumentHandler {
 				taxonPathId = elementBuffer.toString();
 				if (isCompetency) {
 					if (competencyCount == 0) {
-						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						domainID = elementBuffer.toString();
 						competencyCount++;
 					} else if (competencyCount == 1){
-						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						competencyID = elementBuffer.toString();
 						competencyCount++;
 					}
-				}
+				} 
+//				else{
+//					doc.add(new Field(tmpBranche, taxonPathId, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+//				}
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
 				if (isCompetency) {
-					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.TOKENIZED));
 				}
 				else if (taxonPathId != null) {
 					classificationValues = MACEUtils.getClassification();
@@ -211,10 +203,14 @@ public class MACELOMHandler extends DocumentHandler {
 						getMaceClassTaxonPath(classificationValue);
 						for (Iterator iterator = taxonPath.iterator(); iterator.hasNext();) {
 							Element item = (Element) iterator.next();
-							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id"), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
-							doc.add(new Field(tmpBranche, item.getChildText("label"), Field.Store.YES,Field.Index.TOKENIZED));// XXX
-							doc.add(new Field(tmpBranche + ".exact", (item.getChildText("label")).trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-							contents = contents.concat(" "+ (item.getChildText("label")).trim());
+							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id"), Field.Store.YES,Field.Index.UN_TOKENIZED));
+							labels = item.getChildren("label");
+							for (Iterator iterator2 = labels.iterator(); iterator2.hasNext();) {
+								Element label = (Element) iterator2.next();
+								doc.add(new Field(tmpBranche, label.getText(), Field.Store.YES,Field.Index.TOKENIZED));
+//								doc.add(new Field(tmpBranche + ".exact", (label.getText()).trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+								contents = contents.concat(" "+ (label.getText()).trim());
+							}
 						}
 
 					} else {
@@ -391,25 +387,6 @@ public class MACELOMHandler extends DocumentHandler {
 		elementBuffer.setLength(0);
 	}
 	
-	private String readFile(String filePath){
-		String content = "";
-		LineIterator it;
-		File file = new File(filePath);
-		try {
-			it = FileUtils.lineIterator(file, "UTF-8");
-			while (it.hasNext()) {
-				String line = it.nextLine();
-				content = content + line + "\n";
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
-		LineIterator.closeQuietly(it);
-		return content;
-		
-	}
-	
 	
 	
 	private void getMaceClassTaxonPath(Element item) {
@@ -425,9 +402,9 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-//		String filePath = "/Work/MACE/XMLs/10436.content.1.xml"
+		String filePath = "/Work/MACE/XMLs/14470.lo.1.xml";
 //		String filePath = "/Work/MACE/XMLs/2006091001020.xml"; 
-		String filePath = "/Work/MACE/XMLs/katja/problematicXML.xml";
+//		String filePath = "/Work/MACE/XMLs/katja/problematicXML.xml";
 		Document doc = handler.getDocument(new FileInputStream(new File(filePath)));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {

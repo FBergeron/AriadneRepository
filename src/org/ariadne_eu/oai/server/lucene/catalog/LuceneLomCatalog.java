@@ -33,7 +33,6 @@ import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.ariadne.config.PropertiesManager;
-import org.ariadne_eu.utils.Stopwatch;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
@@ -610,8 +609,6 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			throw new BadResumptionTokenException();
 		}
 		int count;
-		Stopwatch st = new Stopwatch();
-		st.start();
 		Hits hits = null;
 		try {
 			hits = searcher.search(query);
@@ -622,8 +619,6 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		st.stopWPrint();
 
 		/* load the headers and identifiers ArrayLists. */
 		for (count = 0; count < maxListSize && count+oldCount < hits.length(); ++count) {
