@@ -19,11 +19,14 @@
 						<xs:element minOccurs="0" name="resourceTitle" nillable="true"
 							type="xs:string"/>
 						<xs:element minOccurs="0" name="resourceDescription" nillable="true"
+						type="xs:string"/>
+						<xs:element minOccurs="0" name="resourceLanguage" nillable="true"
 							type="xs:string"/>
 						<xs:element minOccurs="0" name="resourceType" nillable="true"
 							type="xs:string"/>
 						<xs:element minOccurs="0" name="contributorVCard" nillable="true"
-							type="xs:string"/>
+						type="xs:string"/>
+						
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -35,6 +38,8 @@
 						<xs:element minOccurs="0" name="resourceTitle" nillable="true"
 							type="xs:string"/>
 						<xs:element minOccurs="0" name="resourceDescription" nillable="true"
+						type="xs:string"/>
+						<xs:element minOccurs="0" name="resourceLanguage" nillable="true"
 							type="xs:string"/>
 						<xs:element minOccurs="0" name="url" nillable="true" type="xs:string"/>
 						<xs:element minOccurs="0" name="resourceType" nillable="true"

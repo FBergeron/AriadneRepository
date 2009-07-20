@@ -23,7 +23,7 @@ public class ResultDelegateLomImpl implements IndexSearchDelegate {
 	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 	    	doc = hits.doc(i);
-	    	System.out.println(doc.get("key") + " = " + hits.score(i));
+//	    	System.out.println(doc.get("key") + " = " + hits.score(i));
 	    	sBuild.append(doc.get("lom"));
 	    }
 	    sBuild.append("</results>");

@@ -19,7 +19,7 @@ public class ResultDelegateMACEEnrichedLomImpl implements IndexSearchDelegate {
 	    Document doc;
 
 	    StringBuilder sBuild = new StringBuilder();
-	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results>\n");
+	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 	    	doc = hits.doc(i);
 	    	sBuild.append(doc.get("maceenrichedlom")+"\n\n");

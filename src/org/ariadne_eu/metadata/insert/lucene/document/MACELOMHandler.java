@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,8 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -123,7 +119,8 @@ public class MACELOMHandler extends DocumentHandler {
 		
 		//remove the NS+colons on any element		
 		if (tmpBranche.contains(":")) {
-			tmpBranche = tmpBranche.replaceAll("\\.(\\w+):", ".");
+			tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+//			tmpBranche = tmpBranche.replaceAll("\\.(\\w+):", ".");
 		}
 		String tmp2Branche = "";
 
@@ -259,20 +256,20 @@ public class MACELOMHandler extends DocumentHandler {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.entity")) {
-				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + ""+ source;
-				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+//				String fieldName = tmp2Branche + "" + EQUAL_SEPARATOR + ""+ source;
+//				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("contribute.date.datetime")) {
-				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + "" + source;
-				doc.add(new Field(fieldname.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+//				String fieldname = tmp2Branche + "" + EQUAL_SEPARATOR + "" + source;
+//				doc.add(new Field(fieldname.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 				// para poder soportar busquedas con rangos
 				String date = elementBuffer.toString().toLowerCase().trim().replaceAll("-", "").replaceAll("t", "").replaceAll(":", "").replaceAll("\\.", "").replaceAll("z","");
 				if (date.length() > 15)
 					date = date.substring(0, 15);
 				//				
-				doc.add(new Field(tmp2Branche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -360,9 +357,7 @@ public class MACELOMHandler extends DocumentHandler {
 		}
 		// LearningResourceType + value
 		else if (tmpBranche.matches(".*learningresourcetype.value.*")) {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-					.toString().toLowerCase(), Field.Store.YES,
-					Field.Index.TOKENIZED));
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));
 		}
 		// Source - value -> more general case so it has to be tested at the end
 		// !
@@ -374,7 +369,7 @@ public class MACELOMHandler extends DocumentHandler {
 			} else if (tmpBranche.endsWith("value")) {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR + "" + source + BRANCH_SEPARATOR + "value";
-				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+//				doc.add(new Field(fieldName.toLowerCase(), elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 			}
 		}
 		// In all the other cases add a field !
@@ -402,9 +397,7 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-		String filePath = "/Work/MACE/XMLs/14470.lo.1.xml";
-//		String filePath = "/Work/MACE/XMLs/2006091001020.xml"; 
-//		String filePath = "/Work/MACE/XMLs/katja/problematicXML.xml";
+		String filePath = "/Sandbox/temp/AriadneWS/repository/mdstore/ID_archit_architetture_20000122MD.xml"; 
 		Document doc = handler.getDocument(new FileInputStream(new File(filePath)));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {

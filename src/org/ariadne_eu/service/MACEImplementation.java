@@ -95,7 +95,7 @@ public class MACEImplementation extends MACESkeleton {
 			identifier.addContent(catalog);
 			identifier.addContent(entry1);
 			general.addContent(identifier);
-			Element lang = new Element("language", lomNS).setText("en");
+			Element lang = new Element("language", lomNS).setText(createRWO.getResourceLanguage());
 			general.addContent(lang);
 			Element tit = new Element("title", lomNS);
 			Element str1 = new Element("string", lomNS).setText(createRWO.getResourceTitle());
@@ -186,7 +186,7 @@ public class MACEImplementation extends MACESkeleton {
 			identifier.addContent(catalog);
 			identifier.addContent(entry1);
 			general.addContent(identifier);
-			Element lang = new Element("language", lomNS).setText("en");
+			Element lang = new Element("language", lomNS).setText(createLOM.getResourceLanguage());
 			general.addContent(lang);
 			Element tit = new Element("title", lomNS);
 			Element str1 = new Element("string", lomNS).setText(createLOM.getResourceTitle());

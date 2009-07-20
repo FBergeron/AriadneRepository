@@ -54,6 +54,7 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 
 	    RankingService rankingService = ServiceProvider.getRankingService();
 	    
+	    
 	    Set<EventType> events = new HashSet<EventType>();
 		events.add(EventType.GET_METADATA_FOR_CONTENT);
 		events.add(EventType.GO_TO_PAGE);
@@ -70,7 +71,7 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 
 		//build the resultset
     	StringBuilder sBuild = new StringBuilder();
-	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results>\n");
+	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 	    
 	    for (RankedLom rankedLom : results) {
 //	    	sBuild.append("<result rank=\""+ rankedLom.getRankingValue() +"\">\n");

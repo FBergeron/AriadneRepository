@@ -49,10 +49,6 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 			if (URI == null)
 				URI = ConfigManager.getProperty(RepositoryConstants.CNT_DB_URI);
 			try {
-//				String driver = ConfigManager.getProperty(RepositoryConstants.CNT_DB_DRIVER + "." + getNumber());
-//				if (driver == null)
-//					driver = ConfigManager.getProperty(RepositoryConstants.CNT_DB_DRIVER);
-//				Class cl = Class.forName(driver);
 				Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
 				Database database = (Database) cl.newInstance();
 				DatabaseManager.registerDatabase(database);

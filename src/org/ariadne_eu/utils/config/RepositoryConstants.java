@@ -55,6 +55,7 @@ public class RepositoryConstants {
 	public static final String CNT_SPIFWD_SM_USERNAME = "cntstore.spiforward.sm.username";
 	public static final String CNT_SPIFWD_SM_PASSWORD = "cntstore.spiforward.sm.password";
 	public static final String CNT_MD_XPATHQRY_LOCATION = "cntstore.md.xpathquery.location";
+	public static final String CNT_LUCENE_INDEXDIR = "cntstore.lucene.indexdir";
 	
 	public static final String REPO_USERNAME = "repository.username";
 	public static final String REPO_PASSWORD = "repository.password";
