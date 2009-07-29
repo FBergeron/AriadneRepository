@@ -44,19 +44,9 @@ public class LomOAIHandler extends HttpServlet {
 	 
 	private static final String VERSION = "1.5.49";
 	private static boolean debug = false;
-//	private Transformer transformer = null;
-//	private boolean serviceUnavailable = false;
-//	private boolean monitor = false;
-//	private boolean forceRender = false;
 	protected HashMap attributesMap = new HashMap();
-//	private HashMap serverVerbs = null;
-//	private HashMap extensionVerbs = null;
-//	private String extensionPath = null;
 
 //	private static Logger logger = Logger.getLogger(OAIHandler.class);
-//	static {
-//	BasicConfigurator.configure();
-//	}
 
 	/**
 	 * Get the VERSION number
@@ -88,19 +78,16 @@ public class LomOAIHandler extends HttpServlet {
 			String propertiesFile = config.getServletContext().getRealPath("WEB-INF") + File.separator + fileName;
 			InputStream in;
 			try {
-//				logger.debug("fileName=" + fileName);
 				in = new FileInputStream(propertiesFile);
 			} catch (FileNotFoundException e) {
 				in = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFile);
-//				logger.debug("thread:" + fileName + "=" + in);
 			}
 			if (in != null) {
 				properties = new Properties();
 				properties.load(in);
 				attributes = getAttributes(properties);
-				//if (debug) System.out.println("OAIHandler.init: fileName=" + fileName);
 			}
-
+			
 			attributesMap.put("global", attributes);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -120,8 +107,7 @@ public class LomOAIHandler extends HttpServlet {
 		}
 	}
 
-	protected HashMap getAttributes(Properties properties)
-	throws Throwable {
+	protected HashMap getAttributes(Properties properties) throws Throwable {
 		HashMap attributes = new HashMap();
 		Enumeration attrNames = getServletContext().getAttributeNames();
 		while (attrNames.hasMoreElements()) {
@@ -129,8 +115,6 @@ public class LomOAIHandler extends HttpServlet {
 			attributes.put(attrName, getServletContext().getAttribute(attrName));
 		}
 		attributes.put("OAIHandler.properties", properties);
-//		String temp = properties.getProperty("OAIHandler.debug");
-//		if ("true".equals(temp)) debug = true;
 		if (!"true".equals(properties.getProperty("OAIHandler.serviceUnavailable"))) {
 			attributes.put("OAIHandler.version", VERSION);
 			AbstractCatalog abstractCatalog = AbstractCatalog.factory(properties);
@@ -408,23 +392,12 @@ public class LomOAIHandler extends HttpServlet {
 			System.out.println("encodings=" + encodings);
 		}
 		if (encodings != null && encodings.indexOf("gzip") != -1) {
-//			System.out.println("using gzip encoding");
-//			logger.debug("using gzip encoding");
 			response.setHeader("Content-Encoding", "gzip");
 			out = new OutputStreamWriter(new GZIPOutputStream(response.getOutputStream()),
 			"UTF-8");
-//			} else if (encodings != null && encodings.indexOf("compress") != -1) {
-//			//  	    System.out.println("using compress encoding");
-//			response.setHeader("Content-Encoding", "compress");
-//			ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
-//			zos.putNextEntry(new ZipEntry("dummy name"));
-//			out = new OutputStreamWriter(zos, "UTF-8");
 		} else if (encodings != null && encodings.indexOf("deflate") != -1) {
-//			System.out.println("using deflate encoding");
-//			logger.debug("using deflate encoding");
 			response.setHeader("Content-Encoding", "deflate");
-			out = new OutputStreamWriter(new DeflaterOutputStream(response.getOutputStream()),
-			"UTF-8");
+			out = new OutputStreamWriter(new DeflaterOutputStream(response.getOutputStream()),"UTF-8");
 		} else {
 //			logger.debug("using no encoding");
 			out = response.getWriter();

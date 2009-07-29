@@ -6,11 +6,6 @@ import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -28,7 +23,7 @@ import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-//import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
+
 
 /**
  * Created by ben
@@ -46,14 +41,14 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-            String indexDirString = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_INDEXDIR + "." + getLanguage());
+            String indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getLanguage());
             if (indexDirString == null)
-        	indexDirString = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_INDEXDIR);
+        	indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
             if (indexDirString == null)
-                log.error("initialize failed: no " + RepositoryConstants.MD_LUCENE_INDEXDIR + " found");
+                log.error("initialize failed: no " + RepositoryConstants.SR_LUCENE_INDEXDIR + " found");
             indexDir = new File(indexDirString);
             if (!indexDir.isDirectory())
-                log.error("initialize failed: " + RepositoryConstants.MD_LUCENE_INDEXDIR + " invalid directory");
+                log.error("initialize failed: " + RepositoryConstants.SR_LUCENE_INDEXDIR + " invalid directory");
             //TODO: check for valid lucene index
         } catch (Throwable t) {
             log.error("initialize: ", t);
@@ -103,26 +98,15 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             }
             String searchResult = result.result(hits);
 
-//            String searchResult = "";
-//            Document doc;
-//            for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
-//    	    	doc = hits.doc(i);
-//    	    	searchResult.concat(doc.get("lom")+"\n\n");
-//    	    	
-//    	    }
-            
-            
             return searchResult;
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;  //To change body of created methods use File | Settings | File Templates.
+        	log.error("Lucene query exception",e);
+            return null;
         } finally {
 			try {
-				//GAP: too many open files solution!
 				ReaderManagement.getInstance().unRegister(indexDir, reader);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Unable to un-register a lucene reader",e);
 			}
 		}
     }
@@ -133,15 +117,13 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         	reader = ReaderManagement.getInstance().getReader(indexDir);
             return getHits(lQuery).length();
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        	log.error("Lucene query exception",e);
             return -1;
         } finally {
 			try {
-				//GAP: too many open files solution!
 				ReaderManagement.getInstance().unRegister(indexDir, reader);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Unable to un-register a lucene reader",e);
 			}
 		}
     }
@@ -149,36 +131,19 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
     private Hits getHits(String lQuery) {
     	
         try {
-        	
-			//Directory fsDir = FSDirectory.getDirectory(indexDir);
-			
-			//singleton to have only one instance of IndexSearcher to avoid open too many files!!
 			IndexSearcher is = new IndexSearcher(reader);
-//			SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 
 			//XXX Note that QueryParser is not thread-safe.
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-			
-
-			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);//TODO "contents"
-
-			
-//			Hits hits = SingletonIndexSearcher.search(query);
-//			return hits;
+			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);
 			
 			return is.search(query);
-			
-			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Lucene parse exception",e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Lucene query exception",e);
 		} 
 		return null;
-		
-		
     }
 
     

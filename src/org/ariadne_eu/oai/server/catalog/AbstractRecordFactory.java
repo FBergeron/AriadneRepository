@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.ariadne.config.PropertiesManager;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.oclc.oai.server.catalog.RecordFactory;
 
 
@@ -16,13 +17,13 @@ public abstract class AbstractRecordFactory extends RecordFactory{
 
 	public AbstractRecordFactory(Properties properties)	throws IllegalArgumentException {
 		super(properties);
-		repositoryIdentifier = properties.getProperty("Identify.repositoryIdentifier");
+		repositoryIdentifier = properties.getProperty(RepositoryConstants.OAICAT_IDENTIFY_REPOID);
 		if (repositoryIdentifier == null) {
-			throw new IllegalArgumentException("Identify.repositoryIdentifier is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_IDENTIFY_REPOID + " is missing from the properties file");
 		}
-		String property = PropertiesManager.getProperty("OAIHandler.useOaiIdScheme");
+		String property = PropertiesManager.getProperty(RepositoryConstants.OAICAT_HANDLER_USEIDSHEME);
 		if (property == null) {
-			throw new IllegalArgumentException("OAIHandler.useOaiIdScheme is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_HANDLER_USEIDSHEME + " is missing from the properties file");
 		}
 		else {
 			useOaiIdScheme = Boolean.getBoolean(property);

@@ -84,12 +84,12 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
      // to get the location
         xmlns = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
         xpathIdentifiers = new Vector();
-        if (ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + ".1") == null)
+        if (ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
         	xpathIdentifiers.add("general/identifier/entry/text()");
         else {
             int i = 1;
-            while(ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + "." + i) != null) {
-            	xpathIdentifiers.add(ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + "." + i));
+            while(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
+            	xpathIdentifiers.add(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
                 i++;
             }
         }

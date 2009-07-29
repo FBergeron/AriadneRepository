@@ -102,10 +102,16 @@ public class LOMHandler extends DocumentHandler {
 		elementBuffer.append(text, start, length);
 	}
 
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
+	public void endElement(String uri, String localName, String qName) throws SAXException {
 
 		String tmpBranche = branche.substring(0, branche.length() - 1);
+		
+		//remove the NS+colons on any element		
+		if (tmpBranche.contains(":")) {
+			tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+//			tmpBranche = tmpBranche.replaceAll("\\.(\\w+):", ".");
+		}
+		
 		String tmp2Branche = "";
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
@@ -406,10 +412,7 @@ public class LOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		LOMHandler handler = new LOMHandler();
-//		Document doc = handler.getDocument(new FileInputStream(newFile("/Sandbox/temp/AriadneWS/mace/xmls/winds-18564.xml")));
-//		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/temp/AriadneWS/mace/xmls/dynamo-project43.xml")));
-		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/documentos/MACE/XMLs/D7.5_Appendix_D_MACE_AP_example_mo.xml")));
-//		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/documentos/MELT/xmls/lomESPOL.xml")));
+		Document doc = handler.getDocument(new FileInputStream(new File("/Work/CAM/Examples/ZoepCAMsample.xml")));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();

@@ -35,7 +35,7 @@ public class ReaderManagement {
     /*
      * Get the last reader for the index in argument and register (inc a counter for that reader)
      */
-    public IndexReader getReader(File indexDir) throws Exception{
+    public synchronized IndexReader getReader(File indexDir) throws Exception{
     	if (!mReaders.containsKey(indexDir)){
     		setNewReader(indexDir);
     		return getReader(indexDir);
@@ -67,7 +67,7 @@ public class ReaderManagement {
     /*
      * Before changing the reader, check if the lastest reader is being used by someone, if not close that reader
      */
-    public void setNewReader(File indexDir) throws IOException{
+    public synchronized void setNewReader(File indexDir) throws IOException{
     	synchronized (mReaders) {
     		try{
         	List<ReaderContainer> lReader;
@@ -81,7 +81,6 @@ public class ReaderManagement {
         		if (lReader.size() > 0){
         			log.debug("setNewReader-STEP1 :: lReader.size() = " + lReader.size());
         			for (int i = lReader.size() - 1; i >= 0 ; i--) {
-//        				ReaderContainer readerContainer = lReader.get(lReader.size()-1);
         				ReaderContainer readerContainer = lReader.get(i);
             			
                     	if (readerContainer.isClosable()){
@@ -115,7 +114,6 @@ public class ReaderManagement {
 	    	//
 	    	ReaderContainer readerContainer = lReader.get(lReader.indexOf(new ReaderContainer(reader)));
 	    	readerContainer.decNbSearch();
-//	    	if (lReader.size() > 1 && !lReader.get(lReader.size()-1).equals(reader) && readerContainer.isClosable()){
 	    	if (readerContainer.isClosable()){
 	    		log.info("unRegister :: close = (unRegister) size lreader = "+lReader.size()+" | reader = "+reader);
 	    		readerContainer.close();

@@ -45,28 +45,28 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
     
     static {
         try {
-        	instanceDir = ConfigManager.getProperty(RepositoryConstants.MD_SOLR_INSTANCEDIR);
-        	dataDir = ConfigManager.getProperty(RepositoryConstants.REPO_DATADIR);
+        	instanceDir = ConfigManager.getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
+        	dataDir = ConfigManager.getProperty(RepositoryConstants.SR_SOLR_DATADIR);
         	loggingPath = ConfigManager.getProperty(RepositoryConstants.REPO_LOG4J_DIR);
         	
         	facetFields = new Vector();
         	int i = 1;
-            while(ConfigManager.getProperty(RepositoryConstants.MD_SOLR_FACETFIELD + "." + i) != null) {
-            	facetFields.add(ConfigManager.getProperty(RepositoryConstants.MD_SOLR_FACETFIELD + "." + i));
+            while(ConfigManager.getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i) != null) {
+            	facetFields.add(ConfigManager.getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i));
                 i++;
             }
         	
             if(instanceDir == null) {
 //            	instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-                log.error("initialize:property \""+ RepositoryConstants.MD_SOLR_INSTANCEDIR +"\" not defined");
+                log.error("initialize:property \""+ RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
             } else if (dataDir == null) {
 //            	dataDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-                log.warn("initialize:property \""+ RepositoryConstants.REPO_DATADIR + "\" not defined");
+                log.warn("initialize:property \""+ RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
             } else if (loggingPath == null) {
 //            	loggingPath = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
                 log.warn("initialize:property \""+ RepositoryConstants.REPO_LOG4J_DIR +"\" not defined");
             } else if (! (facetFields.size() > 0)) {
-            	log.error("initialize:property \"" + RepositoryConstants.MD_SOLR_FACETFIELD + ".n\" not defined");
+            	log.error("initialize:property \"" + RepositoryConstants.SR_SOLR_FACETFIELD + ".n\" not defined");
             }
             
         } catch (Throwable t) {

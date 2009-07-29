@@ -62,12 +62,12 @@ public class ReIndexFSImpl extends ReIndexImpl {
 			if (!dir.isDirectory())
 				log.error("initialize failed: " + RepositoryConstants.MD_SPIFS_DIR + " invalid directory");
 			xpathQueries = new Vector();
-            if (ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + ".1") == null)
+            if (ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
                 xpathQueries.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + "." + i) != null) {
-                    xpathQueries.add(ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_XPATHQRY_ID + "." + i));
+                while(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
+                    xpathQueries.add(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }

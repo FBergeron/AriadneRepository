@@ -23,7 +23,7 @@ public class HandlerFactory {
     }
 
     public static void initialize() {
-    	String handlerClass = PropertiesManager.getProperty(RepositoryConstants.MD_LUCENE_HANDLER);
+    	String handlerClass = PropertiesManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
     	if (handlerClass == null) {
     		handler = new LOMHandler();
     	} else {

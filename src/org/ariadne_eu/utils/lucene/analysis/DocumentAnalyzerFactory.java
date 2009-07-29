@@ -22,7 +22,7 @@ public class DocumentAnalyzerFactory {
     }
 
     public static void initialize() {
-    	String analyzerClass = PropertiesManager.getProperty(RepositoryConstants.MD_LUCENE_ANALYZER);
+    	String analyzerClass = PropertiesManager.getProperty(RepositoryConstants.SR_LUCENE_ANALYZER);
     	if (analyzerClass == null) {
     		analyzer = new LOMDocumentAnalyzer();
     	} else {

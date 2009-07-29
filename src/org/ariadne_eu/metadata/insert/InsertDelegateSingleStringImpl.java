@@ -47,10 +47,9 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
 			doc.add(new Field("key", key, Field.Store.YES, Field.Index.UN_TOKENIZED ));
 			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED));
             doc.add(new Field("lom", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-            
             doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             
-            String luceneHandler = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_HANDLER);
+            String luceneHandler = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
             	MACEUtils.getClassification();
             	String exml = MACEUtils.enrichWClassification(insertMetadata);
@@ -58,8 +57,6 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             	doc.add(new Field("maceenrichedlom", exml, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             }
 
-//            Term term = new Term("key", key);
-//            writer.deleteDocuments(term);
 			writer.addDocument(doc);
 		} catch (DocumentHandlerException e) {
 			log.error("insert: ", e);

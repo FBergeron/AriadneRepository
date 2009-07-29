@@ -57,10 +57,9 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 
 
 	public IbmDb2LomCatalog(Properties properties) {
-		String classname = "IbmDb2LomCatalog";
-		String maxListSize = properties.getProperty(classname + ".maxListSize");
+		String maxListSize = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE);
 		if (maxListSize == null) {
-			throw new IllegalArgumentException(classname + ".maxListSize is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
 		} else {
 			IbmDb2LomCatalog.maxListSize = Integer.parseInt(maxListSize);
 		}
@@ -100,9 +99,9 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 		} else {
 			IbmDb2LomCatalog.column_id = column_id;
 		}
-		String column_datestamp = properties.getProperty(classname + ".db.column.datestamp");
+		String column_datestamp = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN);
 		if (column_datestamp == null) {
-			throw new IllegalArgumentException(classname + ".db.column.datestamp is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN + " is missing from the properties file");
 		} else {
 			IbmDb2LomCatalog.column_datestamp = column_datestamp;
 		}
@@ -110,7 +109,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		String setList = PropertiesManager.getProperty("sets.list");
+		String setList = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST);
 		StringTokenizer tokenizer = new StringTokenizer(setList,";");
 		if(tokenizer.countTokens() == 0) {
                 throw new NoSetHierarchyException();
@@ -185,7 +184,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 //      try {
         String setSpec = setItem;
         String setName = "Metadata originating from " + setItem;
-        String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
+        String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + setItem+".repoid");
         
         StringBuffer sb = new StringBuffer();
         sb.append("<set>");
@@ -270,13 +269,13 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	}
 
 	private String createListQuery(String from, String until, String set) throws ParseException {
-		String[] activeSets = PropertiesManager.getProperty("sets.list").split(";");
+		String[] activeSets = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST).split(";");
 
 		String reposIdentifier = "";
 
 		for(int i = 0; i < activeSets.length; i++) {
 			if(activeSets[i].equals(set)) {
-				reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
+				reposIdentifier = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + set + ".repoid");
 			}
 		}
 		String newFrom = TargetUtils.convertToLocaleIbmDB2DateTime(from);

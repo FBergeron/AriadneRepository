@@ -14,10 +14,7 @@ import java.util.Vector;
 
 import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 
-import org.apache.log4j.helpers.DateLayout;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
@@ -29,14 +26,13 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeQuery;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.ariadne.config.PropertiesManager;
+import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-//import org.ariadne_eu.utils.lucene.query.SingletonIndexSearcher;
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadArgumentException;
 import org.oclc.oai.server.verb.BadResumptionTokenException;
@@ -49,6 +45,8 @@ import org.oclc.oai.server.verb.OAIInternalServerError;
 import org.oclc.oai.util.OAIUtil;
 
 public class LuceneLomCatalog extends AbstractCatalog {
+	
+	private static Logger log = Logger.getLogger(QueryMetadataLuceneImpl.class);
 
 	/**
 	 * pending resumption tokens
@@ -64,41 +62,42 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	private static String dateField;
 	private static String identifierField;
 	private static File indexDir;
+	
+	private static IndexReader reader;
 
 	public LuceneLomCatalog(Properties properties) {
-		String classname = "LuceneLomCatalog";
-		String maxListSize = properties.getProperty(classname + ".maxListSize");
+		String maxListSize = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE);
 		if (maxListSize == null) {
-			throw new IllegalArgumentException(classname + ".maxListSize is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.maxListSize = Integer.parseInt(maxListSize);
 		}
-		String lucenePath = properties.getProperty(RepositoryConstants.MD_LUCENE_INDEXDIR);
+		String lucenePath = properties.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
 		if (lucenePath == null) {
-			throw new IllegalArgumentException(classname + ".lucenePath is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.SR_LUCENE_INDEXDIR + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.lucenePath = lucenePath;
 		}
-		String dateField = properties.getProperty(classname + ".dateField");
+		String dateField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD);
 		if (lucenePath == null) {
-			throw new IllegalArgumentException(classname + ".dateField is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.dateField = dateField;
 		}
-		String identifierField = properties.getProperty(classname + ".identifierField");
+		String identifierField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD);
 		if (identifierField == null) {
-			throw new IllegalArgumentException(classname + ".identifierField is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.identifierField = identifierField;
 		}
 		indexDir = new File(LuceneLomCatalog.lucenePath);
 		docAnalyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
 		try {
-			String[] activeSets = PropertiesManager.getProperty("sets.list").split(";");
+			String[] activeSets = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST).split(";");
 			String reposIdentifier = "";
 			for(int i = 0; i < activeSets.length; i++) {
 				String set = activeSets[i];
-				reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
+				reposIdentifier = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + set + ".repoid");
 				sets.put(set, reposIdentifier);
 			}
 		} catch (Exception e) {
@@ -107,31 +106,26 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	}
 
-	private IndexReader loadIndexReader(File indexDir) {
-		IndexReader reader = null;
+	private void loadIndexReader(File indexDir) {
 		try {
-			//			reader = IndexReader.open(LuceneLomCatalog.lucenePath);
 			reader = ReaderManagement.getInstance().getReader(indexDir);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Could not get a Reader instance",e);
 		}
-		return reader;
 	}
 
 	private void closeIndexReader(IndexReader reader) {
 		try {
-			//			ReaderManagement.getInstance().unRegister(indexDir, reader);
+			ReaderManagement.getInstance().unRegister(indexDir, reader);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Could not remove a Reader instance",e);
 		}
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		String setList = PropertiesManager.getProperty("sets.list");
+		String setList = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST);
 		StringTokenizer tokenizer = new StringTokenizer(setList,";");
 		if(tokenizer.countTokens() == 0) {
 			throw new NoSetHierarchyException();
@@ -144,33 +138,6 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			while (tokenizer.hasMoreTokens()) {
 				sets.add(getSetXML(tokenizer.nextToken()));
 			}
-
-			//                /* decide if you're done */
-			//                if (count < numRows) {
-			//                    String resumptionId = getResumptionId();
-			//                    resumptionResults.put(resumptionId, rs);
-			//                    
-			//                    /*****************************************************************
-			//                     * Construct the resumptionToken String however you see fit.
-			//                     *****************************************************************/
-			//                    StringBuffer resumptionTokenSb = new StringBuffer();
-			//                    resumptionTokenSb.append(resumptionId);
-			//                    resumptionTokenSb.append("!");
-			//                    resumptionTokenSb.append(Integer.toString(count));
-			//                    resumptionTokenSb.append("!");
-			//                    resumptionTokenSb.append(Integer.toString(numRows));
-			//                    
-			//                    /*****************************************************************
-			//                     * Use the following line if you wish to include the optional
-			//                     * resumptionToken attributes in the response. Otherwise, use the
-			//                     * line after it that I've commented out.
-			//                     *****************************************************************/
-			//                    listSetsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-			//                            numRows,
-			//                            0));
-			//                    //          listSetsMap.put("resumptionMap",
-			//                    //                                 getResumptionMap(resumptionTokenSb.toString()));
-			//                }
 
 			listSetsMap.put("sets", sets.iterator());
 			return listSetsMap;  
@@ -189,10 +156,9 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	 */
 	public String getSetXML(String setItem)
 	throws IllegalArgumentException {
-		//      try {
 		String setSpec = setItem;
 		String setName = "Metadata originating from " + setItem;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + setItem + ".repoid");
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");
@@ -209,10 +175,6 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		}
 		sb.append("</set>");
 		return sb.toString();
-		//      } catch (SQLException e) {
-		//      e.printStackTrace();
-		//      throw new IllegalArgumentException(e.getMessage());
-		//      }
 	} 
 
 	public Vector getSchemaLocations(String identifier) throws IdDoesNotExistException, NoMetadataFormatsException, OAIInternalServerError {
@@ -232,7 +194,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	}
 
 	private Object getIndexRecord(String identifier) {
-		IndexReader reader = loadIndexReader(indexDir);
+		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
@@ -267,7 +229,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
-		IndexReader reader = loadIndexReader(indexDir);
+		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
@@ -431,7 +393,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String from, String until, String set, String metadataPrefix)
 	throws CannotDisseminateFormatException {
-		IndexReader reader = loadIndexReader(indexDir);
+		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
@@ -577,9 +539,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String resumptionToken)
 	throws BadResumptionTokenException {
-		IndexReader reader = loadIndexReader(indexDir);
+		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
-//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		Map listRecordsMap = new HashMap();
 		ArrayList records = new ArrayList();
 		purge(); // clean out old resumptionTokens
@@ -746,7 +707,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	//	}
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
-		IndexReader reader = loadIndexReader(indexDir);
+		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);

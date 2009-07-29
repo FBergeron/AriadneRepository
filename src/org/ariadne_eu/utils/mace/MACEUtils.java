@@ -41,7 +41,6 @@ public class MACEUtils {
 	public static HashMap<String, Element> getClassification() {
 		if (classificationValues == null) {
 			classificationValues = loadClassification();
-//			System.out.println("CLASIF CREADA!!!");
 		}
 		return classificationValues;
 	}
@@ -162,7 +161,7 @@ public class MACEUtils {
 		classificationValues = new HashMap<String, Element>(0);
 		SAXBuilder builder = new SAXBuilder();
 //		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
-		File in = new File (ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_ANALYZER_MACE_CLASSIFICATION));
+		File in = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
 		
 		org.jdom.Document xmlDoc;
 		try {

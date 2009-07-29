@@ -13,11 +13,8 @@ public class IbmDb22oai_lom extends Crosswalk {
 
 	public IbmDb22oai_lom(Properties properties) {
 		super("http://ltsc.ieee.org/xsd/LOM http://ltsc.ieee.org/xsd/lomv1.0/lom.xsd");
-		String catalogClassName = "IbmDb2LomCatalog";
-//		column_xml  = properties.getProperty(catalogClassName + ".db.column.xml");
 		column_xml = properties.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
 		if (column_xml == null) {
-//			throw new IllegalArgumentException(catalogClassName + ".db.column.xml is missing from the properties file");
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME + " is missing from the properties file");
 		}
 	}

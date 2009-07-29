@@ -61,16 +61,10 @@ public class Searcher {
   
   
   public static String search(File indexDir, String q, IndexSearchDelegate result) throws Exception {
-    //Directory fsDir = FSDirectory.getDirectory(indexDir);
 	IndexReader reader = ReaderManagement.getInstance().getReader(indexDir);
     IndexSearcher is = new IndexSearcher(reader);
     
-    //XXX Note that QueryParser is not thread-safe.
     DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-//    PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer());
-//    analyzer.addAnalyzer("key", new KeywordAnalyzer());
-//    analyzer.addAnalyzer("date.insert", new KeywordAnalyzer());
-//    analyzer.addAnalyzer("untokenized.xmlns", new KeywordAnalyzer());
     
     Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(q);//TODO "contents"
     

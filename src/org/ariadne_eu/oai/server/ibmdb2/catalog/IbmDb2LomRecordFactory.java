@@ -17,14 +17,13 @@ public class IbmDb2LomRecordFactory extends AbstractRecordFactory{
 
 	public IbmDb2LomRecordFactory(Properties properties)	throws IllegalArgumentException {
 		super(properties);
-		String catalogClassName = "IbmDb2LomCatalog";
 		column_id = properties.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
 		if (column_id == null) {
 			throw new IllegalArgumentException(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME + " is missing from the properties file");
 		}
-		column_datestamp = properties.getProperty(catalogClassName + ".db.column.datestamp");
+		column_datestamp = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN);
 		if (column_datestamp == null) {
-			throw new IllegalArgumentException(catalogClassName + ".db.column.datestamp is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN + " is missing from the properties file");
 		}
 	}
 

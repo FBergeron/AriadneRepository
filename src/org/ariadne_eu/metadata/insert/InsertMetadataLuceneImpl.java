@@ -40,14 +40,14 @@ public class InsertMetadataLuceneImpl extends InsertMetadataImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String indexDirString = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_INDEXDIR + "." + getLanguage());
+			String indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getLanguage());
 			if (indexDirString == null)
-				indexDirString = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_INDEXDIR);
+				indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
 			if (indexDirString == null)
-				log.error("initialize failed: no " + RepositoryConstants.MD_LUCENE_INDEXDIR + " found");
+				log.error("initialize failed: no " + RepositoryConstants.SR_LUCENE_INDEXDIR + " found");
 			indexDir = new File(indexDirString);
 			if (!indexDir.isDirectory())
-				log.error("initialize failed: " + RepositoryConstants.MD_LUCENE_INDEXDIR + " invalid directory");
+				log.error("initialize failed: " + RepositoryConstants.SR_LUCENE_INDEXDIR + " invalid directory");
 			//TODO: check for valid lucene index
 		} catch (Throwable t) {
 			log.error("initialize: ", t);

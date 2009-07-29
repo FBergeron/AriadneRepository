@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.lucene.document.Document;
 import org.ariadne_eu.oai.server.catalog.AbstractRecordFactory;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 
 public class LuceneLomRecordFactory extends AbstractRecordFactory{
 	private String dateField;
@@ -17,16 +18,14 @@ public class LuceneLomRecordFactory extends AbstractRecordFactory{
 	
 	
 	public LuceneLomRecordFactory(Properties properties)	throws IllegalArgumentException {
-		super(properties);
-		String classname = "LuceneLomRecordFactory";
-		String catalogClassname = "LuceneLomCatalog";
-		dateField = properties.getProperty(catalogClassname + ".dateField");
+		super(properties);;
+		dateField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD);
 		if (dateField == null) {
-		    throw new IllegalArgumentException(catalogClassname + ".dateField is missing from the properties file");
+		    throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD + " is missing from the properties file");
 		}
-		identifierField = properties.getProperty(catalogClassname + ".identifierField");
+		identifierField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD);
 		if (identifierField == null) {
-		    throw new IllegalArgumentException(catalogClassname + ".identifierField is missing from the properties file");
+		    throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD + " is missing from the properties file");
 		}
 	}
 

@@ -557,7 +557,7 @@ public class MACEImplementation extends MACESkeleton {
 			String orgXML = QueryMetadataFactory.getQueryImpl(queryLanguage).query("lom.metaMetadata.identifier.entry = \""+ enrichFromAloe.getResourceId() +"\"", startResult, nbResults, resultsFormat);
 			orgXML = orgXML.replaceAll("<results cardinality=\"(.)*\">", "").replaceAll("</results>", "");
 			
-			Document aloeDoc = OAIHarvester.getrecord(ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), ConfigManager.getProperty(RepositoryConstants.MD_MACE_OAI_ALOE_MDPREFIX));
+			Document aloeDoc = OAIHarvester.getrecord(ConfigManager.getProperty(RepositoryConstants.MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), ConfigManager.getProperty(RepositoryConstants.MACE_OAI_ALOE_MDPREFIX));
 			Element aloeRoot = aloeDoc.getRootElement();
 			SAXBuilder builder = new SAXBuilder();
 			
@@ -717,7 +717,7 @@ public class MACEImplementation extends MACESkeleton {
 				doc.add(new Field("contents", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			}
 			
-			String luceneHandler = ConfigManager.getProperty(RepositoryConstants.MD_LUCENE_HANDLER);
+			String luceneHandler = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
 			if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
 				MACEUtils.getClassification();
 				String exml = MACEUtils.enrichWClassification(insertMetadata);

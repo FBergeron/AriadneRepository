@@ -114,8 +114,7 @@ public class CAMHandler extends DocumentHandler {
 		String tmp2Branche = "";
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
-			branche = branche.substring(0, branche.length() - qName.length()
-					- 1);
+			branche = branche.substring(0, branche.length() - qName.length() - 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
@@ -138,10 +137,7 @@ public class CAMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		CAMHandler handler = new CAMHandler();
-//		Document doc = handler.getDocument(new FileInputStream(newFile("/Sandbox/temp/AriadneWS/mace/xmls/winds-18564.xml")));
-//		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/temp/AriadneWS/mace/xmls/dynamo-project43.xml")));
-		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/documentos/MACE/XMLs/D7.5_Appendix_D_MACE_AP_example_mo.xml")));
-//		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/documentos/MELT/xmls/lomESPOL.xml")));
+		Document doc = handler.getDocument(new FileInputStream(new File("/Work/CAM/Examples/ZoepCAMsample.xml")));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();
