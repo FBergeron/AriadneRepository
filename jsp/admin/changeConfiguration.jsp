@@ -1,7 +1,7 @@
 <%@ page session="true" %>
 <%@ page import="org.ariadne.config.*" %>
 
-<%@ page import="java.io.*" %>
+<%--<%@ page import="java.io.*" %>--%>
 <%@ page import="java.util.*" %>
 
 <html>
@@ -19,7 +19,7 @@
 <div class="page">
     <center>
 
-<form ACTION="config.jsp" METHOD=post name="conf" id="conf">
+<form ACTION="changeConfiguration.jsp" METHOD=post name="conf" id="conf">
 <INPUT TYPE=hidden NAME="usrname" VALUE="<%=request.getParameter("usrname") %>">
 <INPUT TYPE=hidden NAME="password" VALUE="<%=request.getParameter("password") %>">
 
@@ -29,7 +29,7 @@
     //if (!PropertiesManager.getPropertiesFile().exists())
     //out.println("Could not find ariadneV4.properties template at '"+PropertiesManager.getPropertiesFile()+"'");
     //PropertiesManager.init();
-    Iterator it = null;
+    Iterator it;
 
 	it = PropertiesManager.getTypes().iterator();
          %>
@@ -71,8 +71,8 @@
 
 	<input TYPE="submit" NAME="Request" VALUE="Submit ">
    <input TYPE="reset" NAME="Clear" VALUE="Clear"><br><br>
-   <a href="../configuration/testConfiguration.jsp">validate configuration</a><br>
-   <a href="../start">home</a><br>
+   <!--<a href="../configuration/testConfiguration.jsp">validate configuration</a><br>-->
+   <!--<a href="../start">home</a><br>-->
 
 </form>
       </center>
