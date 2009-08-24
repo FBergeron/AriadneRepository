@@ -51,7 +51,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
                 }
             }
             //Also has a critical section
-            ReaderManagement.getInstance().setNewReader(indexDir);
+//            ReaderManagement.getInstance().setNewReader(indexDir);
         }
 	}
 
@@ -69,7 +69,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
                 }
             }
             //	Also has a critical section
-            ReaderManagement.getInstance().setNewReader(indexDir);
+//            ReaderManagement.getInstance().setNewReader(indexDir);
         }
 	}
 
@@ -89,7 +89,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
                 }
             }
             //		Also has a critical section
-            ReaderManagement.getInstance().setNewReader(indexDir);
+//            ReaderManagement.getInstance().setNewReader(indexDir);
         }
 	}
 	
@@ -107,7 +107,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
                 }
             }
             //		Also has a critical section
-            ReaderManagement.getInstance().setNewReader(indexDir);
+//            ReaderManagement.getInstance().setNewReader(indexDir);
         }
 	}
 

@@ -68,7 +68,7 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 	    
 	    for (RankedLom rankedLom : results) {
 	    	sBuild.append((hits.doc((Integer)lRank.get(rankedLom.getId()))).get("lom"));
-	    	log.error(rankedLom.getId()+":"+rankedLom.getRankingValue());
+	    	log.debug(rankedLom.getId()+":"+rankedLom.getRankingValue());
 		}
 	    sBuild.append("</results>");
 	    

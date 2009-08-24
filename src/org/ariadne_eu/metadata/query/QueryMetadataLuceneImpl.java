@@ -55,22 +55,22 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         }
     }
     
-    public String xQuery(String xQuery) throws QueryMetadataException {
+    public synchronized String xQuery(String xQuery) throws QueryMetadataException {
     	return null;
     }
 
-    public String query(String query, int start, int max, int resultsFormat) throws QueryTranslationException, QueryMetadataException {
+    public synchronized String query(String query, int start, int max, int resultsFormat) throws QueryTranslationException, QueryMetadataException {
         String lQuery = TranslateLanguage.translateToQuery(query, getLanguage(), TranslateLanguage.LUCENE, start, max, resultsFormat);
         return luceneQuery(lQuery, start, max, resultsFormat);
     }
     
 
-    public int count(String query) throws QueryTranslationException, QueryMetadataException {
+    public synchronized int count(String query) throws QueryTranslationException, QueryMetadataException {
         String lQuery = TranslateLanguage.translateToCount(query, getLanguage(), TranslateLanguage.LUCENE);
         return luceneCount(lQuery);
     }
 
-    private String luceneQuery(String lQuery, int start, int max, int resultsFormat) {
+    private synchronized String luceneQuery(String lQuery, int start, int max, int resultsFormat) {
         try {
         	reader = null;
         	reader = ReaderManagement.getInstance().getReader(indexDir);
@@ -111,7 +111,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 		}
     }
 
-    private int luceneCount(String lQuery) {
+    private synchronized int luceneCount(String lQuery) {
         try {
         	reader = null;
         	reader = ReaderManagement.getInstance().getReader(indexDir);
@@ -128,7 +128,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 		}
     }
 
-    private Hits getHits(String lQuery) {
+    private synchronized Hits getHits(String lQuery) {
     	
         try {
 			IndexSearcher is = new IndexSearcher(reader);

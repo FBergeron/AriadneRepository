@@ -46,9 +46,19 @@ public class ReaderManagement {
     		List<ReaderContainer> lReader = mReaders.get(indexDir);
     		log.info("getReader :: lReader size = "+lReader.size()+" | nb index files= "+indexDir.listFiles().length);
     		
-    		if (lReader.size() == 0) 
+    		if (lReader.size() ==  0) {
     			setNewReader(indexDir);
-    		
+    		} else {
+    			ReaderContainer readerContainer = lReader.get(lReader.size()-1);
+    			if (readerContainer.isClosable()){
+    	    		readerContainer.close();
+    	    		lReader.remove(readerContainer);
+    	    		log.info("getReader :: closed = (unRegister) size lreader = "+lReader.size());
+    	    		setNewReader(indexDir);
+    	    		
+    	    	}
+    		}
+
     		ReaderContainer readerContainer = lReader.get(lReader.size()-1);
             readerContainer.incNbSearch();
     		return readerContainer.getReader();
@@ -65,7 +75,7 @@ public class ReaderManagement {
     }
     
     /*
-     * Before changing the reader, check if the lastest reader is being used by someone, if not close that reader
+     * Before changing the reader, check if the latest reader is being used by someone, if not close that reader
      */
     public synchronized void setNewReader(File indexDir) throws IOException{
     	synchronized (mReaders) {
@@ -80,18 +90,18 @@ public class ReaderManagement {
         		
         		if (lReader.size() > 0){
         			log.debug("setNewReader-STEP1 :: lReader.size() = " + lReader.size());
-        			for (int i = lReader.size() - 1; i >= 0 ; i--) {
-        				ReaderContainer readerContainer = lReader.get(i);
+//        			for (int i = lReader.size() - 1; i >= 0 ; i--) {
+//        				ReaderContainer readerContainer = lReader.get(i);
+        			ReaderContainer readerContainer = lReader.get(lReader.size() - 1);
             			
                     	if (readerContainer.isClosable()){
                     		readerContainer.close();
                     		lReader.remove(readerContainer);
                     	}
-        			}
-        			
+//        			}
             	}
         		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
-        		log.debug("setNewReader-STEP2 :: lReader.size() = " + lReader.size());
+        		log.info("setNewReader :: lReader.size() = " + lReader.size());
         	}
         	
     		} catch(Exception ex){
@@ -115,9 +125,9 @@ public class ReaderManagement {
 	    	ReaderContainer readerContainer = lReader.get(lReader.indexOf(new ReaderContainer(reader)));
 	    	readerContainer.decNbSearch();
 	    	if (readerContainer.isClosable()){
-	    		log.info("unRegister :: close = (unRegister) size lreader = "+lReader.size()+" | reader = "+reader);
 	    		readerContainer.close();
 	    		lReader.remove(readerContainer);
+	    		log.info("unRegister :: closed = (unRegister) size lreader = "+lReader.size()+" | reader = "+reader);
 	    		
 	    	}
 	    	log.debug("unRegister-STEP2 :: lReader size = "+lReader.size()+" | index of reader = "+lReader.indexOf(new ReaderContainer(reader)));
