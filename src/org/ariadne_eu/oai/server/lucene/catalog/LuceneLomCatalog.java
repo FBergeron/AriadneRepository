@@ -3,8 +3,10 @@ package org.ariadne_eu.oai.server.lucene.catalog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -33,6 +35,7 @@ import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
+import org.jdom.Element;
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadArgumentException;
 import org.oclc.oai.server.verb.BadResumptionTokenException;
@@ -93,12 +96,14 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		indexDir = new File(LuceneLomCatalog.lucenePath);
 		docAnalyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
 		try {
-			String[] activeSets = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST).split(";");
+			
+			Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			String[] keys = (String[]) sets.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
-			for(int i = 0; i < activeSets.length; i++) {
-				String set = activeSets[i];
-				reposIdentifier = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + set + ".repoid");
-				sets.put(set, reposIdentifier);
+			for(String key : keys) {
+				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				reposIdentifier = PropertiesManager.getProperty(key);
+				sets.put(setSpec, reposIdentifier);
 			}
 		} catch (Exception e) {
 			//NOOP
@@ -125,9 +130,9 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		String setList = PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS_LIST);
-		StringTokenizer tokenizer = new StringTokenizer(setList,";");
-		if(tokenizer.countTokens() == 0) {
+			Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
+		if(keys.length == 0) {
 			throw new NoSetHierarchyException();
 		}
 		else {
@@ -135,8 +140,9 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			Map listSetsMap = new HashMap();
 			ArrayList sets = new ArrayList();
 
-			while (tokenizer.hasMoreTokens()) {
-				sets.add(getSetXML(tokenizer.nextToken()));
+			for(String key : keys) {
+				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				sets.add(getSetXML(key,setSpec));
 			}
 
 			listSetsMap.put("sets", sets.iterator());
@@ -154,11 +160,10 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	 * @param setItem individual set instance in native format
 	 * @return an XML String containing the XML &lt;set&gt; content
 	 */
-	public String getSetXML(String setItem)
+	public String getSetXML(String key, String setSpec)
 	throws IllegalArgumentException {
-		String setSpec = setItem;
-		String setName = "Metadata originating from " + setItem;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty(RepositoryConstants.OAICAT_SETS + "." + setItem + ".repoid");
+		String setName = "Metadata originating from " + setSpec;
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty(key);
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");

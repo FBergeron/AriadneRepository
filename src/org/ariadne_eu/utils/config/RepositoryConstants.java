@@ -110,6 +110,7 @@ public class RepositoryConstants {
 
 	public static final String OAICAT_SETS_LIST = "oaicat.sets.list";
 	public static final String OAICAT_SETS = "oaicat.sets";
+	public static final String OAICAT_SETS_ID = "repoid";
 
 	public static final String OAICAT_HANDLER_BASEURL = "oaicat.handler.baseuRL";
 	public static final String OAICAT_HANDLER_STYLESHEET = "oaicat.handler.stylesheet";
