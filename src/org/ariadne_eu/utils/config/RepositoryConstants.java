@@ -86,7 +86,6 @@ public class RepositoryConstants {
 	
 	public static final String OAICAT_SERVER_CATALOG_SEC2LIVE = "oaicat.server.catalog.seconds2live";
 	public static final String OAICAT_SERVER_CATALOG_GRANULARITY = "oaicat.server.catalog.granularity";
-	public static final String OAICAT_SERVER_CATALOG_MAXLSTSIZE = "oaicat.server.catalog.maxlistsize";
 	
 	public static final String OAICAT_IDENTIFY_EMAIL = "oaicat.identify.email";
 	public static final String OAICAT_IDENTIFY_REPONAME = "oaicat.identify.reponame";
@@ -95,10 +94,12 @@ public class RepositoryConstants {
 	public static final String OAICAT_IDENTIFY_REPOID = "oaicat.identify.repoid";
 	public static final String OAICAT_IDENTIFY_REPODESC = "oaicat.identify.description"; 
 	public static final String OAICAT_IDENTIFY_SAMPLEID = "oaicat.identify.sampleid";
-
+	
 	public static final String OAICAT_CROSSWALK_ETDMS = "oaicat.crosswalk.etdms";
 	public static final String OAICAT_CROSSWALK_DC = "oaicat.crosswalk.dc";
 	public static final String OAICAT_CROSSWALK_LOM = "oaicat.crosswalk.lom";
+	
+	public static final String OAICAT_SERVER_CATALOG_MAXLSTSIZE = "oaicat.server.catalog.maxlistsize";
 
 	public static final String OAICAT_SERVER_CATALOG_CLASS = "oaicat.server.catalog.class";
 	public static final String OAICAT_SERVER_CATALOG_RECORD_CLASS = "oaicat.server.catalog.record.class";
@@ -108,7 +109,6 @@ public class RepositoryConstants {
 	public static final String OAICAT_SERVER_CATALOG_REPOID = "oaicat.server.catalog.repoId";
 	public static final String OAICAT_SERVER_CATALOG_DATECOLUMN = "oaicat.server.catalog.db.column.date";
 
-	public static final String OAICAT_SETS_LIST = "oaicat.sets.list";
 	public static final String OAICAT_SETS = "oaicat.sets";
 	public static final String OAICAT_SETS_ID = "repoid";
 
