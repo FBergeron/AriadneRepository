@@ -123,12 +123,15 @@ public class MACELOMHandler extends DocumentHandler {
 //			tmpBranche = tmpBranche.replaceAll("\\.(\\w+):", ".");
 		}
 		String tmp2Branche = "";
+		
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
 			branche = branche.substring(0, branche.length() - qName.length() - 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
+		
+//		System.out.println(tmpBranche);
 
 		if (tmpBranche.matches("lom")) {
 			doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
@@ -221,7 +224,9 @@ public class MACELOMHandler extends DocumentHandler {
 					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
 						maxEQF = Integer.parseInt(elementBuffer.toString());
 					competencyCount++;
-				} else if (competencyCount == 4) {
+//				} else if (competencyCount == 4) {
+				} 
+				if (competencyCount == 4) {
 					if(tmpBranche.endsWith(".classification.taxonpath.taxon.mineqf"))
 						minEQF = Integer.parseInt(elementBuffer.toString());
 					else if (tmpBranche.endsWith(".classification.taxonpath.taxon.maxeqf"))
@@ -397,7 +402,7 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-		String filePath = "/Sandbox/temp/AriadneWS/repository/mdstore/ID_archit_architetture_20000122MD.xml"; 
+		String filePath = "/Work/MACE/XMLs/2007071000838.xml"; 
 		Document doc = handler.getDocument(new FileInputStream(new File(filePath)));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {

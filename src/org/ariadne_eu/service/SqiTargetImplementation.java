@@ -97,8 +97,6 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
        throws _SQIFaultException{
     	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
     	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
-//    	System.out.println((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.USER_AGENT));;
-    	//AbstractHTTPSender
     	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
     	String userAgent = (String) th.get("user-agent");
     	String host = (String) th.get("host");
@@ -120,30 +118,6 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
                 nbResults = Integer.parseInt(ticket.getParameter("resultsSetSize"));
             return synchronousQuery(synchronousQuery, queryLanguage, resultsFormat, startResult, nbResults);
         }
-
-        //TODO: add something for retrieve
-//        if (synchronousQuery.getTargetSessionID().equalsIgnoreCase("retrieve")) {
-//            try {
-//                //retrieve document with given ID
-//                collection.setProperty(OutputKeys.INDENT, "no");
-//                XMLResource res = (XMLResource)collection.getResource(synchronousQuery.getQueryStatement());
-//                String result = "";
-//                if (res != null) {
-//                    result = (String) res.getContent();
-//                }
-//                SynchronousQueryResponse response = new SynchronousQueryResponse();
-//                response.setSynchronousQueryReturn(result);
-//                return response;
-//            } catch (XMLDBException e) {
-//                log.error("synchronousQuery:sessionID="+synchronousQuery.getTargetSessionID(), e);
-//                _SQIFault fault = new _SQIFault();
-//                fault.setSqiFaultCode(FaultCodeType.SQI_00001);
-//                fault.setMessage("Database exception");
-//                _SQIFaultException exception = new _SQIFaultException();
-//                exception.setFaultMessage(fault);
-//                throw exception;
-//            }
-//        }
 
         if (ticket == null) {
             try {

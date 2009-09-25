@@ -36,6 +36,7 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
                 Ticket t = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
                 t.setParameter("username", username);
                 t.setParameter("password", password);
+                t.setParameter("queryExpireTime", "1");
                 CreateSessionResponse response = new CreateSessionResponse();
                 response.setCreateSessionReturn(t.toString());
                 log.info("createSession:username="+createSession.getUserID()+",sessionID="+response.getCreateSessionReturn());

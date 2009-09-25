@@ -66,10 +66,8 @@ public class MACEUtils {
 			}
 			
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -147,10 +145,8 @@ public class MACEUtils {
 			String output = outputter.outputString(newEnrichedDoc);
 			return output;
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -160,8 +156,8 @@ public class MACEUtils {
 	private static HashMap<String, Element> loadClassification(){
 		classificationValues = new HashMap<String, Element>(0);
 		SAXBuilder builder = new SAXBuilder();
-//		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
-		File in = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
+		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
+//		File in = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
 		
 		org.jdom.Document xmlDoc;
 		try {

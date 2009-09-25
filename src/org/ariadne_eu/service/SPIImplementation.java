@@ -109,7 +109,7 @@ public class SPIImplementation extends SPISkeleton {
 //                throw exception;
 //            }
         } catch (SessionExpiredException e) {
-            log.debug("submitResource: ", e);
+            log.error("submitResource: ", e);
             SpiFault fault = new SpiFault();
 //            fault.setSpiFaultCode(SpiFaultCodeType.SPI_00000);
             fault.setSpiFaultCode(FaultCodeType.SPI_00000);
@@ -133,7 +133,7 @@ public class SPIImplementation extends SPISkeleton {
             checkValidTicket(ticket);
             InsertMetadataFactory.insertMetadata(submitMetadataRecord.getGlobalIdentifier(), submitMetadataRecord.getMetadata());
         } catch (SessionExpiredException e) {
-            log.debug("submitMetadataRecord: ", e);
+            log.error("submitMetadataRecord: ", e);
             SpiFault fault = new SpiFault();
             fault.setSpiFaultCode(FaultCodeType.SPI_00000);
             fault.setMessage("The given session ID is invalid");

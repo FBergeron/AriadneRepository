@@ -219,7 +219,9 @@ public class MACEImplementation extends MACESkeleton {
 
 			Element educational = new Element("educational", lomNS);
 			Element lrt = new Element("learningResourceType", lomNS);
+			Element esrc = new Element("source", lomNSM).setText("MACEv1.0");
 			Element value = new Element("value", lomNS).setText(createLOM.getResourceType());
+			lrt.addContent(esrc);
 			lrt.addContent(value);
 			educational.addContent(lrt);
 			root.addContent(educational);
@@ -235,7 +237,11 @@ public class MACEImplementation extends MACESkeleton {
 			Element str4 = new Element("value",lomNS).setText("yes");
 			cor.addContent(src2);
 			cor.addContent(str4);
+			Element rdesc = new Element("description",lomNS);
+			Element rstr = new Element("string",lomNS).setText("Copyrights description");
+			rdesc.addContent(rstr);
 			rights.addContent(cor);
+			rights.addContent(rdesc);
 			root.addContent(rights);
 
 			doc.setRootElement(root);
@@ -773,7 +779,7 @@ public class MACEImplementation extends MACESkeleton {
 		value.setText(valueString);
 		role.addContent(value);
 		Element source = new Element("source", lomNS);
-		String sourceString = "LOMv1.0";
+		String sourceString = "MACEv1.0";
 		source.setText(sourceString);
 		role.addContent(source);
 		// contribute.date

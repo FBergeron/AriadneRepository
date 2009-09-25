@@ -84,11 +84,6 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
                 i++;
             }
         }
-        mdCollection = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
-        if(mdCollection == null) {
-        	mdCollection = "collection(\"metadatastore\")";
-            log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
-        }
     }
     
     public DataHandler retrieveContent(String identifier) {
