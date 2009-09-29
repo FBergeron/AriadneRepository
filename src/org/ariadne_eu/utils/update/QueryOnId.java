@@ -102,7 +102,7 @@ public class QueryOnId {
 //			SynchronousQueryResponse result = sqiStub.synchronousQuery(query);
 			logger.info("Requesting : " + metadataIdentifier);
 
-			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, TranslateResultsformat.LOM, 12, TranslateLanguage.PLQL1);
+			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);
 			
 //			String synchronousQueryReturn = result.getSynchronousQueryReturn();
 			watch.stopWPrint();
