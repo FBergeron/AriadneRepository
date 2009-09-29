@@ -25,7 +25,7 @@ public class QueryOnId {
 //	private String enrichTarget = "";
 //	private String enrichSession = "";
 
-	private static Logger logger = Logger.getLogger(PublishMetadata.class);
+	private static Logger logger = Logger.getLogger(QueryOnId.class);
 
 //	private SqiSessionManagementStub sqiSessionStub = null;
 //	private String sessionId = "";
@@ -105,7 +105,8 @@ public class QueryOnId {
 			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);
 			
 //			String synchronousQueryReturn = result.getSynchronousQueryReturn();
-			watch.stopWPrint();
+			
+			logger.debug(watch.stop());
 			logger.debug(resultString);
 			Document doc = OaiUtils.parseXmlString2Lom(resultString);
 
