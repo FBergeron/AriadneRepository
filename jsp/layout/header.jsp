@@ -58,7 +58,7 @@
 			],
 			_cmSplit,
 			[null,'Modify',null,null,'Modify',
-				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/content.png" />','Obtain Metadata','<%=request.getContextPath()%>/admin/modifyMetadata.jsp',null,'Modify Metadata'],
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/content.png" />','Modify Metadata','<%=request.getContextPath()%>/admin/updateMetadata.jsp',null,'Modify Metadata'],
 			],
 			_cmSplit,
 			[null,'Search',null,null,'Search',

@@ -59,10 +59,6 @@ public class OaiUtils {
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
-	private static boolean lom2XmlstringparserInited = false;
-
-	private static boolean XmlString2LomparserInited = false;
-
 //	private static Unmarshaller unmarshaller = null;
 
 	private static Calendar starttime = null;
@@ -132,18 +128,9 @@ public class OaiUtils {
 	public static String parseLom2XmlstringNoXmlHeader(Element lom){
 		XMLOutputter outputter = new XMLOutputter();
 		Format format = Format.getPrettyFormat();
+		format.setOmitDeclaration(true);
 		outputter.setFormat(format);
 		String output = outputter.outputString(lom);
-		return output;
-	}
-	
-
-	public static String parseLom2Xmlstring(Element lom) {
-		XMLOutputter outputter = new XMLOutputter();
-		Format format = Format.getPrettyFormat();
-		outputter.setFormat(format);
-		String output = outputter.outputString(lom);
-		output = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.getProperty("line.separator")).concat(output);
 		return output;
 	}
 	

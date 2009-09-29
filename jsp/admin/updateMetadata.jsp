@@ -16,7 +16,7 @@
 <%@page import="org.ariadne_eu.utils.update.QueryOnId"%>
 <%@page import="org.ariadne_eu.utils.update.PublishMetadata"%><html>
 
-	<script language="Javascript" type="text/javascript" src="includes/editarea/edit_area/edit_area_full.js"></script>
+	<script language="Javascript" type="text/javascript" src="../includes/editarea/edit_area/edit_area_full.js"></script>
 	<script language="Javascript" type="text/javascript">
 		// initialisation
 		editAreaLoader.init({
@@ -103,7 +103,7 @@ if (metadata != null){
 <%@ include file="/layout/header.jsp"%>
 <br>
 <center>
-<form method="post" action="admin.jsp">
+<form method="post" action="updateMetadata.jsp">
 
 <br>
 <table border="1" bgcolor="lightgrey" width="80%">

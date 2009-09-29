@@ -10,59 +10,17 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
+import org.ariadne_eu.oai.server.catalog.AbstractRecordFactory;
 import org.oclc.oai.server.catalog.RecordFactory;
 
 
-public class FileSystemLomRecordFactory extends RecordFactory{
-	private String repositoryIdentifier = null;
-	
-	
-	public FileSystemLomRecordFactory(Properties properties)	throws IllegalArgumentException {
-		super(properties);
-		String classname = "FileSystemLomRecordFactory";
-		repositoryIdentifier = properties.getProperty(classname + ".repositoryIdentifier");
-		if (repositoryIdentifier == null) {
-		    throw new IllegalArgumentException(classname + ".repositoryIdentifier is missing from the properties file");
-		}
-	}
-
+public class FileSystemLomRecordFactory extends AbstractRecordFactory{
     
 
-    /**
-     * Utility method to parse the 'local identifier' from the OAI identifier
-     *
-     * @param identifier OAI identifier (e.g. oai:oaicat.oclc.org:ID/12345)
-     * @return local identifier (e.g. ID/12345).
-     */
-    public String fromOAIIdentifier(String identifier) {
-        try {
-            StringTokenizer tokenizer = new StringTokenizer(identifier, ":");
-            tokenizer.nextToken();
-            tokenizer.nextToken();
-            String result = tokenizer.nextToken();
-            while(tokenizer.hasMoreElements()){
-            	result = result.concat(":" + tokenizer.nextToken());
-            }
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Construct an OAI identifier from the native item
-     *
-     * @param nativeItem native Item object
-     * @return OAI identifier
-     */
-    public String getOAIIdentifier(Object nativeItem) {
-	StringBuffer sb = new StringBuffer();
-	sb.append("oai:");
-	sb.append(repositoryIdentifier);
-	sb.append(":");
-	sb.append(getLocalIdentifier(nativeItem));
-	return sb.toString();
-    }
+    public FileSystemLomRecordFactory(Properties properties) throws IllegalArgumentException {
+		super(properties);
+		// TODO Auto-generated constructor stub
+	}
 
     /**
      * Extract the local identifier from the native item

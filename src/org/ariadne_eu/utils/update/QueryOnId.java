@@ -106,6 +106,7 @@ public class QueryOnId {
 			
 //			String synchronousQueryReturn = result.getSynchronousQueryReturn();
 			watch.stopWPrint();
+			logger.debug(resultString);
 			Document doc = OaiUtils.parseXmlString2Lom(resultString);
 
 			List results = doc.getRootElement().getChildren();
@@ -130,6 +131,7 @@ public class QueryOnId {
 			//        					OAIRecord record = repos.getRecord("oai:ariadne.cs.kuleuven.be:" + line.trim(),prefix);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(metadataIdentifier + " : " + e.getMessage());
 			throw e;
 		}

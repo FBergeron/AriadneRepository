@@ -30,6 +30,8 @@ import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
 import org.ariadne.config.PropertiesManager;
+import org.ariadne_eu.oai.server.lucene.catalog.LuceneLomCatalog;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadArgumentException;
@@ -67,42 +69,34 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	private static HashMap<String, String> sets = new HashMap<String, String>();
 
 	public FileSystemLomCatalog(Properties properties) {
-		String classname = "FileSystemLomCatalog";
-		String maxListSize = properties.getProperty(classname + ".maxListSize");
+		String maxListSize = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE);
 		if (maxListSize == null) {
-			throw new IllegalArgumentException(classname + ".maxListSize is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
 		} else {
 			FileSystemLomCatalog.maxListSize = Integer.parseInt(maxListSize);
 		}
-		String basePath = properties.getProperty(classname + ".basePath");
+		String basePath = properties.getProperty(RepositoryConstants.MD_SPIFS_DIR);
 		if (basePath == null) {
-			throw new IllegalArgumentException(classname + ".basePath is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
 		} else {
 			FileSystemLomCatalog.basePath = basePath;
 		}
-		String ext = properties.getProperty(classname + ".ext");
+		String ext = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_FS_EXT);
 		if (ext == null) {
-			throw new IllegalArgumentException(classname + ".ext is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_FS_EXT + " is missing from the properties file");
 		} else {
 			FileSystemLomCatalog.ext = ext;
 		}
 		try {
 			
-			Hashtable targets = PropertiesManager.getPropertyStartingWith("sets.");
-			
-			for(Object key : targets.keySet()) {
-				String set = ((String)key).replace("sets.", "").replace(".repositoryIdentifier","");
-				String reposIdentifier = PropertiesManager.getProperty((String)key);
-				sets.put(set, reposIdentifier);
+			Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			String[] keys = (String[]) sets.keySet().toArray(new String[0]);
+			String reposIdentifier = "";
+			for(String key : keys) {
+				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				reposIdentifier = PropertiesManager.getProperty(key);
+				sets.put(setSpec, reposIdentifier);
 			}
-//			
-//			String[] activeSets = PropertiesManager.getProperty("sets.list").split(";");
-//			String reposIdentifier = "";
-//			for(int i = 0; i < activeSets.length; i++) {
-//				String set = activeSets[i];
-//				reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
-//				sets.put(set, reposIdentifier);
-//			}
 		} catch (Exception e) {
 			//NOOP
 		}

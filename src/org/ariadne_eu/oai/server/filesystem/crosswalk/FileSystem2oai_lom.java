@@ -26,7 +26,7 @@ public class FileSystem2oai_lom extends Crosswalk {
 		try {
 	    	SAXBuilder builder = new SAXBuilder();
 			org.jdom.Document jdom = builder.build(new File((String)nativeItem));
-			return OaiUtils.parseLom2Xmlstring(jdom.getRootElement());
+			return OaiUtils.parseLom2XmlstringNoXmlHeader(jdom.getRootElement());
 		} catch (JDOMException e) {
 			throw new CannotDisseminateFormatException(e.getMessage());
 			} catch (IOException e) {

@@ -110,7 +110,9 @@ public class RepositoryConstants {
 	public static final String OAICAT_SERVER_CATALOG_IDFIELD = "oaicat.server.catalog.field.id";
 	public static final String OAICAT_SERVER_CATALOG_REPOID = "oaicat.server.catalog.repoId";
 	public static final String OAICAT_SERVER_CATALOG_DATECOLUMN = "oaicat.server.catalog.db.column.date";
-
+	public static final String OAICAT_SERVER_CATALOG_FS_EXT = "oaicat.server.catalog.fs.ext";
+	
+	
 	public static final String OAICAT_SETS = "oaicat.sets";
 	public static final String OAICAT_SETS_ID = "repoid";
 
