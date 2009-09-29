@@ -17,7 +17,7 @@ package org.eun.plql.layer1;
 
 
 
-//#line 1 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 1 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 
 
 /*
@@ -38,8 +38,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-  import java.io.IOException;
-import java.io.Reader;
+  import java.io.*;
+  import java.lang.String;
+import java.util.StringTokenizer;  
+//#line 41 "PlqlLayer1Analyzer.java"
 
 
 
@@ -327,7 +329,7 @@ final static String yyrule[] = {
 "standard : STANDARD",
 };
 
-//#line 162 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 162 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 
 
 	private PlqlLayer1Parser lexer;
@@ -435,7 +437,7 @@ boolean flag = false;
         yystate = yytable[yyn];//we are in a new state
         state_push(yystate);   //save it
         
-        // GAP start
+     // GAP start
 		if (yylval.sval.equalsIgnoreCase("="))
 			flag = true;
 		else if (flag == true) {
@@ -531,132 +533,132 @@ boolean flag = false;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 61 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 61 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {  	yyval.sval = val_peek(0).sval;
 							query = yyval.sval;
 						}
 break;
 case 2:
-//#line 66 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 66 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-2.1 : " + val_peek(0).sval);
                     }
 break;
 case 3:
-//#line 69 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 69 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
 					val_peek(2).sval = val_peek(2).sval + "." + val_peek(0).sval;	
 					if (DISPLAY_OUTPUT) System.out.println("rule number = 1-2.2 : " + val_peek(2).sval);
 				}
 break;
 case 4:
-//#line 73 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 73 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
 					val_peek(2).sval = " ( " + val_peek(1).sval + " ) "; 
 					if (DISPLAY_OUTPUT) System.out.println("rule number = 1-2.3 : " + val_peek(2).sval);
 					}
 break;
 case 5:
-//#line 77 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 77 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 { 	
 					val_peek(2).sval = val_peek(2).sval + " AND " + val_peek(0).sval; 
     				if (DISPLAY_OUTPUT) System.out.println("rule number = 1-2.4 : " + val_peek(2).sval);
 					}
 break;
 case 6:
-//#line 83 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 83 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-3 : " + val_peek(0).sval);
                     }
 break;
 case 7:
-//#line 89 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 89 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-4.1 : " + val_peek(0).sval);
                     }
 break;
 case 8:
-//#line 92 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 92 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-4.2 : " + val_peek(0).sval);
                     }
 break;
 case 9:
-//#line 95 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 95 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-4.3 : " + val_peek(0).sval);
                     }
 break;
 case 10:
-//#line 98 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 98 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-4.4 : " + val_peek(0).sval);
                     }
 break;
 case 11:
-//#line 104 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 104 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-5 : " + val_peek(0).sval);
                     }
 break;
 case 12:
-//#line 109 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 109 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-6 : " + val_peek(0).sval);
                     }
 break;
 case 13:
-//#line 114 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 114 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {   
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-7 : " + val_peek(0).sval);
 					}
 break;
 case 14:
-//#line 119 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 119 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-8 : " + val_peek(0).sval);
 					}
 break;
 case 15:
-//#line 124 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 124 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-9 : " + val_peek(0).ival);
 					}
 break;
 case 16:
-//#line 129 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 129 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
 				if (DISPLAY_OUTPUT) System.out.println("rule number = 1-10 : " + val_peek(0).dval);
                 }
 break;
 case 17:
-//#line 135 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 135 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
 					val_peek(2).sval = val_peek(2).sval.toLowerCase() + ":"  + val_peek(0).sval; 
 					if (DISPLAY_OUTPUT) System.out.println("rule number = 1-11 : " + val_peek(2).sval );
 					}
 break;
 case 18:
-//#line 141 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 141 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
 					if (DISPLAY_OUTPUT) System.out.println("rule number = 1-12.1 : " + val_peek(0).sval);
 					}
 break;
 case 19:
-//#line 144 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 144 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {	
 					val_peek(2).sval = (val_peek(2).sval + val_peek(1).sval + val_peek(0).sval).toLowerCase(); 
 					if (DISPLAY_OUTPUT) System.out.println("rule number = 1-12.2 : " + val_peek(2).sval);
 					}
 break;
 case 20:
-//#line 151 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 151 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-13 : " + val_peek(0).sval);
             }
 break;
 case 21:
-//#line 158 "/Sandbox/eclipse/hmdb/plql/plql_layer1/src/conf/Layer1.y"
+//#line 158 "/Sandbox/eclipse/hmdb/plql2lucene/plql_layer1/src/conf/Layer1.y"
 {
                     if (DISPLAY_OUTPUT) System.out.println("rule number = 1-14 : " + val_peek(0).sval);
                 }

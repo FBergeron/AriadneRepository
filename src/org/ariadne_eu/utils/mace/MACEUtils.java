@@ -156,8 +156,8 @@ public class MACEUtils {
 	private static HashMap<String, Element> loadClassification(){
 		classificationValues = new HashMap<String, Element>(0);
 		SAXBuilder builder = new SAXBuilder();
-		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
-//		File in = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
+//		File in = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
+		File in = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
 		
 		org.jdom.Document xmlDoc;
 		try {

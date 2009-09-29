@@ -45,7 +45,8 @@ public class PLQL1Translator
 //	private static String plqlQuery = "lom.technical.format = \"application/msword\"";
 //	private static String plqlQuery = "lom.classification.taxonPath.source.string.ARIADNE = \"medicina\"";
 //	private static String plqlQuery = "lom.general.identifier.entry=\"CumincadWorks.id\" AND lom.educational.language=\"it\"";
-	private static String plqlQuery = "xmlns = \"http://ltsc.ieee.org/xsd/lom\"";
+//	private static String plqlQuery = "xmlns = \"http://ltsc.ieee.org/xsd/lom\"";
+	private static String plqlQuery = "lom.description.metadata.lom.general.language=\"nl\"";
 
     public static void main(String[] args) throws Exception
     {

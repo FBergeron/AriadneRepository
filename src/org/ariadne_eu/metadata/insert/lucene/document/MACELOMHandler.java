@@ -164,8 +164,11 @@ public class MACELOMHandler extends DocumentHandler {
 //				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				
 				purpose = elementBuffer.toString();
+				
 				if (purpose.equalsIgnoreCase("competency"))
 					isCompetency = true;
+				else 
+					isCompetency = false;
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
@@ -238,6 +241,7 @@ public class MACELOMHandler extends DocumentHandler {
 						doc.add(new Field(tmpBranche.replaceAll("mineqf", "").replaceAll("maxeqf", "") + "domain.eqf", domainID + "_" + Integer.toString(i), Field.Store.YES,Field.Index.UN_TOKENIZED));
 					}
 					competencyCount = 0;
+					
 				}
 				isCompetency = false;
 			}
@@ -402,7 +406,7 @@ public class MACELOMHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		MACELOMHandler handler = new MACELOMHandler();
-		String filePath = "/Work/MACE/XMLs/2007071000838.xml"; 
+		String filePath = "/Work/MACE/XMLs/5843.lo.1.xml"; 
 		Document doc = handler.getDocument(new FileInputStream(new File(filePath)));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
