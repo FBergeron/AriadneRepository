@@ -31,7 +31,7 @@ public class FileSystemLomRecordFactory extends AbstractRecordFactory{
     public String getLocalIdentifier(Object nativeItem) {
     	File doc = new File((String)nativeItem);
 
-    	return doc.getName().substring(0,doc.getName().lastIndexOf("."));
+    	return doc.getName().substring(0,doc.getName().lastIndexOf(".")).replaceAll("_", ":").replaceAll(".s.", "/");
     }
 
     /**

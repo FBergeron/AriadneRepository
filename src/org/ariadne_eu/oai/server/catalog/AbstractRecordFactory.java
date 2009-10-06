@@ -40,12 +40,15 @@ public abstract class AbstractRecordFactory extends RecordFactory{
 	 */
 	public String fromOAIIdentifier(String identifier) {
 		try {
-			StringTokenizer tokenizer = new StringTokenizer(identifier, ":");
-			tokenizer.nextToken();
-			tokenizer.nextToken();
-			String result = tokenizer.nextToken();
-			while(tokenizer.hasMoreElements()){
-				result = result.concat(":" + tokenizer.nextToken());
+			String result = identifier;
+			if(useOaiIdScheme) {
+				StringTokenizer tokenizer = new StringTokenizer(identifier, ":");
+				tokenizer.nextToken();
+				tokenizer.nextToken();
+				result = tokenizer.nextToken();
+				while(tokenizer.hasMoreElements()){
+					result = result.concat(":" + tokenizer.nextToken());
+				}
 			}
 			return result;
 		} catch (Exception e) {
@@ -77,7 +80,7 @@ public abstract class AbstractRecordFactory extends RecordFactory{
 	 * @return local identifier
 	 */
 	public abstract String getLocalIdentifier(Object nativeItem);
-	
+
 	/**
 	 * get the datestamp from the item
 	 *

@@ -57,9 +57,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	 */
 	private HashMap resumptionResults = new HashMap();
 
-	private Searcher searcher;
-	private Analyzer analyzer;
-
 	private static int maxListSize;
 
 	private static String basePath;
@@ -111,7 +108,7 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	}
 
 	public Vector getSchemaLocations(String identifier) throws IdDoesNotExistException, NoMetadataFormatsException, OAIInternalServerError {
-		Object nativeItem = getIndexRecord(identifier);
+		Object nativeItem = null;
 		/*
 		 * Let your recordFactory decide which schemaLocations
 		 * (i.e. metadataFormats) it can produce from the record.
@@ -126,34 +123,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		}
 	}
 
-	private Object getIndexRecord(String identifier) {
-		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
-
-		QueryParser parser = new QueryParser("field", analyzer);
-		Query query = null;
-		TermQuery termQuery = new TermQuery(new Term("lom.General.Identifier.Entry", parseToLuceneQuery(localIdentifier)));
-		try {
-			query = parser.parse(termQuery.toString());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		Hits hits = null;
-		try {
-			hits = searcher.search(query);
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		}
-		Document resultDoc = null;
-		try {
-			resultDoc = hits.doc(0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return resultDoc;
-	}
-
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
 		purge(); // clean out old resumptionTokens
@@ -161,7 +130,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		ArrayList headers = new ArrayList();
 		ArrayList identifiers = new ArrayList();
 
-		QueryParser parser = new QueryParser("luceneDate", analyzer);
 		Query query = null;
 		String fromDate = from.replaceAll("-", "");
 		fromDate = fromDate.replaceAll(":", "");
@@ -175,19 +143,7 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		Term termUntil = new Term("lastModDate", untilDate);
 		RangeQuery rangeQuery = new RangeQuery(termFrom,termUntil,true);
 		//TermQuery termQuery = new TermQuery(new Term(LOMLuceneIndexCreator.lomfield_LifecycleContributeDate(), "lom")); //better way to do this ? + filtered on dates
-		try {
-			query = parser.parse(rangeQuery.toString());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		Hits hits = null;
-		try {
-			hits = searcher.search(query);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		if(hits.length() == 0) throw new NoItemsMatchException();
 
 		/* Get some records from your database */
@@ -586,24 +542,10 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			return listIdentifiersMap;
 		}
 
-
-		protected String parseToLuceneQuery(String query){
-			try {
-				StringTokenizer tokenizer = new StringTokenizer(query, ":");
-				String result = tokenizer.nextToken();
-				while(tokenizer.hasMoreElements()){
-					result = result.concat("\\:" + tokenizer.nextToken());
-				}
-				return result;
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
 		public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
 			String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
 
-			String file = getMatchingFile(new File(basePath), localIdentifier);
+			String file = getMatchingFile(new File(basePath), localIdentifier.replaceAll(":", "_").replaceAll("/", ".s."));
 			
 			return constructRecord(file, metadataPrefix);
 		}
