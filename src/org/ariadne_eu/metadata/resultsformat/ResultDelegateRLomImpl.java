@@ -4,29 +4,18 @@
 package org.ariadne_eu.metadata.resultsformat;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Hits;
-import org.ariadne_eu.metrics.webservices.GeneralGetRankingMetricValues;
-import org.ariadne_eu.metrics.webservices.GeneralGetRankingMetricValuesResponse;
-import org.ariadne_eu.metrics.webservices.RankingMetricsStub;
-import org.ariadne_eu.utils.Stopwatch;
-import org.ariadne_eu.utils.config.ConfigManager;
-import org.ariadne_eu.utils.config.RepositoryConstants;
+
+
 
 import de.fit.cam.ranking.ServiceProvider;
-import de.fit.cam.ranking.domain.EventType;
 import de.fit.cam.ranking.domain.RankedLom;
 import de.fit.cam.ranking.service.RankingService;
 

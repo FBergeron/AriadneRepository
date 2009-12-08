@@ -62,8 +62,7 @@ public class GENERICHandler extends DocumentHandler {
 	}
 	
 	public void endDocument() {
-		doc.add(new Field("contents", contents, Field.Store.YES,
-				Field.Index.TOKENIZED));
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
 	}
 
 	/*
@@ -150,7 +149,7 @@ public class GENERICHandler extends DocumentHandler {
 
 	public static void main(String args[]) throws Exception {
 		GENERICHandler handler = new GENERICHandler();
-		Document doc = handler.getDocument(new FileInputStream(new File("/Work/CAM/Examples/ZoepCAMsample.xml")));
+		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/temp/AriadneWS/mdstore/lre-collection-v4.xml")));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();

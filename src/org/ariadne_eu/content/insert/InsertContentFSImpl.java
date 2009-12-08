@@ -56,7 +56,7 @@ public class InsertContentFSImpl extends InsertContentImpl {
 	private synchronized File getFileForID(String identifier, String fileName, String fileType) {
 		String name = identifier.replaceAll(":", "_");
         name = name.replaceAll("/", ".s.");
-		File idFolder = new File(baseFolder.getAbsolutePath() + File.separator + name);
+		File idFolder = new File(baseFolder.getAbsolutePath() + File.separator + name + File.separator);
 		if (idFolder.exists()) {
 			File[] subFiles = idFolder.listFiles(); 
 			if (subFiles.length > 0) {
@@ -68,7 +68,8 @@ public class InsertContentFSImpl extends InsertContentImpl {
 		} else {
 			idFolder.mkdir();
 		}
-			
+		if (fileName.equalsIgnoreCase(""))
+			fileName = name;
 		return new File(baseFolder.getAbsolutePath() + File.separator + name + File.separator + fileName);	
 	}
 
