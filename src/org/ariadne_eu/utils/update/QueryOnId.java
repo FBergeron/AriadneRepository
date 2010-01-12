@@ -173,12 +173,28 @@ public class QueryOnId {
 					logger.info("Successfully Requested : " + metadataIdentifier);
 					return outputter.outputString(el);
 					
-			}else if (results.size() < 1) {
-				String msg = "No records found, please check the identifier";
-				throw new Exception(msg);
-			}else if (results.size() > 1) {
-				String msg = "Too many records found, please check the identifier";
-				throw new Exception(msg);
+			}else {
+				logger.info("No MetadataCollection found, trying with protocol");
+				query = "protocol.identifier.entry = \"" + metadataIdentifier + "\"";
+				watch.start();
+				logger.info("Requesting : " + metadataIdentifier);
+				resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);	
+				logger.debug(watch.stop());
+				logger.debug(resultString);
+				doc = OaiUtils.parseXmlString2Lom(resultString);
+				results = doc.getRootElement().getChildren();
+				if(results.size() == 1) {
+					Element el = (Element)results.get(0);
+					el.detach();
+					logger.info("Successfully Requested : " + metadataIdentifier);
+					return outputter.outputString(el);
+				}else if (results.size() < 1) {
+					String msg = "No records found, please check the identifier";
+					throw new Exception(msg);
+				}else if (results.size() > 1) {
+					String msg = "Too many records found, please check the identifier";
+					throw new Exception(msg);
+				}				
 			}
 
 		} catch (Exception e) {
