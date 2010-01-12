@@ -152,6 +152,43 @@ public class QueryOnId {
 		return null;
 	}
 	
+	public String getMetadataCollectionInstance(String metadataIdentifier) throws Exception {
+
+		try {
+
+			XMLOutputter outputter = new XMLOutputter();
+			String query = "metadataCollection.identifier.entry = \"" + metadataIdentifier + "\"";
+			watch.start();
+			logger.info("Requesting : " + metadataIdentifier);
+			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);	
+			logger.debug(watch.stop());
+			logger.debug(resultString);
+			Document doc = OaiUtils.parseXmlString2Lom(resultString);
+
+			List results = doc.getRootElement().getChildren();
+			if(results.size() == 1) {
+				
+					Element el = (Element)results.get(0);
+					el.detach();
+					logger.info("Successfully Requested : " + metadataIdentifier);
+					return outputter.outputString(el);
+					
+			}else if (results.size() < 1) {
+				String msg = "No records found, please check the identifier";
+				throw new Exception(msg);
+			}else if (results.size() > 1) {
+				String msg = "Too many records found, please check the identifier";
+				throw new Exception(msg);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(metadataIdentifier + " : " + e.getMessage());
+			throw e;
+		}
+		return null;
+	}
+	
 //    private String query(String query) throws Exception {
 //        try {
 //            return QueryMetadataFactory.getQueryImpl(2).query(query, TranslateResultsformat.LOM, 12, TranslateLanguage.PLQL1);
