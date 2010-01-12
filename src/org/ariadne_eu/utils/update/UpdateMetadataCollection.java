@@ -38,7 +38,7 @@ public class UpdateMetadataCollection {
 			XPath ids_metadataCollection = XPath.newInstance("//mc:metadataCollection/mc:identifier/mc:entry");
 			ids_metadataCollection.addNamespace(ns_metadataCollection);
 			/*-------------------*/
-
+			
 			org.jdom.Document xmlDoc = builder.build(new StringReader(metadata));
 
 			String id = null;
@@ -47,10 +47,18 @@ public class UpdateMetadataCollection {
 			if(foundId != null) {
 				id = foundId.getTextTrim();				
 			}
-			logger.info("Found id: " + id);
+			logger.info("Found MetadataCollection id: " + id);
 			
 			if (id == null) {
-				throw new Exception("No Id found !!!");
+				/*protocol*/
+				Namespace ns_protocol = Namespace.getNamespace("p","http://www.imsglobal.org/services/lode/imsloreg_v1p0");
+				XPath ids_protocol = XPath.newInstance("//p:protocol/p:identifier/p:entry");
+				ids_protocol.addNamespace(ns_protocol);
+				/*-------------------*/
+				foundId = (Element) ids_protocol.selectSingleNode(xmlDoc);
+				if(foundId != null) id = foundId.getTextTrim();		
+				logger.info("Found protocol id: " + id);
+				if (id == null) throw new Exception("No Id found !!!");
 			}
 
 			logger.info("Pushing " + id);
