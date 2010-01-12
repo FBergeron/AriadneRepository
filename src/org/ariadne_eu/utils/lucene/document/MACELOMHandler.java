@@ -174,18 +174,18 @@ public class MACELOMHandler extends DocumentHandler {
 				taxonPathId = elementBuffer.toString();
 				if (isCompetency) {
 					if (competencyCount == 0) {
-						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+						doc.add(new Field(tmpBranche+".domain", elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						domainID = elementBuffer.toString();
 						competencyCount++;
 					} else if (competencyCount == 1){
-						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+						doc.add(new Field(tmpBranche+".competency", elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 						competencyID = elementBuffer.toString();
 						competencyCount++;
 					}
 				} 
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
 				if (isCompetency) {
-					doc.add(new Field(tmpBranche, elementBuffer.toString(), Field.Store.YES,Field.Index.TOKENIZED));
+					doc.add(new Field(tmpBranche, elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));
 				}
 				else if (taxonPathId != null) {
 					classificationValues = MACEUtils.getClassification();
@@ -195,11 +195,11 @@ public class MACELOMHandler extends DocumentHandler {
 						getMaceClassTaxonPath(classificationValue);
 						for (Iterator iterator = taxonPath.iterator(); iterator.hasNext();) {
 							Element item = (Element) iterator.next();
-							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id"), Field.Store.YES,Field.Index.UN_TOKENIZED));
+							doc.add(new Field(tpIdFieldName, item.getAttributeValue("id").toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 							labels = item.getChildren("label");
 							for (Iterator iterator2 = labels.iterator(); iterator2.hasNext();) {
 								Element label = (Element) iterator2.next();
-								doc.add(new Field(tmpBranche, label.getText(), Field.Store.YES,Field.Index.TOKENIZED));
+								doc.add(new Field(tmpBranche, label.getText().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));
 								contents = contents.concat(" "+ (label.getText()).trim());
 							}
 						}
@@ -237,8 +237,8 @@ public class MACELOMHandler extends DocumentHandler {
 		// Title
 		else if (tmpBranche.matches(".*title.*")) {
 			if (tmpBranche.endsWith("title.string")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
-				doc.add(new Field(tmpBranche.toLowerCase() + ".exact",elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase() + ".exact",elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -316,14 +316,12 @@ public class MACELOMHandler extends DocumentHandler {
 		// Catalog + entry
 		else if (tmpBranche.matches(".*identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
-				// indentifier =
-				// "catalog"+EQUAL_SEPARATOR+""+elementBuffer.toString().trim();
-				catalog = elementBuffer.toString().trim().replace("\n", "");
+				catalog = elementBuffer.toString().trim().replace("\n", "").toLowerCase();
 				doc.add(new Field(tmpBranche.toLowerCase(), catalog, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 			}
 		}
 		// technical.format

@@ -50,6 +50,16 @@ public class DeleteMetadataFSImpl extends DeleteMetadataImpl {
 	public synchronized void deleteMetadata(String identifier) {
 		String name = identifier.replaceAll(":", "_");
         name = name.replaceAll("/", ".s.");
+        
+        File folder = new File(dirString);
+        File[] subfolders = folder.listFiles();
+        for (int i = 0; i < subfolders.length; i++) {
+        	if (subfolders[i].isDirectory()) {
+        		File result = new File(subfolders[i].getPath() + File.separator + name + ".xml");
+        		result.delete();
+        	}
+		}
+        
 		File result = new File(dirString + name + ".xml");
 		result.delete();
 		

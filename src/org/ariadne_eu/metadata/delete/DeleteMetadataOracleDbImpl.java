@@ -1,25 +1,34 @@
 package org.ariadne_eu.metadata.delete;
 
+import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import oracle.sql.CLOB;
+
 import org.apache.log4j.Logger;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
-public class InsertMetadataIBMDB2DbImpl extends DeleteMetadataImpl {
-    private static Logger log = Logger.getLogger(InsertMetadataIBMDB2DbImpl.class);
+/**
+ * Created by ben
+ * Date: 5-mei-2007
+ * Time: 19:05:44
+ * To change this template use File | Settings | File Templates.
+ */
+public class DeleteMetadataOracleDbImpl extends DeleteMetadataImpl {
+    private static Logger log = Logger.getLogger(DeleteMetadataOracleDbImpl.class);
 
     private String tableName;
     private String columnName;
     private String identifierColumnName;
 
-    public InsertMetadataIBMDB2DbImpl() {
+    public DeleteMetadataOracleDbImpl() {
     }
 
-    public InsertMetadataIBMDB2DbImpl(int implementation) {
+    public DeleteMetadataOracleDbImpl(int implementation) {
         setImplementation(implementation);
         initialize();
     }
@@ -27,7 +36,7 @@ public class InsertMetadataIBMDB2DbImpl extends DeleteMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-        	Class.forName("com.ibm.db2.jcc.DB2Driver");
+            Class.forName("oracle.jdbc.driver.OracleDriver");
             tableName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Metadatastore";
@@ -37,9 +46,8 @@ public class InsertMetadataIBMDB2DbImpl extends DeleteMetadataImpl {
             identifierColumnName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
-        } catch (ClassNotFoundException e) {
-            log.error("initialize: ", e);
-        } catch (Throwable t) {
+        } 
+        catch (Throwable t) {
             log.error("initialize: ", t);
         }
     }
@@ -66,6 +74,7 @@ public class InsertMetadataIBMDB2DbImpl extends DeleteMetadataImpl {
             pstmt.setString(1, identifier);
             pstmt.execute();
             pstmt.close();
+
             con.close();
             log.info("deleteMetadata:identifier:\""+identifier+"\"");
         } catch (SQLException e) {

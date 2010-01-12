@@ -25,41 +25,44 @@ import org.eun.plql.layer1.* ;
 public class PLQL1Translator {
 	
 	private static String queries[] = new String[]{
-		"heLlo and \"reYvath\" and 001.5 and 0120 and \"///\\ 123.34\" and 1000a and 000 and .123 and \"or\" "
-		,
-		"2.0 and web"
-		,
-		"dog"
-		,
-		"\"learning object\" and dog"
-		,
-		"dog and cat and jaguar"
-		,
-		"(dog and cat) and jaguar"
-		,
-		"\"lom.general.title\" and \"my dog\""
-		,
-		"1.2 and dog"
-		,
-		"test and 1024"
-		,
-		"\"12.25 dog\""
-		,
-		"\"\\\"hello\\\" he said\""
-		,
-		"dc.title = \"SQL\" and lom.general.lom.title = \"SQL\""
-		,
-		"lom.general.title = \"Design Patterns\" and lom.technical.format = \"video/mpeg\" and lom.technical.duration = \"PT1H\" and lom.rights.cost = \"no\""
-		,
-		"lom.general.title = \"Design Patterns\" and lom.educational.intendedUserRole = \"learner\" and lom.educational.typicalAgeRange = \"15-18\""
-		,
-		"((lom.general.title = abc) and (lom.general.language = \"fr\")) ; test"
-		,
-		"tiger"
-		,
-		"keyword1 and keyword2 and (lom.general.language = \"fr\") and (lom.educational.ageRange = \"10-12\")"
-		,
-		"keyword1 and keyword2 and (lom.general.language = en) and (lom.educational.ageRange=10-12)"
+//		"heLlo and \"reYvath\" and 001.5 and 0120 and \"///\\ 123.34\" and 1000a and 000 and .123 and \"or\" "
+//		,
+//		"2.0 and web"
+//		,
+//		"dog"
+//		,
+//		"\"learning object\" and dog"
+//		,
+//		"dog and cat and jaguar"
+//		,
+//		"(dog and cat) and jaguar"
+//		,
+//		"\"lom.general.title\" and \"my dog\""
+//		,
+//		"1.2 and dog"
+//		,
+//		"test and 1024"
+//		,
+//		"\"12.25 dog\""
+//		,
+//		"\"\\\"hello\\\" he said\""
+//		,
+//		"dc.title = \"SQL\" and lom.general.lom.title = \"SQL\""
+//		,
+//		"lom.general.title = \"Design Patterns\" and lom.technical.format = \"video/mpeg\" and lom.technical.duration = \"PT1H\" and lom.rights.cost = \"no\""
+//		,
+//		"lom.general.title = \"Design Patterns\" and lom.educational.intendedUserRole = \"learner\" and lom.educational.typicalAgeRange = \"15-18\""
+//		,
+//		"((lom.general.title = abc) and (lom.general.language = \"fr\")) ; test"
+//		,
+//		"tiger"
+//		,
+//		"keyword1 and keyword2 and (lom.general.language = \"fr\") and (lom.educational.ageRange = \"10-12\")"
+//		,
+//		"keyword1 and keyword2 and (lom.general.language = en) and (lom.educational.ageRange=10-12)"
+//		,
+//		"protocol.identifier.catalog = \"ariadne-protocols-targets\""
+		"\"church\" AND lom.metametadata.identifier.catalog=\"ICONDA\""
 };
 
 //	private static String plqlQuery = "hello and \" my name is /// ) \\\"sereyvath\" and dc.title = \"SQL\" and lom.generate.title = \"SQL\" and lom.title = 1299 " ;

@@ -23,10 +23,9 @@ public class LuceneQLMaker {
 				return new org.eun.plql.PLQL1Translator().transformQueryToLuceneQL(query);
 				
 			} 
-//			else if (queryLanguage.equals(PLQL_L2)){
-//				return new org.eun.plql.PLQL2Translator().transformQueryToLuceneQL(query);
-//				
-//		    } 
+			else if (queryLanguage.equals(PLQL_L2)){
+				return new org.eun.plql.PLQL2Translator().transformQueryToLuceneQL(query);
+		    } 
 			else {
 		    	throw new QueryMakerException(queryLanguage+" isn't supported.");
 		    }

@@ -21,7 +21,7 @@ import be.cenorm.www.SqiSessionManagementStub;
  * To change this template use File | Settings | File Templates.
  */
 public class DeleteMetadataSpiForwardImpl extends DeleteMetadataImpl {
-    private static Logger log = Logger.getLogger(InsertMetadataExistDbImpl.class);
+    private static Logger log = Logger.getLogger(DeleteMetadataExistDbImpl.class);
 
     private String smURI;
     private String spiURI;

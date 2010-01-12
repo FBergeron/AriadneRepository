@@ -16,16 +16,16 @@ import org.xmldb.api.modules.XMLResource;
  * Time: 19:05:44
  * To change this template use File | Settings | File Templates.
  */
-public class InsertMetadataExistDbImpl extends DeleteMetadataImpl {
-    private static Logger log = Logger.getLogger(InsertMetadataExistDbImpl.class);
+public class DeleteMetadataExistDbImpl extends DeleteMetadataImpl {
+    private static Logger log = Logger.getLogger(DeleteMetadataExistDbImpl.class);
 
     private Collection collection;
 
-    public InsertMetadataExistDbImpl() {
+    public DeleteMetadataExistDbImpl() {
         initialize();
     }
 
-    public InsertMetadataExistDbImpl(int implementation) {
+    public DeleteMetadataExistDbImpl(int implementation) {
         setImplementation(implementation);
         initialize();
     }

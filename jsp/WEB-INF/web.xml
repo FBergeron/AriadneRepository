@@ -1,5 +1,7 @@
 <web-app>
 
+	
+
 	<context-param>
       <param-name>properties</param-name>
       <param-value>../install/ariadne.properties</param-value>
@@ -61,12 +63,31 @@
 
 
     <!-- Servlets -->
+    
+    <!-- servlet>
+		<servlet-name>default-myfiles</servlet-name>
+		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>0</param-value>
+		</init-param>
+		<init-param>
+			<param-name>listings</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet -->
+    
 	<servlet>
         <servlet-name>InitServlet</servlet-name>
         <display-name>Initialisation Servlet</display-name>
         <!--servlet-class>org.ariadne.config.InitServlet</servlet-class-->
         <servlet-class>org.ariadne_eu.utils.config.servlets.InitServlet</servlet-class>
         <load-on-startup>5</load-on-startup>
+        <init-param>
+			<param-name>listings</param-name>
+			<param-value>true</param-value>
+		</init-param>
     </servlet>
     <servlet>
        <servlet-name>log4j-init</servlet-name>
@@ -114,6 +135,11 @@
 
     <!-- Servlet Mappings -->
 
+	<!-- servlet-mapping>
+		<servlet-name>default-myfiles</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping -->
+
 	<servlet-mapping>
       <servlet-name>OAIHandler</servlet-name>
       <url-pattern>/services/oai</url-pattern>
@@ -124,9 +150,7 @@
         <url-pattern>/servlet/OAIHandler</url-pattern>
     </servlet-mapping>
     
-    
-        <!--  servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
+	<servlet-name>AxisServlet</servlet-name>
         <url-pattern>/servlet/AxisServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -164,11 +188,11 @@
 	    </security-constraint>
 
 	<login-config>
-	<auth-method>BASIC</auth-method>
+		<auth-method>BASIC</auth-method>
 	</login-config>
 
-	    <security-role>
-	      <role-name>admin</role-name>
-	    </security-role>
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
 	    
 </web-app>
