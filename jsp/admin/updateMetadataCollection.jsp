@@ -116,7 +116,7 @@ if (metadata != null){
 <table border="1" bgcolor="lightgrey" width="80%">
 	<tr>
 		<TD><br>
-		Retrieve the LOM record with this identifier :<br>
+		Retrieve the MetadataCollection or protocol record with this identifier :<br>
 		<br>
 		<input style="width: 30%;" name="id" value="<%=id%>"/>
 		
@@ -141,17 +141,17 @@ if (metadata != null){
 		<input type="button" onClick="feature('publish');"
 			value="Publish !"
 			<%
-			if(metadata.equalsIgnoreCase("")){
+			/*if(metadata.equalsIgnoreCase("")){
 				out.print("disabled=\"disabled\"");
-			}
+			}*/
 			%>
 			>
 			<input type="button" onClick="feature('delete');"
 			value="Delete !"
 			<%
-			if(metadata.equalsIgnoreCase("")){
+			/*if(metadata.equalsIgnoreCase("")){
 				out.print("disabled=\"disabled\"");
-			}
+			}*/
 			%>
 			>
 	</tr>
