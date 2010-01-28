@@ -1,9 +1,15 @@
 <wsdl:definitions xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
                   xmlns:types="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0"
                   xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
-                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-                  xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
+                  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/" 
+                  targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
+    <wsdl:documentation>SqiTarget</wsdl:documentation>
     <wsdl:types>
         <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
                     targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
@@ -172,7 +178,7 @@
         <wsdl:part name="part1" element="types:setSourceLocation"/>
     </wsdl:message>
     <wsdl:message name="setSourceLocationResponse"/>
-    <wsdl:portType name="SqiTargetBindingServicePortType">
+    <wsdl:portType name="SqiTargetPortType">
         <wsdl:operation name="getTotalResultsCount">
             <wsdl:input xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
                         message="types:getTotalResultsCountRequest" wsaw:Action="getTotalResultsCount"/>
@@ -260,7 +266,7 @@
                         wsaw:Action="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0:SqiTargetPort:setSourceLocation:Fault:_SQIFault"/>
         </wsdl:operation>
     </wsdl:portType>
-    <wsdl:binding name="SqiTargetBindingServiceSOAP11Binding" type="types:SqiTargetBindingServicePortType">
+    <wsdl:binding name="SqiTargetSOAP11Binding" type="types:SqiTargetPortType">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="getTotalResultsCount">
             <soap:operation soapAction="getTotalResultsCount" style="document"/>
@@ -371,7 +377,7 @@
             </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
-    <wsdl:binding name="SqiTargetBindingServiceSOAP12Binding" type="types:SqiTargetBindingServicePortType">
+    <wsdl:binding name="SqiTargetSOAP12Binding" type="types:SqiTargetPortType">
         <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="getTotalResultsCount">
             <soap12:operation soapAction="getTotalResultsCount" style="document"/>
@@ -483,11 +489,11 @@
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="SqiTarget">
-        <wsdl:port name="SqiTargetBindingServiceSOAP11port" binding="types:SqiTargetBindingServiceSOAP11Binding">
-            <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+        <wsdl:port name="SqiTargetSOAP11port" binding="types:SqiTargetSOAP11Binding">
+            <soap:address location="http://localhost:8081/repository/services/SqiSessionManagement"/>
         </wsdl:port>
-        <wsdl:port name="SqiTargetBindingServiceSOAP12port" binding="types:SqiTargetBindingServiceSOAP12Binding">
-            <soap12:address location="REPLACE_WITH_ACTUAL_URL"/>
+        <wsdl:port name="SqiTargetSOAP12port" binding="types:SqiTargetSOAP12Binding">
+            <soap12:address location="http://localhost:8081/repository/services/SqiSessionManagement"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

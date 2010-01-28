@@ -1,11 +1,17 @@
 <wsdl:definitions xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
                   xmlns:types="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0"
                   xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
-                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-                  xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
+                  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/"
+                  targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
+    <wsdl:documentation>SqiSessionManagement</wsdl:documentation>
     <wsdl:types>
-        <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+        <xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified"
                     targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
             <xsd:element name="createSession">
                 <xsd:complexType>
@@ -42,7 +48,7 @@
                 </xsd:complexType>
             </xsd:element>
         </xsd:schema>
-        <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+        <xsd:schema attributeFormDefault="qualified" elementFormDefault="qualified"
                     targetNamespace="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0">
             <xsd:simpleType name="faultCodeType">
                 <xsd:restriction base="xsd:string">
@@ -94,7 +100,7 @@
     <wsdl:message name="createAnonymousSessionResponse">
         <wsdl:part name="part1" element="types:createAnonymousSessionResponse"/>
     </wsdl:message>
-    <wsdl:portType name="SqiSessionManagementBindingServicePortType">
+    <wsdl:portType name="SqiSessionManagementPortType">
         <wsdl:operation name="createSession">
             <wsdl:input xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" message="types:createSessionRequest"
                         wsaw:Action="createSession"/>
@@ -124,8 +130,8 @@
                         wsaw:Action="urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0:SqiSessionManagementPort:createAnonymousSession:Fault:_SQIFault"/>
         </wsdl:operation>
     </wsdl:portType>
-    <wsdl:binding name="SqiSessionManagementBindingServiceSOAP11Binding"
-                  type="types:SqiSessionManagementBindingServicePortType">
+    <wsdl:binding name="SqiSessionManagementSOAP11Binding"
+                  type="types:SqiSessionManagementPortType">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="createSession">
             <soap:operation soapAction="createSession" style="document"/>
@@ -164,8 +170,8 @@
             </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
-    <wsdl:binding name="SqiSessionManagementBindingServiceSOAP12Binding"
-                  type="types:SqiSessionManagementBindingServicePortType">
+    <wsdl:binding name="SqiSessionManagementSOAP12Binding"
+                  type="types:SqiSessionManagementPortType">
         <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="createSession">
             <soap12:operation soapAction="createSession" style="document"/>
@@ -205,13 +211,13 @@
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="SqiSessionManagement">
-        <wsdl:port name="SqiSessionManagementBindingServiceSOAP11port"
-                   binding="types:SqiSessionManagementBindingServiceSOAP11Binding">
-            <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+        <wsdl:port name="SqiSessionManagementSOAP11port"
+                   binding="types:SqiSessionManagementSOAP11Binding">
+            <soap:address location="http://localhost:8081/repository/services/SqiSessionManagement"/>
         </wsdl:port>
-        <wsdl:port name="SqiSessionManagementBindingServiceSOAP12port"
-                   binding="types:SqiSessionManagementBindingServiceSOAP12Binding">
-            <soap12:address location="REPLACE_WITH_ACTUAL_URL"/>
+        <wsdl:port name="SqiSessionManagementSOAP12port"
+                   binding="types:SqiSessionManagementSOAP12Binding">
+            <soap12:address location="http://localhost:8081/repository/services/SqiSessionManagement"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

@@ -124,6 +124,7 @@
             </lib>
         	<!-- own properties file -->
         	<classes dir="${output.classes}">
+        		<include name="be/**" />
         		<include name="org/**" />
         		<include name="net/**" />
         		<include name="translator/**" />

@@ -1,12 +1,9 @@
 <serviceGroup>
-
     <service name="SqiSessionManagement">
         <messageReceivers>
-            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
-                             class="be.cenorm.www.SqiSessionManagementMessageReceiverInOut"/>
+            <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="be.cenorm.www.SqiSessionManagementMessageReceiverInOut"/>
         </messageReceivers>
-        <parameter locked="false" name="ServiceClass">org.ariadne_eu.service.SqiSessionManagementImplementation
-        </parameter>
+        <parameter locked="false" name="ServiceClass">org.ariadne_eu.service.SqiSessionManagementImplementation</parameter>
         <operation name="createSession" mep="http://www.w3.org/2004/08/wsdl/in-out">
             <actionMapping>createSession</actionMapping>
             <outputActionMapping>urn:www.cenorm.be/isss/ltws/wsdl/SQIv1p0:SqiSessionManagementPort:createSessionResponse

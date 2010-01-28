@@ -1,15 +1,9 @@
-<!-- This file was auto-generated from WSDL -->
-<!-- by the Apache Axis2 version: #axisVersion# #today# -->
 <serviceGroup>
 	<service name="MACE">
 		<messageReceivers>
 			<messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.ariadne_eu.mace.MACEMessageReceiverInOut" />
-			<!--messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-only" class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver" /-->
-			<!--messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" /-->
 		</messageReceivers>
-		<parameter locked="false" name="ServiceClass">
-			org.ariadne_eu.service.MACEImplementation
-		</parameter>
+		<parameter locked="false" name="ServiceClass">org.ariadne_eu.service.MACEImplementation</parameter>
 		<operation name="removeRelation" mep="http://www.w3.org/2004/08/wsdl/in-out">
 			<actionMapping>removeRelation</actionMapping>
 			<outputActionMapping>urn:mace.ariadne-eu.org/interfaces/MACE:MACEServicePortType:removeRelationResponse</outputActionMapping>

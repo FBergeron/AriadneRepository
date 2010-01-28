@@ -9,21 +9,27 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 
 import org.apache.log4j.Logger;
+import org.apache.xpath.XPathAPI;
 import org.ariadne_eu.metadata.query.QueryMetadataException;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.QueryMetadataImpl;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.ariadne_eu.utils.update.QueryOnId;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
@@ -125,28 +131,20 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
     }
     
     private String retrieveMetadataLocation (String identifier) {
-    	String location = null;
+    	
     	try {
-	    	QueryMetadataImpl xqueryImpl = (QueryMetadataImpl) QueryMetadataFactory.getQueryImpl(-1);
+    		String xml = QueryOnId.getMACEquery().getMaceInstance(identifier);
+    		Document doc = getDoc(xml);
+    		return getTechnicalLocation(doc);
 			
-			for (int i = 0; i < xpathIdentifiers.size() && location == null; i++) {
-				String xpathIdentifier = (String) xpathIdentifiers.elementAt(i);
-				for (int j = 0; j < xpathLocations.size() && location == null; j++) {
-					String xpathLocation = (String) xpathLocations.elementAt(j);
-					String xquery = "xquery version \"1.0\";\n" +
-	        		(xmlns == null ? "" : "declare default element namespace \"" + xmlns + "\"; (:hello:)\n") + 
-	        		"for $x in " + mdCollection + " " +
-	        		"where $x/lom/" + xpathIdentifier + " = \"" + identifier + "\" "+
-	        		"return $x/lom/" + xpathLocation;
-	        		location = xqueryImpl.xQuery(xquery);
-				}
-			} 
     	} catch (QueryTranslationException e) {
 			log.error("retrieveContent:identifier=" + identifier, e);
 		} catch (QueryMetadataException e) {
 			log.error("retrieveContent:identifier=" + identifier, e);
+		} catch (Exception e) {
+			log.error("retrieveContent:identifier=" + identifier, e);
 		}
-		return location;
+		return null;
     }
 
 	@Override
@@ -164,7 +162,7 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 				}
 			}
 		}
-		return null;
+		return identifier;
 	}
 
 	@Override
@@ -195,5 +193,34 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
         name = name.replaceAll("/", ".s.");
     	return new File(baseFolder.getAbsolutePath() + File.separator + name + File.separator + metadata);	
     }
+    
+    private static Document getDoc (String xml) {
+		Document doc = null;
+		StringReader stringReader = new StringReader(xml);
+		InputSource input = new InputSource(stringReader);
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			doc = factory.newDocumentBuilder().parse(input);
+		} catch (Exception e) {
+			log.error("reIndexMetadata:",e);
+		}
+		return doc;
+	}
+    
+    private static String getTechnicalLocation (Document doc) {
+    	String location = null;
+		
+		for (int i = 0; i < xpathIdentifiers.size() && location == null; i++) {
+			String xpathIdentifier = (String) xpathIdentifiers.elementAt(i);
+			for (int j = 0; j < xpathLocations.size() && location == null; j++) {
+				String xpathLocation = (String) xpathLocations.elementAt(j);
+				try {
+					location = XPathAPI.selectSingleNode(doc.getFirstChild(),xpathLocation).getNodeValue();
+				} catch (Exception e) {}
+				
+			}
+		} 
+		return location;
+	}
 
 }
