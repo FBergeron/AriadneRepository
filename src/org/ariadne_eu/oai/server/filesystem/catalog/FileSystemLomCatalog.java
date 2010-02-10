@@ -86,12 +86,12 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		}
 		try {
 			
-			Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
 			String[] keys = (String[]) sets.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
 			for(String key : keys) {
 				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
-				reposIdentifier = PropertiesManager.getProperty(key);
+				reposIdentifier = PropertiesManager.getInstance().getProperty(key);
 				sets.put(setSpec, reposIdentifier);
 			}
 		} catch (Exception e) {

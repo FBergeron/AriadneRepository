@@ -17,7 +17,7 @@ public class ReIndexFactory {
     }
 
     public static void initialize() {
-    	String reIndexClass = PropertiesManager.getProperty(RepositoryConstants.SR_LUCENE_REINDEX);
+    	String reIndexClass = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_REINDEX);
     	if (reIndexClass == null) {
     		reIndex = new ReIndexIBMDB2DbImpl();
     	} else {

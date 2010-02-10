@@ -34,7 +34,7 @@ public class ConfigManager {
 
 	private static Properties $properties;
 //	private static String $propFile = System.getProperty("user.dir") + File.separator + "ariadne.properties";
-	private static String $propFile = PropertiesManager.getPropFile();
+	private static String $propFile = PropertiesManager.getInstance().getPropFile();
 	static {
 		try {
 			init();

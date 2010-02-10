@@ -106,12 +106,12 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 
 		try {
 
-			Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
 			String[] keys = (String[]) sets.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
 			for (String key : keys) {
 				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("." + RepositoryConstants.OAICAT_SETS_ID, "");
-				reposIdentifier = PropertiesManager.getProperty(key);
+				reposIdentifier = PropertiesManager.getInstance().getProperty(key);
 				sets.put(setSpec, reposIdentifier);
 			}
 		} catch (Exception e) {
@@ -121,7 +121,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		Hashtable setKeys = PropertiesManager.getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
 		String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 		if (keys.length == 0) {
 			throw new NoSetHierarchyException();
@@ -170,7 +170,7 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 	 */
 	public String getSetXML(String key, String setSpec) throws IllegalArgumentException {
 		String setName = "Metadata originating from " + setSpec;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty(key);
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getInstance().getProperty(key);
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");

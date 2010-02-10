@@ -43,10 +43,10 @@ public class QueryOnId {
 //	}
 	
 	private QueryOnId(){
-//		session = PropertiesManager.getProperty("admin.sqi.ws.session.url");
-//		target = PropertiesManager.getProperty("admin.sqi.ws.target.url");
-//		enrichSession = PropertiesManager.getProperty("admin.sqi.enrich.session.url");
-//		enrichTarget = PropertiesManager.getProperty("admin.sqi.enrich.target.url");
+//		session = PropertiesManager.getInstance().getProperty("admin.sqi.ws.session.url");
+//		target = PropertiesManager.getInstance().getProperty("admin.sqi.ws.target.url");
+//		enrichSession = PropertiesManager.getInstance().getProperty("admin.sqi.enrich.session.url");
+//		enrichTarget = PropertiesManager.getInstance().getProperty("admin.sqi.enrich.target.url");
 
 	}
 	

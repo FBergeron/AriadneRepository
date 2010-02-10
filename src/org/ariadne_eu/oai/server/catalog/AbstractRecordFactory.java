@@ -21,7 +21,7 @@ public abstract class AbstractRecordFactory extends RecordFactory{
 		if (repositoryIdentifier == null) {
 			throw new IllegalArgumentException(RepositoryConstants.OAICAT_IDENTIFY_REPOID + " is missing from the properties file");
 		}
-		String property = PropertiesManager.getProperty(RepositoryConstants.OAICAT_HANDLER_USEIDSHEME);
+		String property = PropertiesManager.getInstance().getProperty(RepositoryConstants.OAICAT_HANDLER_USEIDSHEME);
 		if (property == null) {
 			throw new IllegalArgumentException(RepositoryConstants.OAICAT_HANDLER_USEIDSHEME + " is missing from the properties file");
 		}

@@ -120,7 +120,7 @@ public class OracleLomCatalog extends AbstractCatalog {
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
 
 		String reposIdentifier = "";
-		Hashtable setProperties = PropertiesManager.getPropertyStartingWith("sets.");
+		Hashtable setProperties = PropertiesManager.getInstance().getPropertyStartingWith("sets.");
 		String[] keys = (String[]) setProperties.keySet().toArray(new String[0]);
 		Arrays.sort(keys);
 		if(keys.length == 0) {
@@ -196,7 +196,7 @@ public class OracleLomCatalog extends AbstractCatalog {
 		//      try {
 		String setSpec = setItem;
 		String setName = "Metadata originating from " + setItem;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getProperty("sets."+setItem+".repositoryIdentifier");
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getInstance().getProperty("sets."+setItem+".repositoryIdentifier");
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");
@@ -284,7 +284,7 @@ public class OracleLomCatalog extends AbstractCatalog {
 
 		String reposIdentifier = "";
 		try {
-			reposIdentifier = PropertiesManager.getProperty("sets."+set+".repositoryIdentifier");
+			reposIdentifier = PropertiesManager.getInstance().getProperty("sets."+set+".repositoryIdentifier");
 		} catch(Exception e) {
 			
 		}

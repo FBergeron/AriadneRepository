@@ -39,7 +39,7 @@ public class InitServlet extends HttpServlet {
 	
 	public static void initializePropertiesManager(){
 		try {
-			PropertiesManager.init();
+			PropertiesManager.getInstance().init();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,10 +53,10 @@ public class InitServlet extends HttpServlet {
 	public void init() throws ServletException {
 		try {
 			System.out.println(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
-			PropertiesManager.setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
-			if (PropertiesManager.getPropertiesFile().exists()){
-				PropertiesManager.init();
-//				dataDir = PropertiesManager.getProperty(RepositoryConstants.REPO_DATADIR);
+			PropertiesManager.getInstance().setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
+			if (PropertiesManager.getInstance().getPropertiesFile().exists()){
+				PropertiesManager.getInstance().init();
+//				dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_DATADIR);
 //			    if(!dataDir.equals("")){
 //			    	System.setProperty(RepositoryConstants.REPO_DATADIR, dataDir);
 //			    }

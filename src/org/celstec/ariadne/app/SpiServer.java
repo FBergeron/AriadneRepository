@@ -116,11 +116,11 @@ public class SpiServer implements SpiSwordServer {
 			title = titleElement.getText();
 		String mediaEditLinkEntry = "";
 		if (!resourceId.equals(""))
-			mediaEditLinkEntry = PropertiesManager.getProperty("app.baseURL") + "/deposit/resource/" + resourceId;
-		String editLinkEntry = PropertiesManager.getProperty("app.baseURL") + "/deposit/metadataForMid/" + metadataId;
+			mediaEditLinkEntry = PropertiesManager.getInstance().getProperty("app.baseURL") + "/deposit/resource/" + resourceId;
+		String editLinkEntry = PropertiesManager.getInstance().getProperty("app.baseURL") + "/deposit/metadataForMid/" + metadataId;
 
 		dr.setEntry(createReturnEntry(title, resourceId, mediaEditLinkEntry, editLinkEntry));
-		dr.setLocation(PropertiesManager.getProperty("app.baseURL") + "/services/oai?verb=GetRecord&metadataPrefix=oai_lom&identifier=" + metadataIdentifier);
+		dr.setLocation(PropertiesManager.getInstance().getProperty("app.baseURL") + "/services/oai?verb=GetRecord&metadataPrefix=oai_lom&identifier=" + metadataIdentifier);
 		return dr;
 	}
 
@@ -137,8 +137,8 @@ public class SpiServer implements SpiSwordServer {
 		sg.submitResource(authorizationToken, resourceIdentifier, resource, packageType, contentType, collection, filename);
 		DepositResponse dr = new DepositResponse(Deposit.CREATED);
 		dr.setLocation("http://localhost:80/todo");
-		String mediaEditLinkEntry = PropertiesManager.getProperty("app.baseURL") + "/deposit/resource/" + resourceIdentifier;
-		String editLinkEntry = PropertiesManager.getProperty("app.baseURL") + "/deposit/metadataForRid/" + resourceIdentifier;
+		String mediaEditLinkEntry = PropertiesManager.getInstance().getProperty("app.baseURL") + "/deposit/resource/" + resourceIdentifier;
+		String editLinkEntry = PropertiesManager.getInstance().getProperty("app.baseURL") + "/deposit/metadataForRid/" + resourceIdentifier;
 		dr.setEntry(createReturnEntry(deposit.getSlug(), resourceIdentifier, mediaEditLinkEntry, editLinkEntry));
 
 		return dr;
