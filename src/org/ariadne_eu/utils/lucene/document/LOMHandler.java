@@ -12,10 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import net.sf.vcard4j.java.type.N;
-import net.sf.vcard4j.java.type.VERSION;
-import net.sf.vcard4j.parser.VCardException;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
@@ -161,7 +157,7 @@ public class LOMHandler extends DocumentHandler {
 				purpose = elementBuffer.toString().trim().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
 				purposeFieldName = tmpBranche + ATT_SEPARATOR + "" + purpose;
 				
-				//GAP: lo a–ado para hacer la prueba con solr
+				//GAP: lo aï¿½ado para hacer la prueba con solr
 				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				doc.add(new Field(tmpBranche + ".exact", purpose, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
@@ -187,7 +183,7 @@ public class LOMHandler extends DocumentHandler {
 				tpIdFieldName = tmpBranche + ATT_SEPARATOR + "" + taxonPathId;
 				
 				
-				//GAP: lo a–ado para hacer la prueba con solr
+				//GAP: lo aï¿½ado para hacer la prueba con solr
 				taxonPathId = elementBuffer.toString().trim().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
 				doc.add(new Field(tmpBranche, taxonPathId, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				doc.add(new Field(tmpBranche + ".exact",taxonPathId, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX

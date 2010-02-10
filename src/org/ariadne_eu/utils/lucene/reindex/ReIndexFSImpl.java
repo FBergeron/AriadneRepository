@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,24 +14,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xpath.XPathAPI;
-import org.ariadne_eu.metadata.insert.InsertMetadataFSImpl;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
 import org.ariadne_eu.metadata.insert.InsertMetadataImpl;
 import org.ariadne_eu.metadata.insert.InsertMetadataLuceneImpl;
-import org.ariadne_eu.metadata.query.QueryMetadataException;
-import org.ariadne_eu.metadata.query.QueryMetadataFactory;
-import org.ariadne_eu.metadata.query.QueryMetadataImpl;
-import org.ariadne_eu.metadata.query.language.QueryTranslationException;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
@@ -55,19 +45,19 @@ public class ReIndexFSImpl extends ReIndexImpl {
 		super.initialize();
 
 		try {
-			dirString = ConfigManager.getProperty(RepositoryConstants.MD_SPIFS_DIR );
+			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR );
 			if (dirString == null)
 				log.error("initialize failed: no " + RepositoryConstants.MD_SPIFS_DIR + " found");
 			File dir = new File(dirString);
 			if (!dir.isDirectory())
 				log.error("initialize failed: " + RepositoryConstants.MD_SPIFS_DIR + " invalid directory");
 			xpathQueries = new Vector();
-            if (ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
                 xpathQueries.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-                    xpathQueries.add(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
+                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }
@@ -100,7 +90,7 @@ public class ReIndexFSImpl extends ReIndexImpl {
 
 		luceneImpl.createLuceneIndex();
 
-		String implementation = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
 		if (implementation != null) {
 
 			for (int i = 0; i < files.length; i++) {

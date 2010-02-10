@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 import be.cenorm.www.CreateAnonymousSession;
@@ -32,7 +32,7 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
         try {
             String username = createSession.getUserID();
             String password = createSession.getPassword();
-            if (username.equals(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME)) && password.equals(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD))) {
+            if (username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
                 Ticket t = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
                 t.setParameter("username", username);
                 t.setParameter("password", password);

@@ -2,7 +2,7 @@
 <%@ page import="be.cenorm.www.*" %>
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="org.ariadne_eu.utils.config.ConfigManager" %>
+<%@ page import="org.ariadne.config.PropertiesManager" %>
 <%@ page import="org.ariadne_eu.spi.SPIStub" %>
 <%@ page import="org.ariadne_eu.spi.CreateIdentifier" %>
 <%@ page import="org.ariadne_eu.spi.CreateIdentifierResponse" %>
@@ -26,7 +26,7 @@
         content = wrapper.getFile("content");
     }
 
-    String axis2_url = ConfigManager.getProperty("axis2.url");
+    String axis2_url = PropertiesManager.getInstance().getProperty("axis2.url");
     if (axis2_url == null)
         axis2_url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/services";
 
@@ -35,13 +35,13 @@
         try {
             SqiSessionManagementStub sm = new SqiSessionManagementStub(axis2_url + "/SqiSessionManagement");
             CreateSession createSession = new CreateSession();
-            createSession.setUserID(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME));
-            createSession.setPassword(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD));
+            createSession.setUserID(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME));
+            createSession.setPassword(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD));
             CreateSessionResponse sessionM = sm.createSession(createSession);
 
             SPIStub spi = new SPIStub(axis2_url + "/SPI");
             CreateIdentifier createIdentifier = new CreateIdentifier();
-            createIdentifier.setCatalog(ConfigManager.getProperty("Identify.repositoryName"));
+            createIdentifier.setCatalog(PropertiesManager.getInstance().getProperty("Identify.repositoryName"));
             createIdentifier.setTargetSessionID(sessionM.getCreateSessionReturn());
             identifier = spi.createIdentifier(createIdentifier);
 

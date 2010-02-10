@@ -3,7 +3,7 @@
 <%@ page import="be.cenorm.www.*" %>
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="org.ariadne_eu.utils.config.ConfigManager" %>
+<%@ page import="org.ariadne.config.PropertiesManager" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -11,7 +11,7 @@
     String stacktrace = null;
     String message = null;
 
-    String axis2_url = ConfigManager.getProperty("axis2.url");
+    String axis2_url = PropertiesManager.getInstance().getProperty("axis2.url");
     if (axis2_url == null)
         axis2_url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/services";
 

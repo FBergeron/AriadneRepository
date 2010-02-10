@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Hits;
 
-
-
 import de.fit.cam.ranking.ServiceProvider;
 import de.fit.cam.ranking.domain.RankedLom;
 import de.fit.cam.ranking.service.RankingService;

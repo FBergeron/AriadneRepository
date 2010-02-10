@@ -15,7 +15,7 @@ import org.ariadne_eu.metadata.query.QueryFactory;
  *//*
 public class Initialize {
     public static void initializeConfigFile() {
-        ConfigManager.readConfigFile(null);
+        PropertiesManager.getInstance().readConfigFile(null);
     }
 
     public static void initializeServices() {
@@ -26,7 +26,7 @@ public class Initialize {
     }
 
     public static void initializeLogging() {
-        String log4j = ConfigManager.getProperty("log4j.properties");
+        String log4j = PropertiesManager.getInstance().getProperty("log4j.properties");
         if (log4j != null) {
             org.apache.log4j.PropertyConfigurator.configure(log4j);
             return;

@@ -1,10 +1,10 @@
 package org.celstec.ariadne.app;
 
+import org.ariadne.config.PropertiesManager;
 import org.purl.sword.base.Collection;
 import org.purl.sword.base.Service;
 import org.purl.sword.base.ServiceDocument;
 import org.purl.sword.base.Workspace;
-import org.ariadne.config.PropertiesManager;
 
 
 public class AriadneServiceDocument extends ServiceDocument{

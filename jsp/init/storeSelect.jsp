@@ -41,7 +41,7 @@
 
 <h1>Where to save the repository metadata ?</h1>
 
-<%String stores = PropertiesManager.getProperty("mdstore.insert.implementation"); %>
+<%String stores = PropertiesManager.getInstance().getProperty("mdstore.insert.implementation"); %>
 
 <div class="install-text">
     			<p>Select the store where you want to save the repository metadata</p>

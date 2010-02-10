@@ -12,7 +12,7 @@ import java.io.StringReader;
 import java.io.Writer;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -33,9 +33,9 @@ public class InsertMetadataFSImpl extends InsertMetadataImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			dirString = ConfigManager.getProperty(RepositoryConstants.MD_SPIFS_DIR + "." + getLanguage());
+			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR + "." + getLanguage());
 			if (dirString == null)
-				dirString = ConfigManager.getProperty(RepositoryConstants.MD_SPIFS_DIR);
+				dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR);
 			if (dirString == null)
 				log.error("initialize failed: no " + RepositoryConstants.MD_SPIFS_DIR + " found");
 			File dir = new File(dirString);

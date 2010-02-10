@@ -23,6 +23,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.mace.AddRelation;
 import org.ariadne_eu.mace.CreateLOM;
 import org.ariadne_eu.mace.CreateRWO;
@@ -41,10 +42,6 @@ import org.ariadne_eu.metadata.insert.InsertMetadataLuceneImpl;
 import org.ariadne_eu.metadata.query.QueryMetadataException;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
-import org.ariadne_eu.spi.FaultCodeType;
-import org.ariadne_eu.spi.SpiFault;
-import org.ariadne_eu.spi.SpiFaultException;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
@@ -589,7 +586,7 @@ public class MACEImplementation extends MACESkeleton {
 			String orgXML = QueryMetadataFactory.getQueryImpl(queryLanguage).query("lom.metaMetadata.identifier.entry = \""+ enrichFromAloe.getResourceId() +"\"", startResult, nbResults, resultsFormat);
 			orgXML = orgXML.replaceAll("<results cardinality=\"(.)*\">", "").replaceAll("</results>", "");
 			
-			Document aloeDoc = OAIHarvester.getrecord(ConfigManager.getProperty(RepositoryConstants.MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), ConfigManager.getProperty(RepositoryConstants.MACE_OAI_ALOE_MDPREFIX));
+			Document aloeDoc = OAIHarvester.getrecord(PropertiesManager.getInstance().getProperty(RepositoryConstants.MACE_OAI_ALOE_TARGET), enrichFromAloe.getResourceId(), PropertiesManager.getInstance().getProperty(RepositoryConstants.MACE_OAI_ALOE_MDPREFIX));
 			Element aloeRoot = aloeDoc.getRootElement();
 			SAXBuilder builder = new SAXBuilder();
 			
@@ -749,7 +746,7 @@ public class MACEImplementation extends MACESkeleton {
 				doc.add(new Field("contents", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			}
 			
-			String luceneHandler = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
+			String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
 			if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.metadata.insert.lucene.document.MACELOMHandler")) {
 				MACEUtils.getClassification();
 				String exml = MACEUtils.enrichWClassification(insertMetadata);
@@ -821,9 +818,9 @@ public class MACEImplementation extends MACESkeleton {
 	
 	private static void checkValidTicket(Ticket ticket) throws MACEFaultException {
         if (ticket.getParameter("username") == null ||
-            !ticket.getParameter("username").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME)) ||
+            !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) ||
             ticket.getParameter("password") == null ||
-            !ticket.getParameter("password").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD))) {
+            !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
         	MACEFault fault = new MACEFault();
             fault.setMaceFaultCode(MACEFaultCodeType.value1);
             fault.setMessage("The given session ID is invalid");

@@ -14,13 +14,9 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-//import javax.xml.rpc.ServiceException;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.ariadne_eu.utils.config.ConfigManager;
-import org.eun.lucene.core.indexer.document.DocumentHandler;
-import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -174,7 +170,7 @@ public class SAXXMLHandler extends DocumentHandler {
 				purpose = elementBuffer.toString().trim().toLowerCase().replaceAll(" ", "").replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
 				purposeFieldName = tmpBranche + ATT_SEPARATOR + "" + purpose;
 				
-				//GAP: lo a–ado para hacer la prueba con solr
+				//GAP: lo aï¿½ado para hacer la prueba con solr
 				purpose = elementBuffer.toString().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","").trim();
 				doc.add(new Field(tmpBranche, purpose, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				doc.add(new Field(tmpBranche + ".exact", purpose, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
@@ -200,7 +196,7 @@ public class SAXXMLHandler extends DocumentHandler {
 				tpIdFieldName = tmpBranche + ATT_SEPARATOR + "" + taxonPathId;
 				
 				
-				//GAP: lo a–ado para hacer la prueba con solr
+				//GAP: lo aï¿½ado para hacer la prueba con solr
 //				taxonPathId = elementBuffer.toString().trim().toLowerCase().replaceAll("\\(.*\\)", "").replaceAll("[a-z]\\.[0-9]", "").replaceAll("\\.[0-9]","");
 //				doc.add(new Field(tmpBranche, taxonPathId, Field.Store.YES,Field.Index.TOKENIZED));// XXX
 				
@@ -231,9 +227,9 @@ public class SAXXMLHandler extends DocumentHandler {
 //					NeuronWebServiceLocator loc = new NeuronWebServiceLocator();
 //					loc.setMaintainSession(true);
 //					NeuronWebServiceSoap stub;
-//					String username = ConfigManager.getProperty("protege.username");
-//					String password = ConfigManager.getProperty("protege.password");
-//					String projectName = ConfigManager.getProperty("protege.project");
+//					String username = PropertiesManager.getInstance().getProperty("protege.username");
+//					String password = PropertiesManager.getInstance().getProperty("protege.password");
+//					String projectName = PropertiesManager.getInstance().getProperty("protege.project");
 //					try {
 //						stub = loc.getNeuronWebServiceSoap();
 //						stub.login(username, password);

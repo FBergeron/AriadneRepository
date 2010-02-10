@@ -3,7 +3,7 @@ package org.ariadne_eu.metadata.insert;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -28,9 +28,9 @@ public class InsertMetadataFactory {
         for (int language = -1; language < 10; language++) {
             String implementation;
             if (language >= 0) {
-                implementation = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION + "." + language);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION + "." + language);
             } else {
-                implementation = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
             }
             if (implementation != null) {
                 try {

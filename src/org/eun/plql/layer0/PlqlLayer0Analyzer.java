@@ -38,9 +38,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import java.io.*;
-import java.util.StringTokenizer;  
-//#line 40 "PlqlLayer0Analyzer.java"
+import java.io.IOException;
+import java.io.Reader;
 
 
 

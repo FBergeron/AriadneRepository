@@ -6,6 +6,7 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.TransportHeaders;
 import org.apache.log4j.Logger;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.content.insert.InsertContentFactory;
 import org.ariadne_eu.metadata.delete.DeleteMetadataFactory;
 import org.ariadne_eu.metadata.insert.InsertMetadataException;
@@ -18,10 +19,8 @@ import org.ariadne_eu.spi.FaultCodeType;
 import org.ariadne_eu.spi.SPISkeleton;
 import org.ariadne_eu.spi.SpiFault;
 import org.ariadne_eu.spi.SpiFaultException;
-//import org.ariadne_eu.spi.SpiFaultCodeType;
 import org.ariadne_eu.spi.SubmitMetadataRecord;
 import org.ariadne_eu.spi.SubmitResource;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.safehaus.uuid.EthernetAddress;
 import org.safehaus.uuid.UUID;
@@ -165,9 +164,9 @@ public class SPIImplementation extends SPISkeleton {
 
     private void checkValidTicket(Ticket ticket) throws SpiFaultException {
         if (ticket.getParameter("username") == null ||
-            !ticket.getParameter("username").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME)) ||
+            !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) ||
             ticket.getParameter("password") == null ||
-            !ticket.getParameter("password").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD))) {
+            !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
             SpiFault fault = new SpiFault();
 //            fault.setSpiFaultCode(SpiFaultCodeType.SPI_00000);
             fault.setSpiFaultCode(FaultCodeType.SPI_00000);

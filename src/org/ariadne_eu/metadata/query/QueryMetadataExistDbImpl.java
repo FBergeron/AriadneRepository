@@ -1,9 +1,9 @@
 package org.ariadne_eu.metadata.query;
 
 import org.apache.log4j.Logger;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
@@ -37,25 +37,25 @@ public class QueryMetadataExistDbImpl extends QueryMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-            String URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
+            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
             if (URI == null)
-                URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI);
+                URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
 
             try {
-//                String driver = ConfigManager.getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
+//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
 //                if (driver == null)
-//                    driver = ConfigManager.getProperty(RepositoryConstants.MD_DB_DRIVER);
+//                    driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER);
 //                Class cl = Class.forName(driver);
             	Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
                 Database database = (Database)cl.newInstance();
                 DatabaseManager.registerDatabase(database);
 
-                String username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
+                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
                 if (username == null)
-                    username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME);
-                String password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD + "."+getLanguage());
+                    username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
+                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "."+getLanguage());
                 if (password == null)
-                    password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD);
+                    password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
                 
                 collection = DatabaseManager.getCollection(URI, username, password);
             } catch (ClassNotFoundException e) {

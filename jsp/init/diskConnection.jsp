@@ -59,10 +59,10 @@ function check()
 
 <h1>What directory should be used on the File System</h1>
 
-<%String logSystemDir = PropertiesManager.getProperty("repository.log4j.directory");
-String repository = PropertiesManager.getProperty("repository.log4j.filename");
-String indexSystemDir = PropertiesManager.getProperty("search.lucene.indexdir");
-String fileSystemDir = PropertiesManager.getProperty("mdstore.spifs.dir");%>
+<%String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
+String repository = PropertiesManager.getInstance().getProperty("repository.log4j.filename");
+String indexSystemDir = PropertiesManager.getInstance().getProperty("search.lucene.indexdir");
+String fileSystemDir = PropertiesManager.getInstance().getProperty("mdstore.spifs.dir");%>
 
 <div class="install-text">
     			<p>To use the File System to store the metadata you have to provide the following information:</p>

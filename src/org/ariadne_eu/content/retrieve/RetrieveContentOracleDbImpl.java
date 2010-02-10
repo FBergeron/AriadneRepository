@@ -1,25 +1,17 @@
 package org.ariadne_eu.content.retrieve;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.StringTokenizer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 import com.ibm.db2.jcc.DB2Xml;
@@ -48,19 +40,19 @@ public class RetrieveContentOracleDbImpl extends RetrieveContentImpl {
     void initialize() {
         super.initialize();
         try {
-//            String driver = ConfigManager.getProperty(RepositoryConstants.CNT_DB_DRIVER);
+//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_DRIVER);
 //            Class.forName(driver);
         	Class.forName("oracle.jdbc.driver.OracleDriver");
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = ConfigManager.getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Contentstore";
-            columnName = ConfigManager.getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "contentxml";
-            identifierColumnName = ConfigManager.getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } catch (ClassNotFoundException e) {
@@ -163,9 +155,9 @@ public class RetrieveContentOracleDbImpl extends RetrieveContentImpl {
 
 
     private Connection getConnection() throws SQLException {
-        String URI = ConfigManager.getProperty(RepositoryConstants.CNT_DB_URI);
-        String username = ConfigManager.getProperty(RepositoryConstants.CNT_DB_USERNAME);
-        String password = ConfigManager.getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 }

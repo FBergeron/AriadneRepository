@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -24,7 +24,7 @@ public class InsertContentFSImpl extends InsertContentImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String basePath = ConfigManager.getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+			String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
 			if (basePath == null)
 				log.error("initialize failed: no " + RepositoryConstants.CNT_DR_BASEPATH + " found");
 			else

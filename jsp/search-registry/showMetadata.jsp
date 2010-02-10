@@ -4,7 +4,7 @@
 <%@ page import="org.xml.sax.InputSource" %>
 <%@ page import="javax.xml.parsers.DocumentBuilderFactory" %>
 <%@ page import="org.apache.xpath.XPathAPI" %>
-<%@ page import="org.ariadne_eu.utils.config.ConfigManager" %>
+<%@ page import="org.ariadne.config.PropertiesManager" %>
 <%@ page import="net.sf.vcard4j.parser.DomParser" %>
 <%@ page import="net.sf.vcard4j.java.VCard" %>
 <%@ page import="net.sf.vcard4j.java.AddressBook" %>
@@ -64,7 +64,7 @@
     } catch (Exception e) {
     }
 
-    String axis2_url = ConfigManager.getProperty("axis2.url");
+    String axis2_url = PropertiesManager.getInstance().getProperty("axis2.url");
     if (axis2_url == null)
         axis2_url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/services";
 

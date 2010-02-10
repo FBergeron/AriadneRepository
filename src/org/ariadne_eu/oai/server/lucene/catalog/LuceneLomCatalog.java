@@ -3,7 +3,6 @@ package org.ariadne_eu.oai.server.lucene.catalog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;

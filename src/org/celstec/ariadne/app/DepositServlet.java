@@ -61,15 +61,13 @@ import org.apache.log4j.Logger;
 import org.purl.sword.atom.Summary;
 import org.purl.sword.atom.Title;
 import org.purl.sword.base.ChecksumUtils;
-import org.purl.sword.base.Deposit;
 import org.purl.sword.base.DepositResponse;
 import org.purl.sword.base.ErrorCodes;
 import org.purl.sword.base.HttpHeaders;
 import org.purl.sword.base.SWORDAuthenticationException;
 import org.purl.sword.base.SWORDErrorDocument;
-import org.purl.sword.base.SWORDException;
 import org.purl.sword.base.SWORDErrorException;
-import org.purl.sword.server.SWORDServer;
+import org.purl.sword.base.SWORDException;
 
 /**
  * DepositServlet

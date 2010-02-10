@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import oracle.sql.CLOB;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -36,21 +36,21 @@ public class InsertMetadataOracleDbImpl extends InsertMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-//            String driver = ConfigManager.getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
+//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
 //            if (driver == null)
-//                driver = ConfigManager.getProperty(RepositoryConstants.MD_DB_DRIVER);
+//                driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER);
 //            Class.forName(driver);
             Class.forName("oracle.jdbc.driver.OracleDriver");
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Metadatastore";
-            columnName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "lomxml";
-            identifierColumnName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } 
@@ -67,15 +67,15 @@ public class InsertMetadataOracleDbImpl extends InsertMetadataImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
         if (URI == null)
-            URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI);
-        String username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
+            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
         if (username == null)
-            username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME);
-        String password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getLanguage());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getLanguage());
         if (password == null)
-            password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 

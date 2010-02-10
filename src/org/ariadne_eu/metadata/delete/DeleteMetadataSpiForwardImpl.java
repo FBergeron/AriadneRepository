@@ -1,12 +1,9 @@
 package org.ariadne_eu.metadata.delete;
 
 import org.apache.log4j.Logger;
-//import org.ariadne_eu.service.SPIStub;
-//import org.ariadne_eu.service.SqiSessionManagementBindingServiceStub;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.spi.DeleteMetadataRecord;
 import org.ariadne_eu.spi.SPIStub;
-import org.ariadne_eu.spi.SubmitMetadataRecord;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 import be.cenorm.www.CreateSession;
@@ -31,18 +28,18 @@ public class DeleteMetadataSpiForwardImpl extends DeleteMetadataImpl {
     void initialize() {
         super.initialize();
 
-        smURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getImplementation());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getImplementation());
         if (smURI == null)
-            smURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
-        spiURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getImplementation());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getImplementation());
         if (spiURI == null)
-            spiURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
-        username = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getImplementation());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getImplementation());
         if (username == null)
-            username = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
-        password = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getImplementation());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getImplementation());
         if (password == null)
-            password = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
     }
 
     public synchronized void deleteMetadata(String identifier) {

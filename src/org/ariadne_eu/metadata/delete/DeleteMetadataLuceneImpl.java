@@ -1,22 +1,12 @@
 package org.ariadne_eu.metadata.delete;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.sourceforge.minor.lucene.core.service.IndexService;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.FSDirectory;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
-import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
 
 /**
  * Created by ben
@@ -40,9 +30,9 @@ public class DeleteMetadataLuceneImpl extends DeleteMetadataImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getImplementation());
+			String indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getImplementation());
 			if (indexDirString == null)
-				indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
+				indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
 			if (indexDirString == null)
 				log.error("initialize failed: no " + RepositoryConstants.SR_LUCENE_INDEXDIR + " found");
 			indexDir = new File(indexDirString);

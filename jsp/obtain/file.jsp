@@ -5,7 +5,7 @@
 
 <%@ page import="be.cenorm.www.SqiSessionManagementStub" %>
 <%@ page import="be.cenorm.www.*" %>
-<%@ page import="org.ariadne_eu.utils.config.ConfigManager" %>
+<%@ page import="org.ariadne.config.PropertiesManager" %>
 <%@ page import="org.w3.www._2005._05.xmlmime.Base64Binary" %>
 <%@ page import="javax.activation.DataHandler" %>
 <%@ page import="org.ariadne_eu.coi.COIStub" %>
@@ -19,7 +19,7 @@
 <%
     String identifier = request.getParameter("content");
 
-    String axis2_url = ConfigManager.getProperty("axis2.url");
+    String axis2_url = PropertiesManager.getInstance().getProperty("axis2.url");
     if (axis2_url == null)
         axis2_url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/services";
 
@@ -27,8 +27,8 @@
         try {
             SqiSessionManagementStub sm = new SqiSessionManagementStub(axis2_url + "/SqiSessionManagement");
             CreateSession createSession = new CreateSession();
-            createSession.setUserID(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME));
-            createSession.setPassword(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD));
+            createSession.setUserID(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME));
+            createSession.setPassword(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD));
             CreateSessionResponse sessionM = sm.createSession(createSession);
 
             COIStub coi = new COIStub(axis2_url + "/COI");

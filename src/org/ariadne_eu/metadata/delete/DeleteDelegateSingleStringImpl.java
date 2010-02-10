@@ -3,17 +3,10 @@
  */
 package org.ariadne_eu.metadata.delete;
 
-import java.io.ByteArrayInputStream;
-import java.util.Date;
+import net.sourceforge.minor.lucene.core.indexer.IndexDeleterDelegate;
 
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.ariadne_eu.utils.mace.MACEUtils;
-import org.eun.lucene.core.indexer.document.DocumentHandlerException;
-
-import net.sourceforge.minor.lucene.core.indexer.IndexDeleterDelegate;
 
 /**
  * @author gonzalo

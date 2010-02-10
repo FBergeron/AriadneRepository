@@ -1,4 +1,4 @@
-<%@ page import="org.ariadne_eu.utils.config.ConfigManager" %>
+<%@ page import="org.ariadne.config.PropertiesManager" %>
 <%@ page import="org.ariadne_eu.utils.config.RepositoryConstants" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -10,8 +10,8 @@
     if (username != null || password != null)
         loginAttempt = true;
     boolean loginSuccess = false;
-    if (username != null && username.equals(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME)) &&
-            password != null && password.equals(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD))) {
+    if (username != null && username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) &&
+            password != null && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
         loginSuccess = true;
         request.getSession().setAttribute("login", "true");
         request.getSession().setAttribute("username", username);

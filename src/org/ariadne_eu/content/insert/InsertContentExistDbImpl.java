@@ -13,7 +13,7 @@ import javax.activation.DataHandler;
 import javax.xml.transform.OutputKeys;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
@@ -45,21 +45,21 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String URI = ConfigManager.getProperty(RepositoryConstants.CNT_DB_URI + "." + getNumber());
+			String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI + "." + getNumber());
 			if (URI == null)
-				URI = ConfigManager.getProperty(RepositoryConstants.CNT_DB_URI);
+				URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
 			try {
 				Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
 				Database database = (Database) cl.newInstance();
 				DatabaseManager.registerDatabase(database);
 
-				String username = ConfigManager
+				String username = PropertiesManager.getInstance()
 						.getProperty(RepositoryConstants.CNT_DB_USERNAME + "." + getNumber());
 				if (username == null)
-					username = ConfigManager.getProperty(RepositoryConstants.CNT_DB_USERNAME);
-				String password = ConfigManager.getProperty(RepositoryConstants.CNT_DB_PASSWORD + "." + getNumber());
+					username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
+				String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD + "." + getNumber());
 				if (password == null)
-					password = ConfigManager.getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+					password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
 
 				collection = DatabaseManager.getCollection(URI, username,password);
 				//TODO: auto generate?
@@ -177,7 +177,7 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 //		byte[] bytes = getMD5Bytes(input.getBytes());
 //		String relativePath = new BigInteger(bytes).abs().toString();
 //
-//		String basePath = ConfigManager.getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+//		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
 //		if (!basePath.endsWith(File.separator))
 //			basePath += File.separator;
 //		String fullPath = basePath + relativePath;
@@ -201,7 +201,7 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 		byte[] bytes = getMD5Bytes(input.getBytes());
 		String relativePath = new BigInteger(bytes).abs().toString();
 
-		String basePath = ConfigManager.getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
 		if (!basePath.endsWith(File.separator))
 			basePath += File.separator;
 		String fullPath = basePath + relativePath;

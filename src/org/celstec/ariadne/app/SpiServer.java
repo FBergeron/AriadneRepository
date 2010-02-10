@@ -1,12 +1,7 @@
 package org.celstec.ariadne.app;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import nu.xom.Builder;
-import nu.xom.ParsingException;
-import nu.xom.ValidityException;
 
 import org.ariadne.config.PropertiesManager;
 import org.jdom.Document;
@@ -14,8 +9,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.purl.sword.atom.ContentType;
 import org.purl.sword.atom.Link;
 import org.purl.sword.atom.Summary;
@@ -24,16 +17,12 @@ import org.purl.sword.base.AtomDocumentRequest;
 import org.purl.sword.base.AtomDocumentResponse;
 import org.purl.sword.base.Deposit;
 import org.purl.sword.base.DepositResponse;
-import org.purl.sword.base.ErrorCodes;
 import org.purl.sword.base.SWORDAuthenticationException;
 import org.purl.sword.base.SWORDEntry;
 import org.purl.sword.base.SWORDErrorException;
 import org.purl.sword.base.SWORDException;
 import org.purl.sword.base.ServiceDocument;
 import org.purl.sword.base.ServiceDocumentRequest;
-import org.purl.sword.base.UnmarshallException;
-import org.purl.sword.server.DummyServer;
-import org.purl.sword.server.SWORDServer;
 
 public class SpiServer implements SpiSwordServer {
 

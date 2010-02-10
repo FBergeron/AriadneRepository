@@ -5,7 +5,6 @@ package org.ariadne_eu.utils.lucene.analysis;
 
 import java.io.Reader;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;

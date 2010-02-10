@@ -3,7 +3,7 @@ package org.ariadne_eu.metadata.query;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -24,9 +24,9 @@ public class QueryMetadataFactory {
 
     public static QueryMetadataImpl getQueryImpl(int language) {
         if (cachedImplementations.get(new Integer(language)) == null) {
-            String implementation = ConfigManager.getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION + "." + language);
+            String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION + "." + language);
             if (implementation == null)
-                implementation = ConfigManager.getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION);
             try {
                 Class implClass = Class.forName(implementation);
                 QueryMetadataImpl query = (QueryMetadataImpl) implClass.newInstance();

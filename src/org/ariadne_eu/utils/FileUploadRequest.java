@@ -48,7 +48,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -81,7 +81,7 @@ public class FileUploadRequest extends HttpServletRequestWrapper
 
         original = req;
 
-        String tempDir = ConfigManager.getProperty("upload.temp.dir");
+        String tempDir = PropertiesManager.getInstance().getProperty("upload.temp.dir");
         if (tempDir == null)
             tempDir = "/tmp";
         int maxSize = 536870912; //512Mb

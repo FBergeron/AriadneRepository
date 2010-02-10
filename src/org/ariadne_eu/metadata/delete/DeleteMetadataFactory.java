@@ -3,7 +3,7 @@ package org.ariadne_eu.metadata.delete;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 
@@ -23,9 +23,9 @@ public class DeleteMetadataFactory {
         for (int implementation = -1; implementation < 10; implementation++) {
             String className;
             if (implementation >= 0) {
-            	className = ConfigManager.getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION + "." + implementation);
+            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION + "." + implementation);
             } else {
-            	className = ConfigManager.getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION);
+            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION);
             }
             if (className != null) {
                 try {

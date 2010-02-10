@@ -42,8 +42,8 @@
 <div class="clr"></div>
 
 <h1>Where to save the repository metadata ?</h1>
-<%String handler = PropertiesManager.getProperty("search.lucene.handler"); 
-String analyzer = PropertiesManager.getProperty("search.lucene.analyzer");%>
+<%String handler = PropertiesManager.getInstance().getProperty("search.lucene.handler"); 
+String analyzer = PropertiesManager.getInstance().getProperty("search.lucene.analyzer");%>
 
 <div class="install-text">
     			<p>Select the store where you want to save the repository metadata</p>

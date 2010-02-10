@@ -12,8 +12,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.mace.MACEUtils;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
@@ -52,7 +51,7 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             doc.add(new Field("lom", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             
-            String luceneHandler = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
+            String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.MACELOMHandler")) {
             	MACEUtils.getClassification();
             	String exml = MACEUtils.enrichWClassification(insertMetadata);

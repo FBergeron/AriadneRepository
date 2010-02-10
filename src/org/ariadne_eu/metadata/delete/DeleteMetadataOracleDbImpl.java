@@ -1,15 +1,12 @@
 package org.ariadne_eu.metadata.delete;
 
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import oracle.sql.CLOB;
-
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -37,13 +34,13 @@ public class DeleteMetadataOracleDbImpl extends DeleteMetadataImpl {
         super.initialize();
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            tableName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Metadatastore";
-            columnName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "lomxml";
-            identifierColumnName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } 
@@ -53,15 +50,15 @@ public class DeleteMetadataOracleDbImpl extends DeleteMetadataImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI + "." + getImplementation());
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getImplementation());
         if (URI == null)
-            URI = ConfigManager.getProperty(RepositoryConstants.MD_DB_URI);
-        String username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getImplementation());
+            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getImplementation());
         if (username == null)
-            username = ConfigManager.getProperty(RepositoryConstants.MD_DB_USERNAME);
-        String password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getImplementation());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getImplementation());
         if (password == null)
-            password = ConfigManager.getProperty(RepositoryConstants.MD_DB_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 

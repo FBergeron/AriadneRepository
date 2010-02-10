@@ -1,14 +1,10 @@
 package org.ariadne_eu.service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.TransportHeaders;
-import org.apache.commons.httpclient.Header;
 import org.apache.log4j.Logger;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;

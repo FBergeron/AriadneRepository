@@ -11,6 +11,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateLomImpl;
@@ -19,7 +20,6 @@ import org.ariadne_eu.metadata.resultsformat.ResultDelegatePlrfImpl;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateRLomImpl;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateSolrImpl;
 import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
@@ -41,9 +41,9 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-            String indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getLanguage());
+            String indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getLanguage());
             if (indexDirString == null)
-        	indexDirString = ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
+        	indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
             if (indexDirString == null)
                 log.error("initialize failed: no " + RepositoryConstants.SR_LUCENE_INDEXDIR + " found");
             indexDir = new File(indexDirString);

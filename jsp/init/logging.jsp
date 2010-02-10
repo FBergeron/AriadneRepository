@@ -52,8 +52,8 @@ function check()
 
 </div>
 
-<%String user = PropertiesManager.getProperty("repository.username");
-String pass = PropertiesManager.getProperty("repository.password");%>
+<%String user = PropertiesManager.getInstance().getProperty("repository.username");
+String pass = PropertiesManager.getInstance().getProperty("repository.password");%>
 
 <div id="right">
 

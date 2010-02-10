@@ -25,15 +25,15 @@
 
 <%
     
-    //PropertiesManager.setPropertiesFile(application.getRealPath("install")+File.separator+"ariadne.properties");
-    //if (!PropertiesManager.getPropertiesFile().exists())
-    //out.println("Could not find ariadneV4.properties template at '"+PropertiesManager.getPropertiesFile()+"'");
-    //PropertiesManager.init();
+    //PropertiesManager.getInstance().setPropertiesFile(application.getRealPath("install")+File.separator+"ariadne.properties");
+    //if (!PropertiesManager.getInstance().getPropertiesFile().exists())
+    //out.println("Could not find ariadneV4.properties template at '"+PropertiesManager.getInstance().getPropertiesFile()+"'");
+    //PropertiesManager.getInstance().init();
     Iterator it;
 
-	it = PropertiesManager.getTypes().iterator();
+	it = PropertiesManager.getInstance().getTypes().iterator();
          %>
- Location of config file: <%= PropertiesManager.getPropFile()%>
+ Location of config file: <%= PropertiesManager.getInstance().getPropFile()%>
  
 
 	<table >
@@ -49,18 +49,18 @@
 						</tr>
 		
 	<%
-	  Iterator iter = PropertiesManager.getPropertyStartingWith(fam).entrySet().iterator();
+	  Iterator iter = PropertiesManager.getInstance().getPropertyStartingWith(fam).entrySet().iterator();
 	  while (iter.hasNext()) {
 		Map.Entry entry = (Map.Entry) iter.next();
 		if (request.getParameter((String) entry.getKey())!= null) {
-			//out.println((String) entry.getKey()+" "+ request.getParameter((String) entry.getKey())+" "+PropertiesManager.getProperty((String) entry.getKey())+"<br>");
-			PropertiesManager.saveProperty((String) entry.getKey(), request.getParameter((String) entry.getKey()));
-			//out.println((String) entry.getKey()+" "+ request.getParameter((String) entry.getKey())+" "+PropertiesManager.getProperty((String) entry.getKey())+"<br>");
+			//out.println((String) entry.getKey()+" "+ request.getParameter((String) entry.getKey())+" "+PropertiesManager.getInstance().getProperty((String) entry.getKey())+"<br>");
+			PropertiesManager.getInstance().saveProperty((String) entry.getKey(), request.getParameter((String) entry.getKey()));
+			//out.println((String) entry.getKey()+" "+ request.getParameter((String) entry.getKey())+" "+PropertiesManager.getInstance().getProperty((String) entry.getKey())+"<br>");
 		}
 		%>
 	  	<tr>
     	  <td  class="quote"><label><%= entry.getKey()%></label></td>
-    	  <td width="70%" class="quote"><input TYPE="text" NAME="<%= entry.getKey()%>" class="inputbox" value="<%= PropertiesManager.getProperty((String) entry.getKey())%>" style="width:97%; padding:0; margin:0;"></td>
+    	  <td width="70%" class="quote"><input TYPE="text" NAME="<%= entry.getKey()%>" class="inputbox" value="<%= PropertiesManager.getInstance().getProperty((String) entry.getKey())%>" style="width:97%; padding:0; margin:0;"></td>
 		</tr>
 		<%
 	  }

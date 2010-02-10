@@ -1,30 +1,13 @@
 package org.ariadne_eu.utils.lucene;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.Logger;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xpath.XPathAPI;
-import org.ariadne_eu.metadata.insert.InsertMetadataImpl;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
+import org.ariadne_eu.metadata.insert.InsertMetadataImpl;
 import org.ariadne_eu.metadata.insert.InsertMetadataLuceneImpl;
-import org.ariadne_eu.metadata.query.QueryMetadataException;
-import org.ariadne_eu.metadata.query.QueryMetadataFactory;
-import org.ariadne_eu.metadata.query.QueryMetadataImpl;
-import org.ariadne_eu.metadata.query.language.QueryTranslationException;
-import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  * Created by ben
@@ -44,19 +27,19 @@ public class IndexOperations {
 
     static {
         try {
-            collection = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+            collection = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
             if(collection == null) {
                 collection = "collection(\"metadatastore\")";
                 log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
             }
-            xmlns = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
             xpathQueries = new Vector();
-            if (ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
                 xpathQueries.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-                    xpathQueries.add(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
+                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }
@@ -101,7 +84,7 @@ public class IndexOperations {
 
 		luceneImpl.createLuceneIndex();
 
-		String implementation = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
 		if (implementation != null) {
 
 			startResult = 1;
@@ -213,7 +196,7 @@ public class IndexOperations {
     }
     
     public static void main(String[] args) throws Exception{
-//    	ConfigManager.setPropertiesFile("jsp/install/ariadne.properties");
+//    	PropertiesManager.getInstance().setPropertiesFile("jsp/install/ariadne.properties");
     	xmlns = "http://ltsc.ieee.org/xsd/LOM";
 //    	collection = "collection(\"metadatastore\")";
     	collection = "db2-fn:xmlcolumn(\"METADATASTORE_DEV2.LOMXML\")";

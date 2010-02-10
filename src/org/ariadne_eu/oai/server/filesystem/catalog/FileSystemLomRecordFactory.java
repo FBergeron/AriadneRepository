@@ -7,11 +7,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 import org.ariadne_eu.oai.server.catalog.AbstractRecordFactory;
-import org.oclc.oai.server.catalog.RecordFactory;
 
 
 public class FileSystemLomRecordFactory extends AbstractRecordFactory{

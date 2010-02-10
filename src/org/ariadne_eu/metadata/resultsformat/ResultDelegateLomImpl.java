@@ -5,8 +5,6 @@ import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Hits;
-import org.ariadne_eu.metadata.insert.InsertDelegateSingleStringImpl;
-import org.ariadne_eu.utils.Stopwatch;
 
 public class ResultDelegateLomImpl implements IndexSearchDelegate {
 	private static Logger log = Logger.getLogger(ResultDelegateLomImpl.class);

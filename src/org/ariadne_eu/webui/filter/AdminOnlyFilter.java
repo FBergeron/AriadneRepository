@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -31,7 +31,7 @@ public class AdminOnlyFilter implements Filter {
         HttpServletResponse hresponse = (HttpServletResponse) response;
 
         if (hrequest.getSession().getAttribute("login") != null && hrequest.getSession().getAttribute("login").equals("true") &&
-                hrequest.getSession().getAttribute("username") != null && hrequest.getSession().getAttribute("username").equals(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME)))
+                hrequest.getSession().getAttribute("username") != null && hrequest.getSession().getAttribute("username").equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)))
             // Allow request to proceed
             chain.doFilter(hrequest, hresponse);
         else

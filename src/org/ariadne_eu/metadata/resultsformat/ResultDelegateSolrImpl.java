@@ -16,15 +16,11 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.ModifiableSolrParams;
-import org.apache.solr.common.params.RequiredSolrParams;
-import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.servlet.DirectSolrConnection;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -45,14 +41,14 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
     
     static {
         try {
-        	instanceDir = ConfigManager.getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
-        	dataDir = ConfigManager.getProperty(RepositoryConstants.SR_SOLR_DATADIR);
-        	loggingPath = ConfigManager.getProperty(RepositoryConstants.REPO_LOG4J_DIR);
+        	instanceDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
+        	dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_DATADIR);
+        	loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
         	
         	facetFields = new Vector();
         	int i = 1;
-            while(ConfigManager.getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i) != null) {
-            	facetFields.add(ConfigManager.getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i));
+            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i) != null) {
+            	facetFields.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD + "." + i));
                 i++;
             }
         	

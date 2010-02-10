@@ -5,7 +5,7 @@ import java.util.Vector;
 import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -30,9 +30,9 @@ public class InsertContentFactory {
         for (int nb = -1; nb < 10; nb++) {
             String implementation;
             if (nb >= 0) {
-                implementation = ConfigManager.getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION + "." + nb);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION + "." + nb);
             } else {
-                implementation = ConfigManager.getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION);
             }
             if (implementation != null) {
                 try {

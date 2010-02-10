@@ -1,11 +1,9 @@
 package org.ariadne_eu.metadata.insert;
 
 import org.apache.log4j.Logger;
-//import org.ariadne_eu.service.SPIStub;
-//import org.ariadne_eu.service.SqiSessionManagementBindingServiceStub;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.spi.SPIStub;
 import org.ariadne_eu.spi.SubmitMetadataRecord;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 import be.cenorm.www.CreateSession;
@@ -30,18 +28,18 @@ public class InsertMetadataSpiForwardImpl extends InsertMetadataImpl {
     void initialize() {
         super.initialize();
 
-        smURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getLanguage());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getLanguage());
         if (smURI == null)
-            smURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
-        spiURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getLanguage());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getLanguage());
         if (spiURI == null)
-            spiURI = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
-        username = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getLanguage());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getLanguage());
         if (username == null)
-            username = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
-        password = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getLanguage());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getLanguage());
         if (password == null)
-            password = ConfigManager.getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
     }
 
     /*

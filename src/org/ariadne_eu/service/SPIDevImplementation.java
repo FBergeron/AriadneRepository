@@ -1,11 +1,10 @@
 package org.ariadne_eu.service;
 
 import org.apache.log4j.Logger;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.content.insert.InsertContentFactory;
 import org.ariadne_eu.metadata.insert.InsertMetadataException;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
-import org.ariadne_eu.spi.SpiFault;
-import org.ariadne_eu.spi.SpiFaultException;
 import org.ariadne_eu.spidev.CreateIdentifier;
 import org.ariadne_eu.spidev.CreateIdentifierResponse;
 import org.ariadne_eu.spidev.DeleteMetadataRecord;
@@ -16,7 +15,6 @@ import org.ariadne_eu.spidev.SpiDevFault;
 import org.ariadne_eu.spidev.SpiDevFaultException;
 import org.ariadne_eu.spidev.SubmitMetadataRecord;
 import org.ariadne_eu.spidev.SubmitResource;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.safehaus.uuid.EthernetAddress;
 import org.safehaus.uuid.UUID;
@@ -140,8 +138,8 @@ public class SPIDevImplementation extends SPIDevSkeleton {
 	}
 
 	private void checkValidTicket(Ticket ticket) throws SpiDevFaultException {
-		if (ticket.getParameter("username") == null || !ticket.getParameter("username").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_USERNAME))
-				|| ticket.getParameter("password") == null || !ticket.getParameter("password").equalsIgnoreCase(ConfigManager.getProperty(RepositoryConstants.REPO_PASSWORD))) {
+		if (ticket.getParameter("username") == null || !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME))
+				|| ticket.getParameter("password") == null || !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
 			SpiDevFault fault = new SpiDevFault();
 			fault.setSpiDevFaultCode(FaultCodeType.SPIDev_00000);
 			fault.setMessage("The given session ID is invalid");

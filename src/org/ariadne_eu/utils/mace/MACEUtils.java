@@ -12,15 +12,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.search.IndexSearcher;
-import org.ariadne_eu.utils.config.ConfigManager;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
-import org.ariadne_eu.utils.config.servlets.InitServlet;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -37,7 +32,7 @@ import org.jdom.xpath.XPath;
 public class MACEUtils {
 	private static HashMap<String, Element> classificationValues;
 //	private static File classificationFile = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
-	private static File classificationFile = new File (ConfigManager.getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
+	private static File classificationFile = new File (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
 	
 	private MACEUtils() {
 		classificationValues = loadClassification();

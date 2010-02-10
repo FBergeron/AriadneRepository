@@ -4,10 +4,10 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.log4j.Logger;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.Translate;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
@@ -30,15 +30,15 @@ public class Plql_XQueryHandler extends Translate {
 
     public void initialize() {
         try {
-            collectionName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_LOC + "." + getStartQueryLanguage());
+            collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC + "." + getStartQueryLanguage());
             if(collectionName == null)
-                collectionName = ConfigManager.getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+                collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
             if(collectionName == null) {
                 collectionName = "collection(\"metadatastore\")";
                 log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
             }
-            xmlns = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
-            wholeWord = ConfigManager.getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD) == null || !ConfigManager.getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD).equalsIgnoreCase("false");
+            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+            wholeWord = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD) == null || !PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD).equalsIgnoreCase("false");
         } catch (Throwable t) {
             log.error("initialize: ", t);
         }

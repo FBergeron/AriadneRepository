@@ -2,20 +2,13 @@ package net.sourceforge.minor.lucene.core.indexer;
 
 import java.io.File;
 
-import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 import net.sourceforge.minor.lucene.core.utils.Check;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-import org.ariadne_eu.utils.lucene.document.MACELOMHandler;
-import org.eun.lucene.core.indexer.document.DocumentHandlerException;
 
 public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
 	

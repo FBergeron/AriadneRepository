@@ -17,24 +17,16 @@ import java.util.Vector;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.QueryMetadataException;
-import org.ariadne_eu.metadata.query.QueryMetadataFactory;
-import org.ariadne_eu.metadata.query.QueryMetadataImpl;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.update.QueryOnId;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xmldb.api.DatabaseManager;
-import org.xmldb.api.base.Collection;
-import org.xmldb.api.base.Database;
-import org.xmldb.api.base.XMLDBException;
-import org.xmldb.api.modules.XMLResource;
 
 /**
  * @author gonzalo
@@ -60,7 +52,7 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
     void initialize() {
         super.initialize();
         try {
-			String basePath = ConfigManager.getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+			String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
 			if (basePath == null)
 				log.error("initialize failed: no " + RepositoryConstants.CNT_DR_BASEPATH + " found");
 			else
@@ -69,24 +61,24 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 			log.error("initialize: ", t);
 		}        
 		// to get the location
-        xmlns = ConfigManager.getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+        xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
         xpathIdentifiers = new Vector();
-        if (ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
         	xpathIdentifiers.add("general/identifier/entry/text()");
         else {
             int i = 1;
-            while(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-            	xpathIdentifiers.add(ConfigManager.getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
+            	xpathIdentifiers.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
                 i++;
             }
         }
         xpathLocations = new Vector();
-        if (ConfigManager.getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + ".1") == null)
+        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + ".1") == null)
         	xpathLocations.add("technical/location/text()");
         else {
             int i = 1;
-            while(ConfigManager.getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
-            	xpathLocations.add(ConfigManager.getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i));
+            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
+            	xpathLocations.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i));
                 i++;
             }
         }

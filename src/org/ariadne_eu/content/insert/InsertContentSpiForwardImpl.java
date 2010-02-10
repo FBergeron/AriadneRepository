@@ -3,10 +3,9 @@ package org.ariadne_eu.content.insert;
 import javax.activation.DataHandler;
 
 import org.apache.log4j.Logger;
-import org.ariadne_eu.metadata.insert.InsertMetadataExistDbImpl;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.spidev.SPIDevStub;
 import org.ariadne_eu.spidev.SubmitResource;
-import org.ariadne_eu.utils.config.ConfigManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.w3.www._2005._05.xmlmime.Base64Binary;
 
@@ -32,21 +31,21 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
     void initialize() {
         super.initialize();
 
-        smURI = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL + "." + getNumber());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL + "." + getNumber());
         if (smURI == null)
-            smURI = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL);
-        spiURI = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL + "." + getNumber());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL + "." + getNumber());
         if (spiURI == null)
-            spiURI = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL);
-        username = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME + "." + getNumber());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME + "." + getNumber());
         if (username == null)
-            username = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME);
-        password = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD + "." + getNumber());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD + "." + getNumber());
         if (password == null)
-            password = ConfigManager.getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD);
-//        catalog = ConfigManager.getProperty("spiforward.content.spi.catalog."+getNumber());
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD);
+//        catalog = PropertiesManager.getInstance().getProperty("spiforward.content.spi.catalog."+getNumber());
 //        if (catalog == null)
-//            catalog = ConfigManager.getProperty("spiforward.content.spi.catalog");
+//            catalog = PropertiesManager.getInstance().getProperty("spiforward.content.spi.catalog");
     }
 
 
