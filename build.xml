@@ -89,6 +89,13 @@
     			<type type="file" />
     		</fileset>
     	</copy>
+    	<copy todir="${output.basedir}/jsp/">
+    	    		<fileset dir="jsp"/>
+    	</copy>
+    	<delete dir="${output.basedir}/jsp/search-registry" />
+		<delete dir="${output.basedir}/jsp/admin-registry" />
+    	<delete dir="${output.basedir}/jsp/layout-registry" />
+    	<delete dir="${output.basedir}/jsp/WEB-INF-registry" />
 	</target>
 
 
@@ -130,7 +137,7 @@
         		<include name="translator/**" />
         		<include name="**/*.properties" />
 			</classes>
-        	<fileset dir="jsp"/>        	
+        	<fileset dir="${output.basedir}/jsp"/>        	
         </war>
     </target>
 
