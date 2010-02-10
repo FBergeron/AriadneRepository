@@ -147,7 +147,7 @@ else{
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.md","lom");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.date","date.insert");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.id","key");
-	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.repoId","oaicat.ariadne.org");
+	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.repoid","oaicat.ariadne.org");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.set","collection");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.fs.ext","");
 	PropertiesManager.getInstance().saveProperty("oaicat.sets.ARIADNE.repoid","ARIADNE");
