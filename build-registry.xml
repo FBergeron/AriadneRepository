@@ -126,9 +126,9 @@
 
     <target name="makeWar" description="Buildwar-file">
         <mkdir dir="${war.output.dir}/" />
-        <war destfile="${war.output.dir}/${war.output.name}.war" webxml="jsp/WEB-INF/web.xml">
+        <war destfile="${war.output.dir}/${war.output.name}.war" webxml="${output.basedir}/jsp/WEB-INF/web.xml">
             <!-- WEB-INF from WSDL and config files-->
-        	<webinf dir="jsp/WEB-INF/"/>
+        	<webinf dir="${output.basedir}/jsp/WEB-INF/"/>
             <!-- Own jar -->
         	<!--<lib dir="${output.basedir}/jar">
                 <include name="**/*.jar"/>
