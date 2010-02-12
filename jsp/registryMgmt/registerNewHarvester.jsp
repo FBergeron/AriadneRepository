@@ -62,6 +62,9 @@
   	   			<div class="form-block">
   	     			<table class="content2">
   	     			<tr>
+  		    			<td>Title :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="title" value=""/></td>
+  		    		</tr>
+  	     			<tr>
   		    			<td>ID :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="id" value=""/></td>
   		    		</tr>
   		  			<tr>

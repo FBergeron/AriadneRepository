@@ -22,7 +22,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+
+<%@page import="java.net.URL"%>
+<%@page import="java.net.URLConnection"%><html>
 <head>
 <link rel="stylesheet" href="css/install.css" type="text/css" />
 <title>Register a new harvester</title>
@@ -34,22 +36,18 @@
 <%
     pageContext.include("/layout/header.jsp");
 
-	Properties properties = new Properties(); 
-	try { 
-		properties.load(new FileInputStream("harvesters.properties")); 
-	} catch (IOException e) { 
-		out.println(e);
-	} 
-	properties.setProperty(request.getParameter("id")+".id",request.getParameter("id"));
-	properties.setProperty(request.getParameter("id")+".url",request.getParameter("url"));
-	properties.setProperty(request.getParameter("id")+".user",request.getParameter("user"));
-	properties.setProperty(request.getParameter("id")+".password",request.getParameter("password"));
-	// Write properties file. 
-	try { 
-		properties.store(new FileOutputStream("harvesters.properties"), null); 
-	} catch (IOException e) {
-		out.println(e);
-	} 
+	PropertiesManager properties = new PropertiesManager(); 
+	 
+	File file = new File(application.getRealPath("registryMgmt/"+"harvesters.properties"));                           
+	properties.init(file); 
+	if (!properties.getProperty("harvesters.list").contains(request.getParameter("id")+";"))
+	properties.saveProperty("harvesters.list", properties.getProperty("harvesters.list")+request.getParameter("id")+";"); 	
+	properties.saveProperty(request.getParameter("id")+".title",request.getParameter("title"));
+	properties.saveProperty(request.getParameter("id")+".id",request.getParameter("id"));
+	properties.saveProperty(request.getParameter("id")+".url",request.getParameter("url"));
+	properties.saveProperty(request.getParameter("id")+".user",request.getParameter("user"));
+	properties.saveProperty(request.getParameter("id")+".password",request.getParameter("pass"));
+
 %>
 
 <div id="ctr" align="center">

@@ -1,8 +1,18 @@
 <%@page import="java.util.Properties" %>
-<%@page import="java.io.File" %>
-<%@page import="java.io.FileOutputStream" %>
+<%@page import="java.io.*" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@page import="java.net.URL"%>
+<%@page import="java.net.URLConnection"%>
+<%@page import="java.util.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<%@page import="org.ariadne.config.PropertiesManager"%>
+<%@page import="java.net.Authenticator"%>
+<%@page import="java.net.PasswordAuthentication"%>
+<%@page import="org.ariadne.util.ClientHttpRequest"%>
+
+
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -10,51 +20,113 @@
 </head>
 <body>
 <% 
-	Properties harvester = new Properties();
-	harvester.setProperty(request.getParameter("target_id")+".active","");
-	harvester.setProperty(request.getParameter("target_id")+".latestHarvestedDatestamp","");
-	harvester.setProperty(request.getParameter("target_id")+".validationUri","");
-	harvester.setProperty(request.getParameter("target_id")+".autoReset","");
-	harvester.setProperty(request.getParameter("target_id")+".granularity",request.getParameter("granularity"));
-	harvester.setProperty(request.getParameter("target_id")+".providerName","");
-	harvester.setProperty(request.getParameter("target_id")+".metadataPrefix",request.getParameter("metadata_prefix"));
-	harvester.setProperty(request.getParameter("target_id")+".baseURL",request.getParameter("location"));
-	String sets="";
-	for (int i=0;i<Integer.parseInt(request.getParameter("numberSets"));i++){
-		if (request.getParameter("set"+i)!=null) sets += request.getParameter("set"+i)+";";		
-	}
-	harvester.setProperty(request.getParameter("target_id")+".harvestingSet",sets);
-	harvester.setProperty(request.getParameter("target_id")+".metadataFormat","");
-	harvester.setProperty(request.getParameter("target_id")+".repositoryIdentifier",request.getParameter("target_id"));
-	harvester.setProperty(request.getParameter("target_id")+".repositoryName","");
-	harvester.setProperty(request.getParameter("target_id")+".statusLastHarvest","");
-	harvester.setProperty(request.getParameter("target_id")+".registryIdentifier.entry",request.getParameter("registry_entry"));
-	harvester.setProperty(request.getParameter("target_id")+".registryIdentifier.catalog",request.getParameter("registry_catalog"));
-	harvester.setProperty(request.getParameter("target_id")+".registryTarget","true");
+	PropertiesManager properties = new PropertiesManager(); 
 	
-	File file = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
-	file.createNewFile();
-	harvester.store(new FileOutputStream(file), "");  
+	File harvestersProperties = new File(application.getRealPath("registryMgmt/"+"harvesters.properties"));                           
+	properties.init(harvestersProperties);
+	String harvesterId = request.getParameter("id");
+	final String user = properties.getProperty(harvesterId+".user");
+	final String password = properties.getProperty(harvesterId+".password");
+	String urlBase = properties.getProperty(harvesterId+".url");
+	out.println(urlBase+harvesterId);
+	
+	Authenticator.setDefault(new Authenticator() {
+		protected PasswordAuthentication getPasswordAuthentication() {
+			return new PasswordAuthentication (user, password.toCharArray());
+		}
+	});
+	PropertiesManager harvester = new PropertiesManager();
+	try { 
+		URL url = new URL(urlBase+"ariadneV4.properties");
+		URLConnection connection = url.openConnection();
+		File file = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
+		file.createNewFile();
+		InputStream inputStream = connection.getInputStream();
+		OutputStream outputStream = new FileOutputStream(file);
+	    byte buf[]=new byte[1024];
+	    int len;
+	    while((len=inputStream.read(buf))>0)
+	    	outputStream.write(buf,0,len);
+	    outputStream.close();
+	    inputStream.close();
+		harvester.init(file); 		
+	} catch (IOException e) {}
+		
+ 
+	
+	if (request.getParameter("next").compareTo("Delete from the harvester >>")==0){
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".active");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".latestHarvestedDatestamp");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".validationUri");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".autoReset");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".granularity");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".providerName");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".metadataPrefix");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".baseURL");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".harvestingSet");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".metadataFormat");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".repositoryIdentifier");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".repositoryName");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".statusLastHarvest");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".registryIdentifier.entry");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".registryIdentifier.catalog");
+		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".registryTarget");
+		String list = harvester.getProperty("AllTargets.list");
+		if (list.endsWith(request.getParameter("registry_entry")))
+			list.replaceAll(request.getParameter("registry_entry"),"");
+		else
+			list.replaceAll(request.getParameter("registry_entry")+";","");
+		harvester.saveProperty("AllTargets.list",list);
+	}else{
+		harvester.saveProperty(request.getParameter("registry_entry")+".active","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".latestHarvestedDatestamp","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".validationUri","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".autoReset","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".granularity",request.getParameter("granularity"));
+		harvester.saveProperty(request.getParameter("registry_entry")+".providerName","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".metadataPrefix",request.getParameter("metadata_prefix"));
+		harvester.saveProperty(request.getParameter("registry_entry")+".baseURL",request.getParameter("location"));
+		String sets="";
+		for (int i=0;i<Integer.parseInt(request.getParameter("numberSets"));i++){
+			if (request.getParameter("set"+i)!=null) sets += request.getParameter("set"+i)+";";		
+		}
+		harvester.saveProperty(request.getParameter("registry_entry")+".harvestingSet",sets);
+		harvester.saveProperty(request.getParameter("registry_entry")+".metadataFormat","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".repositoryIdentifier",request.getParameter("registry_entry"));
+		harvester.saveProperty(request.getParameter("registry_entry")+".repositoryName","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".statusLastHarvest","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".registryIdentifier.entry",request.getParameter("registry_entry"));
+		harvester.saveProperty(request.getParameter("registry_entry")+".registryIdentifier.catalog",request.getParameter("registry_catalog"));
+		harvester.saveProperty(request.getParameter("registry_entry")+".registryTarget","true");
+		harvester.saveProperty("AllTargets.list",harvester.getProperty("AllTargets.list")+";"+request.getParameter("registry_entry"));
+	}
+	
+	try {
+
+		ClientHttpRequest sendFileToHarvester = new ClientHttpRequest(urlBase+"uploadServlet.jsp");
+		sendFileToHarvester.setParameter("content", new File(application.getRealPath("registryMgmt/"+"harvester.properties")));
+		InputStream s = sendFileToHarvester.post();
+		/*StringBuilder sb = new StringBuilder();
+		String line;
+		
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(s, "UTF-8"));
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+		} finally {
+			s.close();
+			}
+		out.println("Response"+sb);*/
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		out.println(e);
+	}
+
 	String query = request.getParameter("query");
-	pageContext.forward("index.jsp?"+query);
+	//pageContext.forward("index.jsp?"+query);
 	
 %>
 </body>
 </html>
-
-<%/*openlearn_open_ac_uk.active = Yes
-openlearn_open_ac_uk.latestHarvestedDatestamp = 2010-01-19T11:38:40Z*/
-//openlearn_open_ac_uk.validationUri = http://ltsc.ieee.org/xsd/LOM/loose
-//openlearn_open_ac_uk.autoReset = true
-//openlearn_open_ac_uk.granularity = YYYY-MM-DDThh:mm:ssZ
-//openlearn_open_ac_uk.providerName =
-//openlearn_open_ac_uk.metadataPrefix = oai_lre
-//openlearn_open_ac_uk.baseURL = http://openlearn.open.ac.uk/local/oai/oai2.php
-/*openlearn_open_ac_uk.harvestingSet =
-openlearn_open_ac_uk.metadataFormat = ILOX
-openlearn_open_ac_uk.repositoryIdentifier = openlearn.open.ac.uk
-openlearn_open_ac_uk.repositoryName = OpenLearn LearningSpace
-openlearn_open_ac_uk.statusLastHarvest = 0
-openlearn_open_ac_uk.registryIdentifier.entry =
-openlearn_open_ac_uk.registryIdentifier.catalog =
-openlearn_open_ac_uk.registryTarget = false */ %>
