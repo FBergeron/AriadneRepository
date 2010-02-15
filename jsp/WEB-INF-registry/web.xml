@@ -1,7 +1,6 @@
 <web-app>
 
 	
-
 	<context-param>
       <param-name>properties</param-name>
       <param-value>../install/ariadne.properties</param-value>
