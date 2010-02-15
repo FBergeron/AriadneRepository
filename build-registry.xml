@@ -101,10 +101,12 @@
 		<copy file="${output.basedir}/jsp/admin-registry/updateMetadata.jsp" todir="${output.basedir}/jsp/admin/"/>
     	<copy file="${output.basedir}/jsp/layout-registry/header.jsp" todir="${output.basedir}/jsp/layout/"/>
     	<copy file="${output.basedir}/jsp/WEB-INF-registry/web.xml" todir="${output.basedir}/jsp/WEB-INF/"/>
+    	<copy file="${output.basedir}/jsp/index-registry/index.jsp" todir="${output.basedir}/jsp/"/>
 		<delete dir="${output.basedir}/jsp/search-registry" />
 		<delete dir="${output.basedir}/jsp/admin-registry" />
     	<delete dir="${output.basedir}/jsp/layout-registry" />
     	<delete dir="${output.basedir}/jsp/WEB-INF-registry" />
+    	<delete dir="${output.basedir}/jsp/index-registry" />
 	</target>
 
 
