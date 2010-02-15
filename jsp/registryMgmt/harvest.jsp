@@ -35,12 +35,13 @@
 			return new PasswordAuthentication (user, password.toCharArray());
 		}
 	});
+	File file = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
+	file.createNewFile();
 	PropertiesManager harvester = new PropertiesManager();
 	try { 
 		URL url = new URL(urlBase+"ariadneV4.properties");
 		URLConnection connection = url.openConnection();
-		File file = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
-		file.createNewFile();
+		
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = new FileOutputStream(file);
 	    byte buf[]=new byte[1024];
@@ -53,8 +54,10 @@
 	} catch (IOException e) {}
 		
  
-	
+	out.println("<br/>"+request.getParameter("next")+"<br/>");
+	out.println("<br/>"+request.getParameter("next").compareTo("Delete from the harvester >>")+"<br/>");
 	if (request.getParameter("next").compareTo("Delete from the harvester >>")==0){
+		out.println("<br/>Delete<br/>");
 		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".active");
 		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".latestHarvestedDatestamp");
 		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".validationUri");
@@ -72,11 +75,11 @@
 		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".registryIdentifier.catalog");
 		harvester.removeKeyFromPropertiesFile(request.getParameter("registry_entry")+".registryTarget");
 		String list = harvester.getProperty("AllTargets.list");
+		out.println("<br/>Comparison<br/>");
 		if (list.endsWith(request.getParameter("registry_entry")))
-			list.replaceAll(request.getParameter("registry_entry"),"");
+			harvester.saveProperty("AllTargets.list",list.replaceAll(";"+request.getParameter("registry_entry"),""));
 		else
-			list.replaceAll(request.getParameter("registry_entry")+";","");
-		harvester.saveProperty("AllTargets.list",list);
+			harvester.saveProperty("AllTargets.list",list.replaceAll(request.getParameter("registry_entry")+";",""));
 	}else{
 		harvester.saveProperty(request.getParameter("registry_entry")+".active","");
 		harvester.saveProperty(request.getParameter("registry_entry")+".latestHarvestedDatestamp","");
@@ -104,9 +107,9 @@
 	try {
 
 		ClientHttpRequest sendFileToHarvester = new ClientHttpRequest(urlBase+"uploadServlet.jsp");
-		sendFileToHarvester.setParameter("content", new File(application.getRealPath("registryMgmt/"+"harvester.properties")));
+		sendFileToHarvester.setParameter("content", file);
 		InputStream s = sendFileToHarvester.post();
-		/*StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		String line;
 		
 		try {
@@ -117,15 +120,17 @@
 		} finally {
 			s.close();
 			}
-		out.println("Response"+sb);*/
+		out.println("Response"+sb);
 		
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		out.println(e);
 	}
 
+	
+	file.delete();
 	String query = request.getParameter("query");
-	//pageContext.forward("index.jsp?"+query);
+	pageContext.forward("search.jsp?"+query);
 	
 %>
 </body>

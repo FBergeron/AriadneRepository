@@ -36,7 +36,8 @@
 <%! static GetTotalResultsCountResponse countResponse = null; %>
 <%! static SynchronousQueryResponse synchronousQueryResponse = null; %>
 
-<%  String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
+<%  
+	String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
 	if (logSystemDir.compareTo("")==0){
 		response.sendRedirect("../init/index.jsp");
 	}
@@ -56,11 +57,12 @@
 		}
 	});
 	// "aspect"  "tomcat4aspect" "http://monet:3781/aspect-harvester/install/ariadneV4.properties"
+	File harvesters = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
+	harvesters.createNewFile();
 	try { 
 		URL url = new URL(urlBase+"ariadneV4.properties");
 		URLConnection connection = url.openConnection();
-		File harvesters = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
-		harvesters.createNewFile();
+		
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = new FileOutputStream(harvesters);
 	    byte buf[]=new byte[1024];
@@ -70,6 +72,7 @@
 	    outputStream.close();
 	    inputStream.close();
 	    properties.init(harvesters); 
+	    harvesters.delete();
 	} catch (IOException e) { 
 		System.out.println(e);
 	} 
@@ -405,7 +408,14 @@
 						}
 						for (int node_prefix=0;node_prefix<nl_oai_prefix.getLength();node_prefix++){
 							String oai_prefix = nl_oai_prefix.item(node_prefix).getNodeValue();
-							%><br/><b>Metadata prefix :</b> <input  type="radio" value="<%=oai_prefix%>" name="metadata_prefix" <%if (node_prefix==0) out.println("checked");%>/><%=oai_prefix%>	<% 
+							%><br/><b>Metadata prefix :</b> <input  type="radio" value="<%=oai_prefix%>" name="metadata_prefix" <%
+							String prefix = properties.getProperty(title+".metadataPrefix");
+							if (prefix!=null){
+								if ((prefix.compareTo(oai_prefix)==0)||(node_prefix==0)) out.println("checked");
+							}else{
+								if (node_prefix==0) out.println("checked");
+							}
+							%>/><%=oai_prefix%>	<% 
 						}
 						%><input  type="hidden" value="<%=nl_oai_sets.getLength()%>" name="numberSets"/>
 						<input  type="hidden" value="<%=nl_oai_granularity.item(0).getNodeValue()%>" name="granularity"/>
@@ -418,7 +428,13 @@
 						<% 
 						for (int node_set=0;node_set<nl_oai_sets.getLength();node_set++){
 							String oai_set = nl_oai_sets.item(node_set).getNodeValue();
-							%><br/><b>Sets :</b><input  type="checkbox" value="<%=oai_set%>" name="set<%=node_set%>" /> <%=oai_set%>	<% 
+							%><br/><b>Sets :</b><input  type="checkbox" value="<%=oai_set%>" name="set<%=node_set%>" 
+								<%String listSets = properties.getProperty(title+".harvestingSet"); 
+								  if (listSets!=null){
+									  if ((listSets.lastIndexOf(";"+oai_set)>0)||(listSets.lastIndexOf(oai_set+";")>=0)) out.println("checked");
+								  }
+								  %>/> 
+							<%=oai_set%>	<% 
 						}
 						
 					
