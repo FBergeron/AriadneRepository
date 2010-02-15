@@ -96,6 +96,7 @@
 		<delete dir="${output.basedir}/jsp/admin-registry" />
     	<delete dir="${output.basedir}/jsp/layout-registry" />
     	<delete dir="${output.basedir}/jsp/WEB-INF-registry" />
+    	<delete dir="${output.basedir}/jsp/index-registry" />
 	</target>
 
 
