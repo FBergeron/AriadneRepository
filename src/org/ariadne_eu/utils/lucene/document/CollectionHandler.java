@@ -65,6 +65,7 @@ public class CollectionHandler extends DocumentHandler {
 	public void endDocument() {
 		if (isProtocol == false)
 		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		isProtocol = false;
 	}
 
 	/*
@@ -112,7 +113,8 @@ public class CollectionHandler extends DocumentHandler {
 	}
 
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-
+		
+		
 		String tmpBranche = branche.substring(0, branche.length() - 1);
 		
 		if (tmpBranche.contains(":")) {
