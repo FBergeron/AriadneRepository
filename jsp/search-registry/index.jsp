@@ -10,7 +10,7 @@
 <%@ page import="net.sf.vcard4j.java.AddressBook" %>
 <%@ page import="net.sf.vcard4j.java.type.FN" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.Vector" %>
+<%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
 <%@ page import="org.apache.xerces.dom.DocumentImpl" %>
 <%@ page import="net.sf.vcard4j.java.type.N" %>
@@ -20,7 +20,8 @@
 <%@ page import="javax.xml.transform.*" %>
 <%@ page import="javax.xml.transform.dom.*" %>
 <%@ page import=" javax.xml.transform.stream.*" %>
-<%@page import="org.ariadne.config.PropertiesManager"%>
+<%@ page import="org.ariadne.config.PropertiesManager"%>
+<%@ page import="org.ariadne_eu.utils.registry.*"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -36,9 +37,9 @@
 <%! static SynchronousQueryResponse synchronousQueryResponse = null; %>
 
 <%  String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
-if (logSystemDir.compareTo("")==0){
-	response.sendRedirect("../init/index.jsp");
-}
+	if (logSystemDir.compareTo("")==0){
+		response.sendRedirect("../init/index.jsp");
+	}
 	String format, language;
 	int resultSize, startResult;
 	Vector metadataFormats = new Vector();
@@ -173,9 +174,9 @@ if (logSystemDir.compareTo("")==0){
   <center>
   
 <%
-        int nbResults = countResults(sessionId, query);
-        if (nbResults > 0)
-        {
+       int nbResults = countResults(sessionId, query);
+       if (nbResults > 0)
+       {
 %>
 
 
@@ -203,180 +204,104 @@ if (logSystemDir.compareTo("")==0){
 
 <%
 
-    StringReader stringReader = new StringReader(result);
-    InputSource input = new InputSource(stringReader);
-
-    try {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
-
-        Node result = doc.getFirstChild();
-        NodeList nl = result.getChildNodes();
+    	Results results = new Results();
+		results.parseXMLResults(result);
+		List<MetadataCollection> list = results.getResults();
+	
         int currentResultCounter = 0;
-        for (int i = 0; i < nl.getLength(); i++)
+        for (int i = 0; i < list.size(); i++)
         {
-            try {
-                Element theNode = ((Element) nl.item(i));
+            MetadataCollection metadataCollection = list.get(i);
 
-                NodeList nl2;
-
-                String title = "Untitled";
-                try {
-                    nl2 = XPathAPI.selectNodeList(theNode, "identifier/entry/text()");
-                    title = nl2.item(0).getNodeValue();
-                } catch (Exception e) {
-                }
-
-                String description = "";
-                try {
-                    nl2 = XPathAPI.selectNodeList(theNode, "description/string/text()");
-                    description = nl2.item(0).getNodeValue();
-                } catch (Exception e) {
-                }
-
-%>
-
-
-
-
-			
+%>			
             <tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
                 <td>
 
-                    <b>Identifier: </b><%=title%>
+                    <b>Identifier: </b><%=metadataCollection.getIdentifier().getEntry()%>
 
                 </td><td/>                 
             </tr>
 <%
-    if (description != null && description.length()>0)
-    {
+    		if (metadataCollection.getDescription().getString() != null && metadataCollection.getDescription().getString().length()>0)
+   			{
 %>
             <tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
-                <td colspan="2" class="searchResultsDescription"><b>Description:</b><br /><%=description%></td>
+                <td colspan="2" class="searchResultsDescription"><b>Description:</b><br /><%=metadataCollection.getDescription().getString()%></td>
             </tr>
 <%
-    }
+    		}
 %>
 
 
 <%
-				String target_id = "";
-				String target_catalog = "";
-				String target_protocol_identifier = "";
-				String target_protocol_catalog = "";
-				String target_location = "";
-                try {
-				NodeList nl_target_entry = XPathAPI.selectNodeList(theNode, "target/targetDescription/identifier/entry/text()");
-				NodeList nl_target_catalog = XPathAPI.selectNodeList(theNode, "target/targetDescription/identifier/catalog/text()");
-				NodeList nl_target_protocol_identifier = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolIdentifier/entry/text()");
-				NodeList nl_target_protocol_catalog = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolIdentifier/catalog/text()");
-				NodeList nl_target_location = XPathAPI.selectNodeList(theNode, "target/targetDescription/location/text()");
-                for (int node=0;node<nl_target_entry.getLength();node++){
-					target_id = nl_target_entry.item(node).getNodeValue();
-					target_catalog = nl_target_catalog.item(node).getNodeValue();
-					target_protocol_identifier = nl_target_protocol_identifier.item(node).getNodeValue();
-					target_protocol_catalog = nl_target_protocol_catalog.item(node).getNodeValue();
-					target_location = nl_target_location.item(node).getNodeValue();
+			List<TargetDescription> targets = metadataCollection.getTarget();
+            for (int node=0;node<targets.size();node++){
+					TargetDescription targetDescription = targets.get(node);					
 %>
 <%
-					if (target_id != null && target_id.length()>0)
+					if (targetDescription.getIdentifier().getEntry() != null && targetDescription.getIdentifier().getEntry().length()>0)
 					{				
 %>
 					<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
 						<td colspan="1" class="searchResultsDescription" align="right"><b>Target <%=node%>:</b>
 					</td><td/></tr>
 					<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
-						<td colspan="1"/><td colspan="1" class="searchResultsDescription"><b>Entry: </b><%=target_id%>				
+						<td colspan="1"/><td colspan="1" class="searchResultsDescription"><b>Entry: </b><%=targetDescription.getIdentifier().getEntry()%>				
 <%					}%>
 <%
-					if (target_catalog != null && target_catalog.length()>0)
+					if (targetDescription.getIdentifier().getCatalog() != null && targetDescription.getIdentifier().getCatalog().length()>0)
 					{				
 %>					
-						<br/><b>Catalog :</b> <%=target_catalog%>				
+						<br/><b>Catalog :</b> <%=targetDescription.getIdentifier().getCatalog()%>				
 <%					}%>
 <%
-					if ((target_protocol_identifier != null && target_protocol_identifier.length()>0) && (target_protocol_catalog != null && target_protocol_catalog.length()>0))
+					if (targetDescription.getLocation() != null && targetDescription.getLocation().length()>0)
 					{				
-						
-						query_protocol = "(protocol.identifier.entry = \""+target_protocol_identifier+"\") and (protocol.identifier.catalog= \""+target_protocol_catalog+"\")";	
-						sessionId = createAnonymousSession(axis2_url +  "/SqiSessionManagement");
-						sqiStub = new SqiTargetStub(axis2_url + "/SqiTarget");
-						int startResult_protocol=1;
-						language = "plql1";
-						setQueryLanguage(sessionId, language);
-						setResultSetSize(sessionId, resultSize);
-						format = "lom";
-						setResultSetFormat(sessionId, format);
-
-						result_protocol = query(sessionId, query_protocol, startResult_protocol);
-						StringReader stringReader_protocol = new StringReader(result_protocol);
-					    InputSource input_protocol = new InputSource(stringReader_protocol);
-				        Document doc_protocol = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input_protocol);
-
-				        Node result_protocol = doc_protocol.getFirstChild();
-				        NodeList nl_protocol = result_protocol.getChildNodes();
-				        int currentResultCounter_protocol = 0;
-				        for (int i_protocol = 0; i_protocol < nl_protocol.getLength(); i_protocol++)
-				        {
-				            try {
-				                Element theNode_protocol = ((Element) nl_protocol.item(i_protocol));
-
-				                NodeList nl2_protocol;
-				                String title_protocol = "";
-				                try {
-				                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "name/text()");
-				                    title_protocol = nl2_protocol.item(0).getNodeValue();
-				                } catch (Exception e) {
-				                }
-				                String binding_space_protocol = "";
-				                try {
-				                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "protocolDescriptionBindingNamespace/text()");
-				                    binding_space_protocol = nl2_protocol.item(0).getNodeValue();
-				                } catch (Exception e) {
-				                }
-				                String binding_location_protocol = "";
-				                try {
-				                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "protocolDescriptionBindingLocation/text()");
-				                    binding_location_protocol = nl2_protocol.item(0).getNodeValue();
-				                } catch (Exception e) {
-				                }
-								if (title_protocol != null && title_protocol.length()>0)
-								{%>					
-									<br/><b>Protocol Name :</b> <%=title_protocol%>				
-<%								}
+%>					
+						<br/><b>Location :</b> <%=targetDescription.getLocation()%>				
+<%					}%>
+<%
+					if ((targetDescription.getProtocolIdentifier().getEntry() != null && targetDescription.getProtocolIdentifier().getEntry().length()>0) && (targetDescription.getProtocolIdentifier().getCatalog() != null && targetDescription.getProtocolIdentifier().getCatalog().length()>0))
+					{	
+						try{
+							query_protocol = "(protocol.identifier.entry = \""+targetDescription.getProtocolIdentifier().getEntry()+"\") and (protocol.identifier.catalog= \""+targetDescription.getProtocolIdentifier().getCatalog()+"\")";	
+							sessionId = createAnonymousSession(axis2_url +  "/SqiSessionManagement");
+							sqiStub = new SqiTargetStub(axis2_url + "/SqiTarget");
+							int startResult_protocol=1;
+							language = "plql1";
+							setQueryLanguage(sessionId, language);
+							setResultSetSize(sessionId, resultSize);
+							format = "lom";
+							setResultSetFormat(sessionId, format);
+	
+							result_protocol = query(sessionId, query_protocol, startResult_protocol);
+							targetDescription.parseXMLProtocol(result_protocol);
+						if (targetDescription.getProtocol().getName() != null && targetDescription.getProtocol().getName().length()>0)
+						{%>					
+								<br/><b>Protocol Name :</b> <%=targetDescription.getProtocol().getName()%>				
+<%						}
+						if (targetDescription.getProtocol().getProtocolDescriptionBindingNamespace() != null && targetDescription.getProtocol().getProtocolDescriptionBindingNamespace().length()>0)
+						{%>					
+								<br/><b>Protocol Description Binding Name Space :</b> <%=targetDescription.getProtocol().getProtocolDescriptionBindingNamespace()%>	
+<%						}	
 								
-								if (binding_space_protocol != null && binding_space_protocol.length()>0)
-								{%>					
-									<br/><b>Protocol Description Binding Name Space :</b> <%=binding_space_protocol%>	
-<%								}	
-								
-								if (binding_location_protocol != null && binding_location_protocol.length()>0)
-								{%>					
-									<br/><b>Protocol Description Binding Location :</b> <%=binding_location_protocol%>	
-<%								}
-				            } catch (Exception e) {}
-				            
-
-				        }
-						
+						if (targetDescription.getProtocol().getProtocolDescriptionBindingLocation() != null && targetDescription.getProtocol().getProtocolDescriptionBindingLocation().length()>0)
+						{%>					
+								<br/><b>Protocol Description Binding Location :</b> <%=targetDescription.getProtocol().getProtocolDescriptionBindingLocation()%>	
+<%						}
+						}catch(Exception e){}
+				
 					}
-					metadataFormats.add(theNode);
+
 
 %>
 					</td></tr>					
 <%
-				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;&#34;"+title+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td/></tr><tr><td/></tr><%} catch (Exception e) {
-                }
-%>
+				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;&#34;"+metadataCollection.getIdentifier().getEntry()+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td/></tr><tr><td/></tr>
+<%				
+				currentResultCounter++;
 
-
-
-
-<%
-            currentResultCounter++;
-            } catch (Exception e) {}
-        }
-    } catch (Exception e) {}
-%>
+        }%>
 
 
         </table>
@@ -438,7 +363,7 @@ if (logSystemDir.compareTo("")==0){
 
 
 <%!
-    public String getVCardFN(String vcardString) {
+    /*public String getVCardFN(String vcardString) {
 
         try {
             DomParser parser = new DomParser();
@@ -469,9 +394,9 @@ if (logSystemDir.compareTo("")==0){
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
-    public String getVCardN(String vcardString) {
+    /*public String getVCardN(String vcardString) {
 
         try {
             DomParser parser = new DomParser();
@@ -488,7 +413,7 @@ if (logSystemDir.compareTo("")==0){
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
     
     //Copy of functions from SqiTest
     
