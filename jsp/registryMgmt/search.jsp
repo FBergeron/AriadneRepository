@@ -10,6 +10,8 @@
 <%@ page import="net.sf.vcard4j.java.AddressBook" %>
 <%@ page import="net.sf.vcard4j.java.type.FN" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.*" %>
 <%@ page import="org.apache.xerces.dom.DocumentImpl" %>
 <%@ page import="net.sf.vcard4j.java.type.N" %>
@@ -22,6 +24,9 @@
 <%@page import="java.net.PasswordAuthentication"%>
 <%@page import="java.net.URL"%>
 <%@page import="java.net.URLConnection"%>
+<%@page import="org.jdom.input.SAXBuilder"%>
+<%@page import="org.jdom.Namespace"%>
+<%@ page import="org.ariadne_eu.utils.registry.*"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -62,6 +67,11 @@
 	try { 
 		URL url = new URL(urlBase+"ariadneV4.properties");
 		URLConnection connection = url.openConnection();
+		connection.setDefaultUseCaches(false);
+		connection.setUseCaches(false);
+		connection.setRequestProperty("Cache-Control","no-store,max-age=0,no-cache");
+		connection.setRequestProperty("Expires", "0");
+		connection.setRequestProperty("Pragma", "no-cache");
 		
 		InputStream inputStream = connection.getInputStream();
 		OutputStream outputStream = new FileOutputStream(harvesters);
@@ -137,6 +147,7 @@
 %>
 
 
+
 <html>
 
 
@@ -161,7 +172,7 @@
 
 
   <center>
-      <form action="search.jsp">
+      
 
 
         <table align="center">
@@ -172,7 +183,7 @@
 
                               <table>
                                   <tr>
-                                      <td><p>Enter search query:</p></td>
+                                      <td><form action="search.jsp"><p>Enter search query:</p></td>
                                   </tr>
                                   <tr>
                                       <td><input type="text" name="query" value="<%=query_temp != null ? StringEscapeUtils.escapeHtml(query_temp) : ""%>" /></td>
@@ -182,7 +193,10 @@
                                   </tr>              
                                   <input type="hidden" name="id" value="<%=harvesterId%>"/>                    
                                   <tr>
-                                      <td align="center"><A href="search.jsp?query=http&search=search&id=<%=harvesterId%>">Show all the content</A></td>
+                                      <td align="center"><A href="search.jsp?query=http&search=search&id=<%=harvesterId%>">Show all the content</A></form></td>
+                                  </tr>
+                                  <tr>
+                                      <td align="center"><form action=""><input type="submit" name="harvesting" value="harvest now" /></form></td>
                                   </tr>
                               </table>
 
@@ -197,7 +211,7 @@
 
           
 
-      </form>
+      
   </center>
 
 
@@ -243,220 +257,140 @@
         <table class="searchResults" cellpadding="0" cellspacing="0">
 
 <%
-
-    StringReader stringReader = new StringReader(result);
-    InputSource input = new InputSource(stringReader);
-
-    try {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input);
-
-        Node result = doc.getFirstChild();
-        NodeList nl = result.getChildNodes();
-        int currentResultCounter = 0;
-        for (int i = 0; i < nl.getLength(); i++)
-        {
-            try {
-                Element theNode = ((Element) nl.item(i));
-
-                NodeList nl2;
-               
-
-                String title = "Untitled";
-                try {
-                    nl2 = XPathAPI.selectNodeList(theNode, "identifier/entry/text()");
-                    title = nl2.item(0).getNodeValue();
-                } catch (Exception e) {
-                }
-
-                String description = "";
-                try {
-                    nl2 = XPathAPI.selectNodeList(theNode, "description/string/text()");
-                    description = nl2.item(0).getNodeValue();
-                } catch (Exception e) {
-                }
+	Results results = new Results();
+	results.parseXMLResults(result);
+	List<MetadataCollection> list = results.getResults();
+    int currentResultCounter = 0;
+    for (int i = 0; i < list.size(); i++)
+    {
+    	MetadataCollection metadataCollection = list.get(i);
 
 %>
 
-
-
-			
-			
             <tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
                 <td>
 
-                    <b>Identifier: </b><%=title%>
+                    <b>Identifier: </b><%=metadataCollection.getIdentifier().getEntry()%>
 
                 </td><td/>                 
             </tr>
-<%
-    if (description != null && description.length()>0)
-    {
-%>
-            <tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
-                <td colspan="2" class="searchResultsDescription"><b>Description:</b><br /><%=description%></td>
-            </tr>
-<%
-    }
+	<%
+	    if (metadataCollection.getDescription().getString() != null && metadataCollection.getDescription().getString().length()>0)
+	    {
+	%>
+	            <tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
+	                <td colspan="2" class="searchResultsDescription"><b>Description:</b><br /><%=metadataCollection.getDescription().getString()%></td>
+	            </tr>
+	<%
+	    }
 %>
 
 
 <%
-				String target_id = "";
-				String target_catalog = "";
-				String target_protocol_identifier = "";
-				String target_protocol_catalog = "";
-				String target_location = "";
-                try {
-				NodeList nl_target_entry = XPathAPI.selectNodeList(theNode, "target/targetDescription/identifier/entry/text()");
-				NodeList nl_target_catalog = XPathAPI.selectNodeList(theNode, "target/targetDescription/identifier/catalog/text()");
-				NodeList nl_target_protocol_identifier = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolIdentifier/entry/text()");
-				NodeList nl_target_protocol_catalog = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolIdentifier/catalog/text()");
-				NodeList nl_target_location = XPathAPI.selectNodeList(theNode, "target/targetDescription/location/text()");
-				NodeList nl_oai_prefix = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolImplementationDescription/oai-pmh/metadataFormat/metadataPrefix/text()");
-				NodeList nl_oai_sets = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolImplementationDescription/oai-pmh/set/text()");
-				NodeList nl_oai_granularity = XPathAPI.selectNodeList(theNode, "target/targetDescription/protocolImplementationDescription/oai-pmh/granularity/text()");
-				NodeList nl_oai_location = XPathAPI.selectNodeList(theNode, "target/targetDescription/location/text()");
-                for (int node=0;node<nl_target_entry.getLength();node++){
-					target_id = nl_target_entry.item(node).getNodeValue();
-					target_catalog = nl_target_catalog.item(node).getNodeValue();
-					target_protocol_identifier = nl_target_protocol_identifier.item(node).getNodeValue();
-					target_protocol_catalog = nl_target_protocol_catalog.item(node).getNodeValue();
-					target_location = nl_target_location.item(node).getNodeValue();
-					
-					if (target_protocol_identifier.compareTo("oai-pmh-v2")==0){
-	%>
+		List<TargetDescription> targets = metadataCollection.getTarget();
+		for (int node=0;node<targets.size();node++){
+			TargetDescription targetDescription = targets.get(node);
+			if (targetDescription.getProtocolIdentifier().getEntry().compareTo("oai-pmh-v2")==0){
+				out.println("true");
+%>
+<%
+				if (targetDescription.getIdentifier().getEntry() != null && targetDescription.getIdentifier().getEntry().length()>0)
+				{				
+%>
+				<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
+					<td colspan="1" class="searchResultsDescription" align="right"><b>Target <%=node%>:</b>
+				</td><td/></tr>
+				<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
+					<td colspan="1"/><td colspan="1" class="searchResultsDescription"><form action="harvest.jsp"><b>Entry: </b><%=targetDescription.getIdentifier().getEntry()%>				
+<%				}%>
 	<%
-						if (target_id != null && target_id.length()>0)
-						{				
-	%>
-						<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
-							<td colspan="1" class="searchResultsDescription" align="right"><b>Target <%=node%>:</b>
-						</td><td/></tr>
-						<tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>">
-							<td colspan="1"/><td colspan="1" class="searchResultsDescription"><form action="harvest.jsp"><b>Entry: </b><%=target_id%>				
-	<%					}%>
+				if (targetDescription.getIdentifier().getCatalog() != null && targetDescription.getIdentifier().getCatalog().length()>0)
+				{				
+%>					
+					<br/><b>Catalog :</b> <%=targetDescription.getIdentifier().getCatalog()%>				
+<%				}%>
 	<%
-						if (target_catalog != null && target_catalog.length()>0)
-						{				
-	%>					
-							<br/><b>Catalog :</b> <%=target_catalog%>				
-	<%					}%>
+				if (targetDescription.getLocation() != null && targetDescription.getLocation().length()>0)
+				{				
+%>					
+					<br/><b>Location :</b> <%=targetDescription.getLocation()%>				
+<%				}%>
 	<%
-						if ((target_protocol_identifier != null && target_protocol_identifier.length()>0) && (target_protocol_catalog != null && target_protocol_catalog.length()>0))
-						{				
+				if ((targetDescription.getProtocolIdentifier().getEntry() != null && targetDescription.getProtocolIdentifier().getEntry().length()>0) && (targetDescription.getProtocolIdentifier().getCatalog() != null && targetDescription.getProtocolIdentifier().getCatalog().length()>0))
+				{				
 							
 							
-							query_protocol = "(protocol.identifier.entry = \""+target_protocol_identifier+"\") and (protocol.identifier.catalog= \""+target_protocol_catalog+"\")";	
-							sessionId = createAnonymousSession(axis2_url +  "/SqiSessionManagement");
-							sqiStub = new SqiTargetStub(axis2_url + "/SqiTarget");
-							int startResult_protocol=1;
-							language = "plql1";
-							setQueryLanguage(sessionId, language);
-							setResultSetSize(sessionId, resultSize);
-							format = "lom";
-							setResultSetFormat(sessionId, format);
-	
-							result_protocol = query(sessionId, query_protocol, startResult_protocol);
-							StringReader stringReader_protocol = new StringReader(result_protocol);
-						    InputSource input_protocol = new InputSource(stringReader_protocol);
-					        Document doc_protocol = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(input_protocol);
-	
-					        Node result_protocol = doc_protocol.getFirstChild();
-					        NodeList nl_protocol = result_protocol.getChildNodes();
-					        int currentResultCounter_protocol = 0;
-					        for (int i_protocol = 0; i_protocol < nl_protocol.getLength(); i_protocol++)
-					        {
-					            try {
-					                Element theNode_protocol = ((Element) nl_protocol.item(i_protocol));
-	
-					                NodeList nl2_protocol;
-					                String title_protocol = "";
-					                try {
-					                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "name/text()");
-					                    title_protocol = nl2_protocol.item(0).getNodeValue();
-					                } catch (Exception e) {
-					                }
-					                String binding_space_protocol = "";
-					                try {
-					                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "protocolDescriptionBindingNamespace/text()");
-					                    binding_space_protocol = nl2_protocol.item(0).getNodeValue();
-					                } catch (Exception e) {
-					                }
-					                String binding_location_protocol = "";
-					                try {
-					                    nl2_protocol = XPathAPI.selectNodeList(theNode_protocol, "protocolDescriptionBindingLocation/text()");
-					                    binding_location_protocol = nl2_protocol.item(0).getNodeValue();
-					                } catch (Exception e) {
-					                }
-									if (title_protocol != null && title_protocol.length()>0)
-									{%>					
-										<br/><b>Protocol Name :</b> <%=title_protocol%>				
-	<%								}
+					try{
+						query_protocol = "(protocol.identifier.entry = \""+targetDescription.getProtocolIdentifier().getEntry()+"\") and (protocol.identifier.catalog= \""+targetDescription.getProtocolIdentifier().getCatalog()+"\")";	
+						sessionId = createAnonymousSession(axis2_url +  "/SqiSessionManagement");
+						sqiStub = new SqiTargetStub(axis2_url + "/SqiTarget");
+						int startResult_protocol=1;
+						language = "plql1";
+						setQueryLanguage(sessionId, language);
+						setResultSetSize(sessionId, resultSize);
+						format = "lom";
+						setResultSetFormat(sessionId, format);
+
+						result_protocol = query(sessionId, query_protocol, startResult_protocol);
+						targetDescription.parseXMLProtocol(result_protocol);
+						if (targetDescription.getProtocol().getName() != null && targetDescription.getProtocol().getName().length()>0)
+						{%>					
+							<br/><b>Protocol Name :</b> <%=targetDescription.getProtocol().getName()%>				
+<%						}
 									
-									if (binding_space_protocol != null && binding_space_protocol.length()>0)
-									{%>					
-										<br/><b>Protocol Description Binding Name Space :</b> <%=binding_space_protocol%>	
-	<%								}	
+						if (targetDescription.getProtocol().getProtocolDescriptionBindingNamespace() != null && targetDescription.getProtocol().getProtocolDescriptionBindingNamespace().length()>0)
+						{%>					
+							<br/><b>Protocol Description Binding Name Space :</b> <%=targetDescription.getProtocol().getProtocolDescriptionBindingNamespace()%>	
+	<%					}	
 									
-									if (binding_location_protocol != null && binding_location_protocol.length()>0)
-									{%>					
-										<br/><b>Protocol Description Binding Location :</b> <%=binding_location_protocol%>	
-	<%								}
-					            } catch (Exception e) {}			            
-					        }
-					        
-						}
-						for (int node_prefix=0;node_prefix<nl_oai_prefix.getLength();node_prefix++){
-							String oai_prefix = nl_oai_prefix.item(node_prefix).getNodeValue();
-							%><br/><b>Metadata prefix :</b> <input  type="radio" value="<%=oai_prefix%>" name="metadata_prefix" <%
-							String prefix = properties.getProperty(title+".metadataPrefix");
-							if (prefix!=null){
-								if ((prefix.compareTo(oai_prefix)==0)||(node_prefix==0)) out.println("checked");
-							}else{
-								if (node_prefix==0) out.println("checked");
-							}
-							%>/><%=oai_prefix%>	<% 
-						}
-						%><input  type="hidden" value="<%=nl_oai_sets.getLength()%>" name="numberSets"/>
-						<input  type="hidden" value="<%=nl_oai_granularity.item(0).getNodeValue()%>" name="granularity"/>
-						<input  type="hidden" value="<%=nl_oai_location.item(0).getNodeValue()%>" name="location"/>
-						<input  type="hidden" value="<%=target_id%>" name="target_id"/>
-						<input type="hidden" name="id" value="<%=harvesterId%>"/>  
-						<input  type="hidden" value="<%=title%>" name="registry_entry"/>
-						<input  type="hidden" value="<%=XPathAPI.selectNodeList(theNode, "identifier/catalog/text()").item(0).getNodeValue()%>" name="registry_catalog"/>
-						<input type="hidden" name="query" value="<%=query != null ? StringEscapeUtils.escapeHtml(query) : ""%>" />
-						<% 
-						for (int node_set=0;node_set<nl_oai_sets.getLength();node_set++){
-							String oai_set = nl_oai_sets.item(node_set).getNodeValue();
-							%><br/><b>Sets :</b><input  type="checkbox" value="<%=oai_set%>" name="set<%=node_set%>" 
-								<%String listSets = properties.getProperty(title+".harvestingSet"); 
-								  if (listSets!=null){
-									  if ((listSets.lastIndexOf(";"+oai_set)>0)||(listSets.lastIndexOf(oai_set+";")>=0)) out.println("checked");
-								  }
-								  %>/> 
-							<%=oai_set%>	<% 
-						}
-						
-					
-						
-					}
+						if (targetDescription.getProtocol().getProtocolDescriptionBindingLocation() != null && targetDescription.getProtocol().getProtocolDescriptionBindingLocation().length()>0)
+						{%>					
+							<br/><b>Protocol Description Binding Location :</b> <%=targetDescription.getProtocol().getProtocolDescriptionBindingLocation()%>	
+	<%					}
+					    } catch (Exception e) {out.println(e);}			            
 				}
+				try{
+				for (int node_prefix=0;node_prefix<targetDescription.getProtocolImplementationDescription().getOaiPmh().getMetadataFormats().size();node_prefix++){
+					String oai_prefix = targetDescription.getProtocolImplementationDescription().getOaiPmh().getMetadataFormats().get(node_prefix).getMetadataPrefix();
+					%><br/><b>Metadata prefix :</b> <input  type="radio" value="<%=oai_prefix%>" name="metadata_prefix" <%
+					String prefix = properties.getProperty(metadataCollection.getIdentifier().getEntry()+".metadataPrefix");
+					if (prefix!=null){
+						if ((prefix.compareTo(oai_prefix)==0)||(node_prefix==0)) out.println("checked");
+						}else{
+							if (node_prefix==0) out.println("checked");
+						}
+						%>/><%=oai_prefix%>	<% 
+				}
+				%><input  type="hidden" value="<%=targetDescription.getProtocolImplementationDescription().getOaiPmh().getSets().size()%>" name="numberSets"/>
+				<input  type="hidden" value="<%=targetDescription.getProtocolImplementationDescription().getOaiPmh().getGranularity()%>" name="granularity"/>
+				<input  type="hidden" value="<%=targetDescription.getLocation()%>" name="location"/>
+				<input  type="hidden" value="<%=targetDescription.getIdentifier().getEntry()%>" name="target_id"/>
+				<input type="hidden" name="id" value="<%=harvesterId%>"/>  
+				<input  type="hidden" value="<%=metadataCollection.getIdentifier().getEntry()%>" name="registry_entry"/>
+				<input  type="hidden" value="<%=metadataCollection.getIdentifier().getCatalog()%>" name="registry_catalog"/>
+				<input type="hidden" name="query" value="<%=query != null ? StringEscapeUtils.escapeHtml(query) : ""%>" />
+					<% 
+				for (int node_set=0;node_set<targetDescription.getProtocolImplementationDescription().getOaiPmh().getSets().size();node_set++){
+					String oai_set = targetDescription.getProtocolImplementationDescription().getOaiPmh().getSets().get(node_set);
+					%><br/><b>Sets :</b><input  type="checkbox" value="<%=oai_set%>" name="set<%=node_set%>" 
+						<%String listSets = properties.getProperty(metadataCollection.getIdentifier().getEntry()+".harvestingSet"); 
+						  if (listSets!=null){
+							  if ((listSets.lastIndexOf(";"+oai_set)>0)||(listSets.lastIndexOf(oai_set+";")>=0)) out.println("checked");
+						  }
+						  %>/> 
+					<%=oai_set%>	<% 
+				}		
+				if (properties.getProperty(metadataCollection.getIdentifier().getEntry()+".active")!=null){
+						out.println("<br/><input type=\"submit\" name=\"next\" value=\"Upload to harvester >>\" />");
+						out.println("<input type=\"submit\" name=\"next\" value=\"Delete from the harvester >>\" /></form></form></td></tr>");
+				}else{
+				    	out.println("<br/><input type=\"submit\" name=\"next\" value=\"Add to harvester >>\" /></form></form></td></tr>");
+				}}catch(Exception e){out.println(e);}
+			}
+			
                 
-			    if (properties.getProperty(title+".active")!=null){
-					out.println("<br/><input type=\"submit\" name=\"next\" value=\"Upload to harvester >>\" />");
-					out.println("<input type=\"submit\" name=\"next\" value=\"Delete from the harvester >>\" /></form></form></td></tr>");
-			    }else{
-			    	out.println("<br/><input type=\"submit\" name=\"next\" value=\"Add to harvester >>\" /></form></form></td></tr>");
-			    }
-                } catch (Exception e) {
-                	if (properties.getProperty(title+".active")!=null){
-    					out.println("<br/><input type=\"submit\" name=\"next\" value=\"Upload to harvester >>\" />");
-    					out.println("<input type=\"submit\" name=\"next\" value=\"Delete from the harvester >>\" /></form></form></td></tr>");
-    			    }else{
-    			    	out.println("<br/><input type=\"submit\" name=\"next\" value=\"Add to harvester >>\" /></form></form></td></tr>");
-    			    }    
-    			    
-                }
+		    
+       } 
 %>
 
 
@@ -464,9 +398,7 @@
 
 <%
             currentResultCounter++;
-            } catch (Exception e) {}
-        }
-    } catch (Exception e) {}
+    }
 %>
 
 
@@ -529,7 +461,7 @@
 
 
 <%!
-    public String getVCardFN(String vcardString) {
+   /* public String getVCardFN(String vcardString) {
 
         try {
             DomParser parser = new DomParser();
@@ -579,7 +511,7 @@
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
     
     //Copy of functions from SqiTest
     

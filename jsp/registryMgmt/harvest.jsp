@@ -10,9 +10,7 @@
 <%@page import="java.net.Authenticator"%>
 <%@page import="java.net.PasswordAuthentication"%>
 <%@page import="org.ariadne.util.ClientHttpRequest"%>
-
-
-
+<%@page import="uiuc.oai.OAIRepository"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -21,7 +19,7 @@
 <body>
 <% 
 	PropertiesManager properties = new PropertiesManager(); 
-	
+	OAIRepository repository = new OAIRepository();
 	File harvestersProperties = new File(application.getRealPath("registryMgmt/"+"harvesters.properties"));                           
 	properties.init(harvestersProperties);
 	String harvesterId = request.getParameter("id");
@@ -52,7 +50,8 @@
 	    inputStream.close();
 		harvester.init(file); 		
 	} catch (IOException e) {}
-		
+	
+	repository.setBaseURL(request.getParameter("location"));
  
 	out.println("<br/>"+request.getParameter("next")+"<br/>");
 	out.println("<br/>"+request.getParameter("next").compareTo("Delete from the harvester >>")+"<br/>");
@@ -86,7 +85,7 @@
 		harvester.saveProperty(request.getParameter("registry_entry")+".validationUri","");
 		harvester.saveProperty(request.getParameter("registry_entry")+".autoReset","");
 		harvester.saveProperty(request.getParameter("registry_entry")+".granularity",request.getParameter("granularity"));
-		harvester.saveProperty(request.getParameter("registry_entry")+".providerName","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".providerName",request.getParameter("location"));
 		harvester.saveProperty(request.getParameter("registry_entry")+".metadataPrefix",request.getParameter("metadata_prefix"));
 		harvester.saveProperty(request.getParameter("registry_entry")+".baseURL",request.getParameter("location"));
 		String sets="";
@@ -97,11 +96,11 @@
 		harvester.saveProperty(request.getParameter("registry_entry")+".metadataFormat","");
 		harvester.saveProperty(request.getParameter("registry_entry")+".repositoryIdentifier",request.getParameter("registry_entry"));
 		harvester.saveProperty(request.getParameter("registry_entry")+".repositoryName","");
-		harvester.saveProperty(request.getParameter("registry_entry")+".statusLastHarvest","");
+		harvester.saveProperty(request.getParameter("registry_entry")+".statusLastHarvest",repository.getRepositoryName());
 		harvester.saveProperty(request.getParameter("registry_entry")+".registryIdentifier.entry",request.getParameter("registry_entry"));
 		harvester.saveProperty(request.getParameter("registry_entry")+".registryIdentifier.catalog",request.getParameter("registry_catalog"));
 		harvester.saveProperty(request.getParameter("registry_entry")+".registryTarget","true");
-		harvester.saveProperty("AllTargets.list",harvester.getProperty("AllTargets.list")+";"+request.getParameter("registry_entry"));
+		if (request.getParameter("next").compareTo("Upload to harvester >>")!=0) harvester.saveProperty("AllTargets.list",harvester.getProperty("AllTargets.list")+";"+request.getParameter("registry_entry"));
 	}
 	
 	try {
