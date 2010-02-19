@@ -23,7 +23,6 @@ public class TranslateResultsformat {
     public static final int SOLR = 5;
     public static final int RLOM = 6;
     public static final int MELOM = 7;
-    public static final int DATE = 8;
 
     public static boolean isPLRF(int rfId) {
         return rfId >= 1 && rfId <= 4;
