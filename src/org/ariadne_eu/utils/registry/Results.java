@@ -38,8 +38,10 @@ public class Results {
 		org.jdom.Document doc;
 		try {
 			doc = builder.build(in);
-			List<Element> mdInstances = doc.getRootElement().getChildren();
 			Namespace ns = Namespace.getNamespace("http://www.imsglobal.org/services/lode/imsloreg_v1p0");
+			List<Element> mdInstances = doc.getRootElement().getChildren("metadataCollection",ns);
+			
+			
 			for(int i=0; i<mdInstances.size();i++){
 				MetadataCollection metadataCollection = new MetadataCollection();
 				metadataCollection.parseXMLMetadataCollection((org.jdom.Element) mdInstances.get(i),ns);
