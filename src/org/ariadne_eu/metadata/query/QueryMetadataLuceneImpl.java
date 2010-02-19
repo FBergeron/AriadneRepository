@@ -92,7 +92,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             	result = new ResultDelegateSolrImpl(start,max,lQuery);
             } else if (resultsFormat == TranslateResultsformat.MELOM) {
             	result = new ResultDelegateMACEEnrichedLomImpl(start,max);
-            } else {
+            }else {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);
             }
