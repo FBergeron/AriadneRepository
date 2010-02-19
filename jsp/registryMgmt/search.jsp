@@ -65,7 +65,7 @@
 	File harvesters = new File(application.getRealPath("registryMgmt/"+"harvester.properties"));                           
 	harvesters.createNewFile();
 	try { 
-		URL url = new URL(urlBase+"ariadneV4.properties");
+		URL url = new URL(urlBase+"/install/ariadneV4.properties");
 		URLConnection connection = url.openConnection();
 		connection.setDefaultUseCaches(false);
 		connection.setUseCaches(false);
@@ -196,8 +196,19 @@
                                       <td align="center"><A href="search.jsp?query=http&search=search&id=<%=harvesterId%>">Show all the content</A></form></td>
                                   </tr>
                                   <tr>
-                                      <td align="center"><form action=""><input type="submit" name="harvesting" value="harvest now" /></form></td>
-                                  </tr>
+                                  	
+                                      <td align="center"><form action="harvest.jsp">
+                                      						<input type="submit" name="next" value="harvest now"/>
+                                      						<input type="hidden" name="id" value="<%=harvesterId%>"/>
+                                      						<input type="hidden" name="query" value="<%=query != null ? StringEscapeUtils.escapeHtml(query) : ""%>" />
+                                      						</form></td></tr>
+                                      						<%try{
+                                      							if (request.getParameter("harvest").compareTo("true")==0)
+                                      								out.println("<tr><td align=\"center\"><a href=\""+urlBase+"//start/viewHistory.jsp\">View history in the harvester</a></td></tr>");
+                                      						} catch (Exception e){
+                                      							
+                                      						}%>
+                                  
                               </table>
 
 
@@ -291,7 +302,7 @@
 		for (int node=0;node<targets.size();node++){
 			TargetDescription targetDescription = targets.get(node);
 			if (targetDescription.getProtocolIdentifier().getEntry().compareTo("oai-pmh-v2")==0){
-				out.println("true");
+				
 %>
 <%
 				if (targetDescription.getIdentifier().getEntry() != null && targetDescription.getIdentifier().getEntry().length()>0)
@@ -363,6 +374,7 @@
 				}
 				%><input  type="hidden" value="<%=targetDescription.getProtocolImplementationDescription().getOaiPmh().getSets().size()%>" name="numberSets"/>
 				<input  type="hidden" value="<%=targetDescription.getProtocolImplementationDescription().getOaiPmh().getGranularity()%>" name="granularity"/>
+				<input  type="hidden" value="<%=targetDescription.getProtocolImplementationDescription().getOaiPmh().getEarliestDateStamp()%>" name="earliestDateStamp"/>
 				<input  type="hidden" value="<%=targetDescription.getLocation()%>" name="location"/>
 				<input  type="hidden" value="<%=targetDescription.getIdentifier().getEntry()%>" name="target_id"/>
 				<input type="hidden" name="id" value="<%=harvesterId%>"/>  
