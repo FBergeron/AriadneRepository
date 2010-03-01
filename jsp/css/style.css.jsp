@@ -49,6 +49,8 @@ body {
         position: relative;
         width: 100%;
         background: #003366;
+        color : #FFF;
+        font-size : 50px;
         background-position: top right;
         margin: 0px;
         padding: 0px;

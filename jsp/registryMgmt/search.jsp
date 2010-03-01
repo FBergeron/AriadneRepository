@@ -324,7 +324,7 @@
 				if (targetDescription.getLocation() != null && targetDescription.getLocation().length()>0)
 				{				
 %>					
-					<br/><b>Location :</b> <%=targetDescription.getLocation()%>				
+					<br/><b>Location :</b> <a href="<%=targetDescription.getLocation()%>"><%=targetDescription.getLocation()%></a>				
 <%				}%>
 	<%
 				if ((targetDescription.getProtocolIdentifier().getEntry() != null && targetDescription.getProtocolIdentifier().getEntry().length()>0) && (targetDescription.getProtocolIdentifier().getCatalog() != null && targetDescription.getProtocolIdentifier().getCatalog().length()>0))
@@ -388,6 +388,7 @@
 						<%String listSets = properties.getProperty(metadataCollection.getIdentifier().getEntry()+".harvestingSet"); 
 						  if (listSets!=null){
 							  if ((listSets.lastIndexOf(";"+oai_set)>0)||(listSets.lastIndexOf(oai_set+";")>=0)) out.println("checked");
+							  else if (listSets.compareTo(oai_set)==0) out.println("checked");
 						  }
 						  %>/> 
 					<%=oai_set%>	<% 

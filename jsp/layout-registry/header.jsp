@@ -3,7 +3,7 @@
 <div id="wrapper">
     <div id="header">
         <div id="mambo">
-            <img alt="Logo" src="<%=request.getContextPath()%>/images/header_text.png" />
+            <img alt="Logo" src="<%=request.getContextPath()%>/images/registry.png" />
         </div>
     </div>
 </div>
@@ -32,10 +32,17 @@
         <!--# log out-->
         <script language="JavaScript" type="text/javascript">
 		var myMenu =
-		[
-<%
+		[			
+			[null,'New',null,null,'New',
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/content.png" />','Add New repository','<%=request.getContextPath()%>/form/addNewRepository.jsp',null,'Add New repository'],
+			],	
+			_cmSplit,
+			[null,'Search',null,null,'Search',
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/query.png" />','Search registry','<%=request.getContextPath()%>/search/',null,'Search registry'],
+			],		
+<%			
 if (isLoggedIn) {
-%>
+%>			_cmSplit,
 			[null,'Status',null,null,'Status',
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/checkin.png" />','Test Status','<%=request.getContextPath()%>/status/',null,''],
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Reload repository','<%=request.getContextPath()%>/admin/reload.jsp',null,''],
@@ -55,14 +62,10 @@ if (isLoggedIn) {
 			_cmSplit,
 			[null,'Modify',null,null,'Modify',
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/content.png" />','Modify Metadata','<%=request.getContextPath()%>/admin/updateMetadata.jsp',null,'Modify Metadata'],
-			],
-
-			[null,'Search',null,null,'Search',
-				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/query.png" />','Search registry','<%=request.getContextPath()%>/search/',null,'Search registry'],
-			],
+			],			
 			_cmSplit,
 			[null,'Management',null,null,'Management',
-				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Easy Configuration','<%=request.getContextPath()%>/init/index.jsp',null,''],
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Wizard Configuration','<%=request.getContextPath()%>/init/index.jsp',null,''],
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Change Configuration','<%=request.getContextPath()%>/admin/changeConfiguration.jsp',null,''],
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Manage harvester Configuration','<%=request.getContextPath()%>/registryMgmt/index.jsp',null,''],
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Add New Harvester','<%=request.getContextPath()%>/registryMgmt/registerNewHarvester.jsp',null,''],

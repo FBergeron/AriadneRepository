@@ -28,25 +28,26 @@
 <%
       pageContext.include("/layout/headLinks.jsp");
 %>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
   </head>
   <body>
 <%
       pageContext.include("/layout/header.jsp");
 %>
-<form METHOD=POST name=form id=form ACTION="finish.jsp" onsubmit="return check();">
+<form METHOD=POST name=form id=form ACTION="addSqiTarget.jsp" onsubmit="return check();">
 <div id="ctr" align="center">
 	<div class="install">
 		<div id="stepbar">
-			<div class="step-on">New Repository</div>
-			<div class="step-off">SQI Target</div>
-			<div class="step-off">OAI Target</div>
+			<div class="step-off">New Repository</div>
 			<div class="step-off">SPI Target</div>
+			<div class="step-on">OAI Target</div>
+			<div class="step-off">SQI Target</div>
 			<div class="step-off">Finish</div>
 		</div>
 
 		<div id="right">
 
-			<div id="step">General Information about the repository</div>
+			<div id="step">General Information about the <br/>repository</div>
 
 			<div class="far-right">
 				<input name="Button2" type="submit" class="button" value="Next >>" />
@@ -56,7 +57,7 @@
 			<h1>Introduce the information for the new repository</h1>
 
 			<div class="install-text">
-    			<p>Introduce the information like URL service, user and password:</p>
+    			<p>Introduce the name of the repository, it will be user to create the id of the repository and its description:</p>
 
        			<p><font color=FF0000><b>
                 </b></font></p>
@@ -65,35 +66,13 @@
   	   			<div class="form-block">
   	     			<table class="content2">
   	     			<tr>
-  		    			<td>Title :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="title" value="<% 
-  		    			try{
-  		    				if (request.getParameter("title")!=null) out.println(request.getParameter("title"));
-  		    			}catch(Exception e){}%>"/></td>
+  		    			<td>URL Oai Target:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="targetURLOai" value=""/>
+  		    			<input type="hidden" name="repositoryName" value="<%=request.getParameter("repositoryName")%>"/>
+  		    			<input type="hidden" name="description" value="<%=request.getParameter("description")%>"/>
+  		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi")%>"/>
+  		    			</td>
   		    		</tr>
-  	     			<tr>
-  		    			<td>ID :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="id" value="<%
-  		    			try{
-  		    				if (request.getParameter("id")!=null) out.println(request.getParameter("id"));
-  		    			}catch(Exception e){}%>"/></td>
-  		    		</tr>
-  		  			<tr>
-  		    			<td>URL :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="url" value="<%
-  		    			try{
-  		    				if (request.getParameter("url")!=null) out.println(request.getParameter("url"));
-  		    			}catch(Exception e){}%>"/></td>
-  		    		</tr>
-  		    		<tr>
-  		    			<td>User :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="user" value="<%
-  		    			try{
-  		    				if (request.getParameter("user")!=null) out.println(request.getParameter("user"));
-  		    			}catch(Exception e){}%>"/></td>
-  		    		</tr>
-  		    		<tr>
-  		    			<td>Password :<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="pass" value="<%
-  		    			try{
-  		    				if (request.getParameter("password")!=null) out.println(request.getParameter("password"));
-  		    			}catch(Exception e){}%>"/></td>
-  		    		</tr>    		
+  	     			 		
 		  	        </table>
   				</div>
 			</div>

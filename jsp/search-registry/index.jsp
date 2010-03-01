@@ -258,7 +258,7 @@
 					if (targetDescription.getLocation() != null && targetDescription.getLocation().length()>0)
 					{				
 %>					
-						<br/><b>Location :</b> <%=targetDescription.getLocation()%>				
+						<br/><b>Location :</b> <a href="<%=targetDescription.getLocation()%>"><%=targetDescription.getLocation()%></a>						
 <%					}%>
 <%
 					if ((targetDescription.getProtocolIdentifier().getEntry() != null && targetDescription.getProtocolIdentifier().getEntry().length()>0) && (targetDescription.getProtocolIdentifier().getCatalog() != null && targetDescription.getProtocolIdentifier().getCatalog().length()>0))
@@ -297,7 +297,7 @@
 %>
 					</td></tr>					
 <%
-				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;&#34;"+metadataCollection.getIdentifier().getEntry()+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td/></tr><tr><td/></tr>
+				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;metadataCollection.identifier.entry%3D&#34;"+metadataCollection.getIdentifier().getEntry()+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td/></tr><tr><td/></tr>
 <%				
 				currentResultCounter++;
 

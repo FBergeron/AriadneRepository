@@ -54,7 +54,7 @@
                                   </tr>
                                   <% for (int i=0;i<vector.length;i++){ %>
                                   <tr>
-                                      <td><a href="search.jsp?id=<%=properties.getProperty(vector[i]+".id")%>"><%=properties.getProperty(vector[i]+".title")%></a></td>
+                                      <td><a href="search.jsp?query=http&id=<%=properties.getProperty(vector[i]+".id")%>"><%=properties.getProperty(vector[i]+".title")%></a> <a href="registerNewHarvester.jsp?id=<%=properties.getProperty(vector[i]+".id")%>&url=<%=properties.getProperty(vector[i]+".url")%>&title=<%=properties.getProperty(vector[i]+".title")%>&user=<%=properties.getProperty(vector[i]+".user")%>&password=<%=properties.getProperty(vector[i]+".password")%>">Edit Harvester</a></a></td>
                                   </tr>    
                                   <%} %>                                                              
 
