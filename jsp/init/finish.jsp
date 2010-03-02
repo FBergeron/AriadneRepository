@@ -149,7 +149,7 @@ else{
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.id","key");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.repoid","oaicat.ariadne.org");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.set","collection");
-	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.fs.ext","");
+	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.fs.ext","xml");
 	PropertiesManager.getInstance().saveProperty("oaicat.sets.ARIADNE.repoid","ARIADNE");
 	PropertiesManager.getInstance().saveProperty("oaicat.handler.useoaischeme","false");
 	PropertiesManager.getInstance().saveProperty("OAIHandler.useOaiIdScheme","false");
