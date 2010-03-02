@@ -262,7 +262,7 @@ public class MACELOMHandler extends DocumentHandler {
 				if (date.length() > 15)
 					date = date.substring(0, 15);
 				//				
-				doc.add(new Field(tmpBranche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), date.toLowerCase(),Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -317,10 +317,10 @@ public class MACELOMHandler extends DocumentHandler {
 		else if (tmpBranche.matches(".*identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
 				catalog = elementBuffer.toString().trim().replace("\n", "").toLowerCase();
-				doc.add(new Field(tmpBranche.toLowerCase(), catalog, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), catalog.toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().toLowerCase().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 			}
 		}

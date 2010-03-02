@@ -226,10 +226,10 @@ public class LOMHandler extends DocumentHandler {
 		else if (tmpBranche.matches(".*title.*")) {
 			if (tmpBranche.endsWith("title.string")) {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer
-						.toString().trim(), Field.Store.YES,
+						.toString().trim().toLowerCase(), Field.Store.YES,
 						Field.Index.TOKENIZED));// XXX
 				doc.add(new Field(tmpBranche.toLowerCase() + ".exact",
-						elementBuffer.toString().trim(), Field.Store.YES,
+						elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,
 						Field.Index.UN_TOKENIZED));// XXX
 
 			}
@@ -258,7 +258,7 @@ public class LOMHandler extends DocumentHandler {
 				if (date.length() > 15)
 					date = date.substring(0, 15);
 				//				
-				doc.add(new Field(tmp2Branche.toLowerCase(), date,Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmp2Branche.toLowerCase(), date.toLowerCase(),Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 			}
 		}
@@ -324,12 +324,12 @@ public class LOMHandler extends DocumentHandler {
 				// indentifier =
 				// "catalog"+EQUAL_SEPARATOR+""+elementBuffer.toString().trim();
 				catalog = elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 				
-				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().trim(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase() + BRANCH_SEPARATOR + "exact" , elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 
 				// doc.add(new
 				// Field(tmp2Branche+""+BRANCH_SEPARATOR+""+indentifier+""+BRANCH_SEPARATOR+"entry",elementBuffer.toString().trim(),
@@ -365,7 +365,7 @@ public class LOMHandler extends DocumentHandler {
 		}
 		// rights.description.string
 		else if (tmpBranche.matches(".*general.language")) {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim(), Field.Store.YES, Field.Index.TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES, Field.Index.TOKENIZED));// XXX
 		}
 		// LearningResourceType + value
 		else if (tmpBranche.matches(".*learningresourcetype.value.*")) {

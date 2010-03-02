@@ -232,7 +232,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
-		loadIndexReader(indexDir);
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
@@ -396,7 +396,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String from, String until, String set, String metadataPrefix)
 	throws CannotDisseminateFormatException {
-		loadIndexReader(indexDir);
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
 		Map listRecordsMap = new HashMap();
@@ -538,7 +538,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String resumptionToken)
 	throws BadResumptionTokenException {
-		loadIndexReader(indexDir);
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		Map listRecordsMap = new HashMap();
 		ArrayList records = new ArrayList();
@@ -706,7 +706,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	//	}
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
-		loadIndexReader(indexDir);
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 //		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);

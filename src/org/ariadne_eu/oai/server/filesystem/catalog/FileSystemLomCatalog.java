@@ -31,6 +31,7 @@ import org.oclc.oai.server.verb.NoItemsMatchException;
 import org.oclc.oai.server.verb.NoMetadataFormatsException;
 import org.oclc.oai.server.verb.NoSetHierarchyException;
 import org.oclc.oai.server.verb.OAIInternalServerError;
+import org.oclc.oai.util.OAIUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,9 +75,9 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			FileSystemLomCatalog.ext = ext;
 		}
 		try {
-			
+
 			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
-			String[] keys = (String[]) sets.keySet().toArray(new String[0]);
+			String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
 			for(String key : keys) {
 				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
@@ -89,7 +90,52 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+		String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
+		if(keys.length == 0) {
+			throw new NoSetHierarchyException();
+		}
+		else {
+			purge(); // clean out old resumptionTokens
+			Map listSetsMap = new HashMap();
+			ArrayList sets = new ArrayList();
+
+			for(String key : keys) {
+				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				sets.add(getSetXML(key,setSpec));
+			}
+
+			listSetsMap.put("sets", sets.iterator());
+			return listSetsMap;  
+		}
+	}
+
+	/**
+	 * Extract &lt;set&gt; XML string from setItem object
+	 *
+	 * @param setItem individual set instance in native format
+	 * @return an XML String containing the XML &lt;set&gt; content
+	 */
+	public String getSetXML(String key, String setSpec)
+	throws IllegalArgumentException {
+		String setName = "Metadata originating from " + setSpec;
+		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getInstance().getProperty(key);
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<set>");
+		sb.append("<setSpec>");
+		sb.append(OAIUtil.xmlEncode(setSpec));
+		sb.append("</setSpec>");
+		sb.append("<setName>");
+		sb.append(OAIUtil.xmlEncode(setName));
+		sb.append("</setName>");
+		if (setDescription != null) {
+			sb.append("<setDescription>");
+			sb.append(OAIUtil.xmlEncode(setDescription));
+			sb.append("</setDescription>");
+		}
+		sb.append("</set>");
+		return sb.toString();
 	}
 
 	public Map listSets(String resumptionToken) throws BadResumptionTokenException, OAIInternalServerError {
@@ -298,7 +344,7 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			throw new CannotDisseminateFormatException(e.getMessage());
 		}
 		Vector nativeItem = getMatchingFiles(dir, fromParsed, untilParsed, start, maxListSize, pointerVector);
-		pointerVector.remove(0);
+		if(pointerVector.size() > 0)pointerVector.remove(0);
 
 		/** End Create **/
 		String record;
@@ -339,7 +385,7 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			resumptionTokenSb.append(metadataPrefix);
 
 			listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-					nativeItem.size(),
+					dir.list().length,
 					start+maxListSize));
 		}
 
@@ -437,109 +483,109 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		return "";
 	}
 
-		/**
-		 * Retrieve the next set of records associated with the resumptionToken
-		 *
-		 * @param resumptionToken implementation-dependent format taken from the
-		 * previous listRecords() Map result.
-		 * @return a Map object containing entries for "headers" and "identifiers" Iterators
-		 * (both containing Strings) as well as an optional "resumptionMap" Map.
-		 * @exception BadResumptionTokenException the value of the resumptionToken argument
-		 * is invalid or expired.
-		 */
-		@SuppressWarnings("unchecked")
-		public Map listRecords(String resumptionToken)
-		throws BadResumptionTokenException {
-			StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
-			String resumptionId;
-			int oldCount;
-			String metadataPrefix;
-			try {
-				resumptionId = tokenizer.nextToken();
-				oldCount = Integer.parseInt(tokenizer.nextToken());
-				metadataPrefix = tokenizer.nextToken();
-			} catch (NoSuchElementException e) {
-				throw new BadResumptionTokenException();
-			}
-			HashMap<String, Object> params = (HashMap<String, Object>)resumptionResults.remove(resumptionId);
-			if (params == null) {
-				throw new BadResumptionTokenException();
-			}
-			try {
-				return listRecords((String)params.get("from"), (String)params.get("until"), (String)params.get("set"), metadataPrefix, oldCount, (Vector<Integer>)params.get("pointerVector"));
-			} catch (CannotDisseminateFormatException e) {
-				throw new BadResumptionTokenException();
-			}
+	/**
+	 * Retrieve the next set of records associated with the resumptionToken
+	 *
+	 * @param resumptionToken implementation-dependent format taken from the
+	 * previous listRecords() Map result.
+	 * @return a Map object containing entries for "headers" and "identifiers" Iterators
+	 * (both containing Strings) as well as an optional "resumptionMap" Map.
+	 * @exception BadResumptionTokenException the value of the resumptionToken argument
+	 * is invalid or expired.
+	 */
+	@SuppressWarnings("unchecked")
+	public Map listRecords(String resumptionToken)
+	throws BadResumptionTokenException {
+		StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
+		String resumptionId;
+		int oldCount;
+		String metadataPrefix;
+		try {
+			resumptionId = tokenizer.nextToken();
+			oldCount = Integer.parseInt(tokenizer.nextToken());
+			metadataPrefix = tokenizer.nextToken();
+		} catch (NoSuchElementException e) {
+			throw new BadResumptionTokenException();
 		}
-
-		@SuppressWarnings("unchecked")
-		public Map listIdentifiers(String resumptionToken) throws BadResumptionTokenException, OAIInternalServerError {
-			purge(); // clean out old resumptionTokens
-			Map listIdentifiersMap = new HashMap();
-			ArrayList headers = new ArrayList();
-			ArrayList identifiers = new ArrayList();
-
-			StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
-			String resumptionId;
-			int oldCount;
-			String metadataPrefix;
-			try {
-				resumptionId = tokenizer.nextToken();
-				oldCount = Integer.parseInt(tokenizer.nextToken());
-				metadataPrefix = tokenizer.nextToken();
-			} catch (NoSuchElementException e) {
-				throw new BadResumptionTokenException();
-			}
-
-			/* Get some more records from your database */
-			Object[] nativeItems = (Object[])resumptionResults.remove(resumptionId);
-			if (nativeItems == null) {
-				throw new BadResumptionTokenException();
-			}
-			int count;
-
-			/* load the headers and identifiers ArrayLists. */
-			for (count = 0; count < maxListSize && count+oldCount < nativeItems.length; ++count) {
-				/* Use the RecordFactory to extract header/identifier pairs for each item */
-				String[] header = getRecordFactory().createHeader(nativeItems[count+oldCount]);
-				headers.add(header[0]);
-				identifiers.add(header[1]);
-			}
-
-			/* decide if you're done. */
-			if (count+oldCount < nativeItems.length) {
-				resumptionId = getResumptionId();
-
-				resumptionResults.put(resumptionId, nativeItems);
-
-				/*****************************************************************
-				 * Construct the resumptionToken String however you see fit.
-				 *****************************************************************/
-				StringBuffer resumptionTokenSb = new StringBuffer();
-				resumptionTokenSb.append(resumptionId);
-				resumptionTokenSb.append(":");
-				resumptionTokenSb.append(Integer.toString(oldCount + count));
-				resumptionTokenSb.append(":");
-				resumptionTokenSb.append(metadataPrefix);
-
-				listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-						nativeItems.length,
-						oldCount));
-			}
-			listIdentifiersMap.put("headers", headers.iterator());
-			listIdentifiersMap.put("identifiers", identifiers.iterator());
-			return listIdentifiersMap;
+		HashMap<String, Object> params = (HashMap<String, Object>)resumptionResults.remove(resumptionId);
+		if (params == null) {
+			throw new BadResumptionTokenException();
 		}
-
-		public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
-			String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
-
-			String file = getMatchingFile(new File(basePath), localIdentifier.replaceAll(":", "_").replaceAll("/", ".s."));
-			
-			return constructRecord(file, metadataPrefix);
-		}
-
-		public void close() {
-			//To change body of implemented methods use File | Settings | File Templates.
+		try {
+			return listRecords((String)params.get("from"), (String)params.get("until"), (String)params.get("set"), metadataPrefix, oldCount, (Vector<Integer>)params.get("pointerVector"));
+		} catch (CannotDisseminateFormatException e) {
+			throw new BadResumptionTokenException();
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public Map listIdentifiers(String resumptionToken) throws BadResumptionTokenException, OAIInternalServerError {
+		purge(); // clean out old resumptionTokens
+		Map listIdentifiersMap = new HashMap();
+		ArrayList headers = new ArrayList();
+		ArrayList identifiers = new ArrayList();
+
+		StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
+		String resumptionId;
+		int oldCount;
+		String metadataPrefix;
+		try {
+			resumptionId = tokenizer.nextToken();
+			oldCount = Integer.parseInt(tokenizer.nextToken());
+			metadataPrefix = tokenizer.nextToken();
+		} catch (NoSuchElementException e) {
+			throw new BadResumptionTokenException();
+		}
+
+		/* Get some more records from your database */
+		Object[] nativeItems = (Object[])resumptionResults.remove(resumptionId);
+		if (nativeItems == null) {
+			throw new BadResumptionTokenException();
+		}
+		int count;
+
+		/* load the headers and identifiers ArrayLists. */
+		for (count = 0; count < maxListSize && count+oldCount < nativeItems.length; ++count) {
+			/* Use the RecordFactory to extract header/identifier pairs for each item */
+			String[] header = getRecordFactory().createHeader(nativeItems[count+oldCount]);
+			headers.add(header[0]);
+			identifiers.add(header[1]);
+		}
+
+		/* decide if you're done. */
+		if (count+oldCount < nativeItems.length) {
+			resumptionId = getResumptionId();
+
+			resumptionResults.put(resumptionId, nativeItems);
+
+			/*****************************************************************
+			 * Construct the resumptionToken String however you see fit.
+			 *****************************************************************/
+			StringBuffer resumptionTokenSb = new StringBuffer();
+			resumptionTokenSb.append(resumptionId);
+			resumptionTokenSb.append(":");
+			resumptionTokenSb.append(Integer.toString(oldCount + count));
+			resumptionTokenSb.append(":");
+			resumptionTokenSb.append(metadataPrefix);
+
+			listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+					nativeItems.length,
+					oldCount));
+		}
+		listIdentifiersMap.put("headers", headers.iterator());
+		listIdentifiersMap.put("identifiers", identifiers.iterator());
+		return listIdentifiersMap;
+	}
+
+	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
+		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
+
+		String file = getMatchingFile(new File(basePath), localIdentifier.replaceAll(":", "_").replaceAll("/", ".s."));
+
+		return constructRecord(file, metadataPrefix);
+	}
+
+	public void close() {
+		//To change body of implemented methods use File | Settings | File Templates.
+	}
+}

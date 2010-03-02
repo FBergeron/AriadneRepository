@@ -346,7 +346,7 @@ final static String yyrule[] = {
 
 	private PlqlLayer2Parser lexer;/***/
 	private String query ;
-	public static boolean DISPLAY_OUTPUT = true;
+	public static boolean DISPLAY_OUTPUT = false;
 	
 	private int yylex () {
 		int yyl_return = -1;

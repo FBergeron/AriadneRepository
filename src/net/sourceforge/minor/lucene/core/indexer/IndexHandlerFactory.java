@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class IndexHandlerFactory {
 	
-	private static Map<File, IndexHandler> mIndex  = new HashMap<File, IndexHandler>();;
+	private static Map<File, IndexHandler> mIndex  = new HashMap<File, IndexHandler>();
 	
 	public static IndexHandler getIndexHandler(File indexDir) {
 		
