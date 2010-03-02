@@ -43,7 +43,7 @@ public class TranslateResultsformat {
         else if (rf.equalsIgnoreCase("solr"))
         	return SOLR;
         else if (rf.equalsIgnoreCase("rlom"))
-        	return RLOM;
+        	return LOM;
         else if (rf.equalsIgnoreCase("maceenrichedlom"))
         	return MELOM;
         return UNDEFINED;
