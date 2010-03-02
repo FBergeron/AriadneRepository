@@ -1,6 +1,10 @@
 package org.ariadne_eu.service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
@@ -35,6 +39,7 @@ import be.cenorm.www._SQIFaultException;
  * Time: 23:50:48
  * To change this template use File | Settings | File Templates.
  */
+@Path("/query")
 public class SqiTargetImplementation extends SqiTargetSkeleton {
     private static Logger log = Logger.getLogger(SqiTargetImplementation.class);
 
@@ -88,6 +93,61 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
             throw exception;
         }
     }
+    
+    @GET
+    @Produces("text/xml")
+    public  String synchronousQuery(@QueryParam("session") String sessionID,@QueryParam("query") String query){
+   Ticket ticket = null;
+     try {
+         ticket = Ticket.getTicket(sessionID);
+     } catch (Exception e) {
+    	 ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+     }
+
+     ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+     
+     int queryLanguage = getQueryLanguage(sessionID);
+     int resultsFormat = getResultsFormat(sessionID);
+     if (queryLanguage != TranslateLanguage.UNDEFINED) {
+         int startResult = 1;
+         int nbResults = 25;
+         if (ticket != null)
+             nbResults = Integer.parseInt(ticket.getParameter("resultsSetSize"));
+         SynchronousQuery synchronousQuery = new SynchronousQuery();
+         synchronousQuery.setQueryStatement(query);
+         synchronousQuery.setTargetSessionID(sessionID);
+         try {
+			SynchronousQueryResponse qReturn = synchronousQuery(synchronousQuery, queryLanguage, resultsFormat, startResult, nbResults);
+			return qReturn.getSynchronousQueryReturn();
+		} catch (_SQIFaultException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     }
+
+     if (ticket == null) {
+         try {
+             Ticket.getTicket(sessionID);
+             log.debug("synchronousQuery:ticket=null");
+         } catch (SessionExpiredException e) {
+             log.debug("synchronousQuery: ", e);
+         }
+         _SQIFault fault = new _SQIFault();
+         fault.setSqiFaultCode(FaultCodeType.SQI_00013);
+         fault.setMessage("The given session ID is invalid");
+         _SQIFaultException exception = new _SQIFaultException();
+         exception.setFaultMessage(fault);
+         return fault.getMessage();
+     }
+
+     log.error("synchronousQuery:sessionID="+sessionID);
+     _SQIFault fault = new _SQIFault();
+     fault.setSqiFaultCode(FaultCodeType.SQI_00001);
+     fault.setMessage("Query has not been executed");
+     _SQIFaultException exception = new _SQIFaultException();
+     exception.setFaultMessage(fault);
+     return fault.getMessage();
+ }
 
     public  SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery)
        throws _SQIFaultException{
@@ -294,6 +354,17 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
             queryLanguage = targetSessionID;
         }
         return queryLanguage;
+    }
+    
+    private String getStartResult(String targetSessionID) {
+        String startResult;
+        try {
+            Ticket ticket = Ticket.getTicket(targetSessionID); //throws exception if no valid ticket exists
+            startResult = ticket.getParameter("startResult");
+        } catch (SessionExpiredException e) {
+        	startResult = targetSessionID;
+        }
+        return startResult;
     }
 
     private int getResultsFormat(String targetSessionID) {
