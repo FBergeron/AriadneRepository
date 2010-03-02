@@ -129,6 +129,9 @@
             <!-- Own libs -->
             <lib dir="${libs}">
                 <include name="**/*.jar"/>
+            	<exclude name="db2jcc_license_cisuz.jar"/>
+            	<exclude name="db2jcc_license_cu.jar"/>
+            	<exclude name="db2jcc.jar"/>
             </lib>
         	<!-- own properties file -->
         	<classes dir="${output.classes}">
@@ -147,7 +150,7 @@
         <delete dir="${war.webserver.deploypath}/${war.output.name}" />
         <copy todir="${war.webserver.deploypath}" preservelastmodified="true">
 			<fileset dir="${war.output.dir}">
-				<include name="*.war" />
+				<include name="${war.output.name}.war" />
 			</fileset>
 		</copy>
 	</target>
