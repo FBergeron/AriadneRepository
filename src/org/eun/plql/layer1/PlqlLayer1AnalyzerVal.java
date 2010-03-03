@@ -4,7 +4,6 @@
 //#############################################
 package org.eun.plql.layer1;
 
-
 /**
  * BYACC/J Semantic Value for parser: PlqlLayer1Analyzer
  * This class provides some of the functionality

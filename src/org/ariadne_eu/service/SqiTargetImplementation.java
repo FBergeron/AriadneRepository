@@ -96,58 +96,53 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
     
     @GET
     @Produces("text/xml")
-    public  String synchronousQuery(@QueryParam("session") String sessionID,@QueryParam("query") String query){
-   Ticket ticket = null;
-     try {
-         ticket = Ticket.getTicket(sessionID);
-     } catch (Exception e) {
-    	 ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
-     }
+	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size) {
+		Ticket ticket = null;
+		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
 
-     ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
-     
-     int queryLanguage = getQueryLanguage(sessionID);
-     int resultsFormat = getResultsFormat(sessionID);
-     if (queryLanguage != TranslateLanguage.UNDEFINED) {
-         int startResult = 1;
-         int nbResults = 25;
-         if (ticket != null)
-             nbResults = Integer.parseInt(ticket.getParameter("resultsSetSize"));
-         SynchronousQuery synchronousQuery = new SynchronousQuery();
-         synchronousQuery.setQueryStatement(query);
-         synchronousQuery.setTargetSessionID(sessionID);
-         try {
-			SynchronousQueryResponse qReturn = synchronousQuery(synchronousQuery, queryLanguage, resultsFormat, startResult, nbResults);
-			return qReturn.getSynchronousQueryReturn();
-		} catch (_SQIFaultException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		int queryLanguage = getQueryLanguage(ticket.toString());
+		int resultsFormat = getResultsFormat(ticket.toString());
+		if (queryLanguage != TranslateLanguage.UNDEFINED) {
+			int startResult, nbResults;
+			
+			if (start == null) 
+				startResult = 1;
+			else
+				startResult = Integer.parseInt(start);
+			
+			if (size == null) 
+				nbResults = 12;
+			else
+				nbResults = Integer.parseInt(size);	
+			
+			SynchronousQuery synchronousQuery = new SynchronousQuery();
+			synchronousQuery.setQueryStatement(query);
+			synchronousQuery.setTargetSessionID(ticket.toString());
+			try {
+				SynchronousQueryResponse qReturn = synchronousQuery(synchronousQuery, queryLanguage, resultsFormat, startResult, nbResults);
+				Ticket.destroy(ticket);
+				return qReturn.getSynchronousQueryReturn();
+			} catch (_SQIFaultException e) {
+				log.error("synchronousQuery:sessionID=" + ticket.toString());
+				_SQIFault fault = new _SQIFault();
+				fault.setSqiFaultCode(FaultCodeType.SQI_00001);
+				fault.setMessage("Query has not been executed");
+				_SQIFaultException exception = new _SQIFaultException();
+				exception.setFaultMessage(fault);
+				Ticket.destroy(ticket);
+				return fault.getMessage();
+			}
 		}
-     }
+		log.error("synchronousQuery:sessionID=" + ticket.toString());
+		_SQIFault fault = new _SQIFault();
+		fault.setSqiFaultCode(FaultCodeType.SQI_00001);
+		fault.setMessage("Query has not been executed");
+		_SQIFaultException exception = new _SQIFaultException();
+		exception.setFaultMessage(fault);
+		Ticket.destroy(ticket);
+		return fault.getMessage();
 
-     if (ticket == null) {
-         try {
-             Ticket.getTicket(sessionID);
-             log.debug("synchronousQuery:ticket=null");
-         } catch (SessionExpiredException e) {
-             log.debug("synchronousQuery: ", e);
-         }
-         _SQIFault fault = new _SQIFault();
-         fault.setSqiFaultCode(FaultCodeType.SQI_00013);
-         fault.setMessage("The given session ID is invalid");
-         _SQIFaultException exception = new _SQIFaultException();
-         exception.setFaultMessage(fault);
-         return fault.getMessage();
-     }
-
-     log.error("synchronousQuery:sessionID="+sessionID);
-     _SQIFault fault = new _SQIFault();
-     fault.setSqiFaultCode(FaultCodeType.SQI_00001);
-     fault.setMessage("Query has not been executed");
-     _SQIFaultException exception = new _SQIFaultException();
-     exception.setFaultMessage(fault);
-     return fault.getMessage();
- }
+	}
 
     public  SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery)
        throws _SQIFaultException{

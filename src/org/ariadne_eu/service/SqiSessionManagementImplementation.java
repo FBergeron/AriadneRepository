@@ -27,7 +27,6 @@ import be.cenorm.www._SQIFaultException;
 /**
  * SqiSessionManagementBindingServiceSkeleton java skeleton for the axisService
  */
-@Path ("/")
 public class SqiSessionManagementImplementation extends SqiSessionManagementSkeleton {
 	private static Logger log = Logger.getLogger(SqiSessionManagementImplementation.class);
 
@@ -86,12 +85,7 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
 		}
 
 	}
-	
-	@GET
-	@Produces ("text/plain")
-	public String sayHello(@QueryParam("name") String name) {
-		return "Hello World to " + name;
-	}
+
 
 	public CreateAnonymousSessionResponse createAnonymousSession(CreateAnonymousSession anonymousSession)
 	throws _SQIFaultException {
@@ -113,19 +107,6 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
 			exception.setFaultMessage(fault);
 			throw exception;
 		}
-	}
-
-	@GET
-	@Path("/createAnonymousSession")
-	@Produces("text/plain")
-	public String createAnonymousSession(){
-//		String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
-//		String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
-//		log.info("createAnonymousSession"+":Forwarding IP="+fIP+":Original IP="+oIP );
-
-		Ticket t = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
-		log.info("createAnonymousSession:sessionID="+t.toString());
-		return t.toString();
 	}
 
 

@@ -52,7 +52,7 @@ public class InitServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		try {
-			System.out.println(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
+//			System.out.println(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			PropertiesManager.getInstance().setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			if (PropertiesManager.getInstance().getPropertiesFile().exists()){
 				PropertiesManager.getInstance().init();

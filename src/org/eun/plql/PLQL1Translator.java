@@ -18,10 +18,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package org.eun.plql ;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.eun.plql.layer1.PlqlLayer1Analyzer;
+import java.io.Reader ;
+import java.io.StringReader ;
+import org.eun.plql.layer1.* ;
 
 public class PLQL1Translator {
 	
@@ -63,7 +62,7 @@ public class PLQL1Translator {
 //		"keyword1 and keyword2 and (lom.general.language = en) and (lom.educational.ageRange=10-12)"
 //		,
 //		"protocol.identifier.catalog = \"ariadne-protocols-targets\""
-		"\"church\" AND lom.metametadata.identifier.catalog=\"ICONDA\""
+		"lom.general.identifier.entry = \"Perro\""
 };
 
 //	private static String plqlQuery = "hello and \" my name is /// ) \\\"sereyvath\" and dc.title = \"SQL\" and lom.generate.title = \"SQL\" and lom.title = 1299 " ;
