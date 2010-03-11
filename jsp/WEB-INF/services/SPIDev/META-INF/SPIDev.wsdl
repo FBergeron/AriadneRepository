@@ -40,7 +40,7 @@
                         <xsd:element name="targetSessionID" type="xsd:string"/>
                         <xsd:element name="globalIdentifier" type="xsd:string"/>
                         <xsd:element name="metadata" type="xsd:string"/>
-                        <xsd:element name="collection" type="xsd:string"/>
+                        <xsd:element name="collection" type="xsd:string" use="optional"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
