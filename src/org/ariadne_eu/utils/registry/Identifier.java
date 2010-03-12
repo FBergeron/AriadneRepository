@@ -36,4 +36,13 @@ public class Identifier {
 		_catalog = identifier.getChild("catalog", ns).getText();
 		_entry = identifier.getChild("entry", ns).getText();
 	}
+	
+	public String getXMLIdentifier(String tab){
+		String xml = "";
+		xml = tab+ "<identifier>\n" +
+				tab+ "\t<catalog>"+_catalog+"</catalog>\n" +
+				tab+ "\t<entry>"+_entry+"</entry>\n" +
+				tab+ "</identifier>\n";
+		return xml;
+	}
 }

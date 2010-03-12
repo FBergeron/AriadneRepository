@@ -8,7 +8,7 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.xpath.XPath;
 
-public class OaiPmh extends ProtocolImplementationDescription{
+public class OaiPmh{
 	
 	List<MetadataFormat> _metadataFormats;
 	String _granularity;
@@ -84,5 +84,21 @@ public class OaiPmh extends ProtocolImplementationDescription{
 			addSets(sets.get(i).getText());
 		}
 		
+	}
+	
+	public String getXMLOaiPmh(String tab){
+		String xml = "";
+		xml = tab+"<oai-pmh xmlns=\"http://www.imsglobal.org/services/lode/imslooaipmh-2p0_v1p0\" xsi:schemaLocation=\"http://www.imsglobal.org/services/lode/imslooaipmh-2p0_v1p0 http://fire.eun.org/xsd/registry/imslooaipmh-2p0_v1p0.xsd\">\n";
+		for (int i=0;i<_metadataFormats.size();i++){
+			xml += tab+((MetadataFormat)_metadataFormats.get(i)).getXMLMetadataFormat(tab+"\t");
+		}
+		for (int i=0;i<_sets.size();i++){
+			xml += tab+("\t<set>"+_sets.get(i)+"</set>\n");
+		}
+		xml += tab+"\t<granularity>"+_granularity+"</granularity>\n" +
+				tab+"\t<earliestDatestamp>"+_earliestDateStamp+"</earliestDatestamp>\n" +
+				tab+"\t<deletedRecord>"+_deletedRecord+"</deletedRecord>\n" +
+				tab+"</oai-pmh>\n";
+		return xml;
 	}
 }

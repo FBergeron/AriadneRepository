@@ -36,4 +36,15 @@ public class Description {
 		_string = description.getChild("string", ns).getText();
 		_language = description.getChild("language", ns).getText();
 	}
+	
+	public String getXMLDescription(String tab){
+		String xml = "";
+		xml = tab+ "<description>\n" +
+				tab+ "\t<language>"+_language+"</language>\n" +
+				tab+ "\t<string>"+_string+"</string>\n" +
+				tab+ "</description>\n";
+		return xml;
+	}
+	
+	
 }

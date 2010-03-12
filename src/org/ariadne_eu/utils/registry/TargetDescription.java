@@ -100,9 +100,20 @@ public class TargetDescription {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}	
+	}
+	
+	public String getXMLTargetDescription(String tab){
+		String xml = "";
+		xml = tab+ "<target>\n" +
+				tab+ "\t<targetDescription>\n" +
+				tab+ _identifier.getXMLIdentifier(tab+"\t\t") +
+				tab+ _protocolIdentifier.getXMLProtocolIdentifier(tab+"\t\t") +
+				tab+ "\t\t<location>"+_location+"</location>\n" +
+				tab+ _protocolImplementationDescription.getXMLDescription(tab+"\t\t") +
+				tab+ "\t\t</targetDescription>\n" +
+				tab+ "\t</target>\n";
+		return xml;		
 	}
 	
 }

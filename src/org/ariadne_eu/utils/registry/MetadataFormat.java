@@ -48,4 +48,14 @@ public class MetadataFormat {
 		_schema = metadataFormat.getChildText("schema", ns);
 		_metadataNamespace = metadataFormat.getChildText("metadataNamespace");
 	}
+	
+	public String getXMLMetadataFormat(String tab){
+		String xml = "";
+		xml = tab+"<metadataFormat>\n" +
+				tab+"\t<metadataPrefix>"+_metadataPrefix+"</metadataPrefix>\n" +
+				tab+"\t<schema>"+_schema+"</schema>\n" +
+				tab+"\t<metadataNamespace>"+_metadataNamespace+"</metadataNamespace>\n" +
+				tab+"</metadataFormat>\n";
+		return xml;
+	}
 }

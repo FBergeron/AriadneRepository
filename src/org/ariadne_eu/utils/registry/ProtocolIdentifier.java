@@ -36,4 +36,13 @@ public class ProtocolIdentifier {
 		_catalog = protocolIdentifier.getChild("catalog", ns).getText();
 		_entry = protocolIdentifier.getChild("entry", ns).getText();
 	}
+	
+	public String getXMLProtocolIdentifier(String tab){
+		String xml = "";
+		xml = tab+"<protocolIdentifier>\n" +
+				tab+"\t<catalog>"+_catalog+"</catalog>\n" +
+				tab+"\t<entry>"+_entry+"</entry>\n" +
+				tab+"</protocolIdentifier>\n";
+		return xml;
+	}
 }
