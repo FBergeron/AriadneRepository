@@ -85,6 +85,7 @@
 			setResultSetFormat(sessionId, format);
 
 			result = query(sessionId, query, startResult);
+			closeSession(sessionId);
 			
         } catch (Exception e) {
             StringWriter stringWriter = new StringWriter();
@@ -275,6 +276,7 @@
 							setResultSetFormat(sessionId, format);
 	
 							result_protocol = query(sessionId, query_protocol, startResult_protocol);
+							closeSession(sessionId);
 							targetDescription.parseXMLProtocol(result_protocol);
 						if (targetDescription.getProtocol().getName() != null && targetDescription.getProtocol().getName().length()>0)
 						{%>					
@@ -490,6 +492,23 @@
         }
         return null;
     }
+	
+	public static void closeSession(String sessionId){
+	       if(!sessionId.equals("")) {
+	           DestroySession destroySession = new DestroySession();
+	           destroySession.setSessionID(sessionId);
+	           try {
+	               sqiSessionStub.destroySession(destroySession);
+	           } catch (RemoteException e) {
+	               e.printStackTrace();
+	           } catch (_SQIFaultException e) {
+	               e.printStackTrace();
+	           }
+	           finally {
+	               sessionId = "";
+	           }
+	       }
+	   }
 	
 %>
 

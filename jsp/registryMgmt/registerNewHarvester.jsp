@@ -37,23 +37,20 @@
 <div id="ctr" align="center">
 	<div class="install">
 		<div id="stepbar">
-			<div class="step-on">New Repository</div>
-			<div class="step-off">SQI Target</div>
-			<div class="step-off">OAI Target</div>
-			<div class="step-off">SPI Target</div>
+			<div class="step-on">New Harvester</div>
 			<div class="step-off">Finish</div>
 		</div>
 
 		<div id="right">
 
-			<div id="step">General Information about the repository</div>
+			<div id="step">General Information about the <br/>harvester</div>
 
 			<div class="far-right">
 				<input name="Button2" type="submit" class="button" value="Next >>" />
 			</div>
 			<div class="clr"></div>
 
-			<h1>Introduce the information for the new repository</h1>
+			<h1>Introduce the information for the new <br/>harvester</h1>
 
 			<div class="install-text">
     			<p>Introduce the information like URL service, user and password:</p>

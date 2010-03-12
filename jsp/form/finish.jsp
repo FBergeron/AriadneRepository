@@ -81,11 +81,16 @@ boolean exists (String dir) {
 <div class="clr"></div>
 
 <%
+
 String repositoryName = request.getParameter("repositoryName");
 String description = request.getParameter("description");
+String email = request.getParameter("email");
 String targetURLSqi = request.getParameter("targetURLSqi");
+if (targetURLSqi!=null) targetURLSqi=targetURLSqi.trim();
 String sessionURLSqi = request.getParameter("sessionURLSqi");
+if (sessionURLSqi!=null) sessionURLSqi=sessionURLSqi.trim();
 String sessionAuthSqi = request.getParameter("sessionAuthSqi");
+if (sessionAuthSqi!=null) sessionAuthSqi=sessionAuthSqi.trim();
 String langcodePLQL = request.getParameter("langcodePLQL");
 String langcodeVSQL = request.getParameter("langcodeVSQL");
 String langcodeQEL = request.getParameter("langcodeQEL");
@@ -96,11 +101,16 @@ String resultFormatLOM = request.getParameter("resultFormatLOM");
 String resultFormatRDF = request.getParameter("resultFormatRDF");
 String resultFormatOther = request.getParameter("resultFormatOther");
 String targetURLOai = request.getParameter("targetURLOai");
+if (targetURLOai!=null) targetURLOai=targetURLOai.trim();
 String targetURLSpi = request.getParameter("targetURLSpi");
+if (targetURLSpi!=null) targetURLSpi=targetURLSpi.trim();
+
 
 String id_repository = repositoryName.replaceAll(" ","");
 String result = null;
 int j = 0;
+
+
 String temp = id_repository;
 do{
 	
@@ -117,6 +127,7 @@ metadataCollection.getIdentifier().setCatalog("ariadne-registry");
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
 metadataCollection.getDescription().setString(description);
+metadataCollection.getResponsible().setVCard("BEGIN:VCARD\\nEMAIL\\;TYPE=INTERN\nET:"+email+"\\nEND:VCARD\\n");
 
 Sqi sqi= null;
 

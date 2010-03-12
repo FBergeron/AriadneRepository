@@ -70,7 +70,10 @@
   		    		</tr>
   	     			<tr>
   		    			<td>Description: <br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="description" value=""/></td>
-  		    		</tr>  		
+  		    		</tr>  	
+  		    		<tr>
+  		    			<td>Contact Person Email: <br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="email" value=""/></td>
+  		    		</tr>  	
 		  	        </table>
   				</div>
 			</div>

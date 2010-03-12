@@ -27,9 +27,9 @@
 <div id="stepbar">
 <div class="step-on">Pre-installation</div>
 <div class="step-off">Store selection</div>
-<div class="step-off">Connection</div>
+<div class="step-off">Store properties</div>
+<div class="step-off">Index properties</div>
 <div class="step-off">Logging</div>
-<div class="step-off">Options</div>
 <div class="step-off">Finish</div>
 
 </div>

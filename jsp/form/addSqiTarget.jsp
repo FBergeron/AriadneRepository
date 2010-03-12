@@ -128,8 +128,9 @@
                                          value="">
                         <input type="hidden" name="repositoryName" value="<%=request.getParameter("repositoryName")%>"/>
   		    			<input type="hidden" name="description" value="<%=request.getParameter("description")%>"/>
-  		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi")%>"/>
-  		    			<input type="hidden" name="targetURLOai" value="<%=request.getParameter("targetURLOai")%>"/>  		    			
+  		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi").trim()%>"/>
+  		    			<input type="hidden" name="targetURLOai" value="<%=request.getParameter("targetURLOai").trim()%>"/>  		
+  		    			<input type="hidden" name="email" value="<%=request.getParameter("email")%>"/>    			
                        </td>
   		    		</tr>
 		  	        </table>

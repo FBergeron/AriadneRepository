@@ -69,7 +69,8 @@
   		    			<td>URL Oai Target:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="targetURLOai" value=""/>
   		    			<input type="hidden" name="repositoryName" value="<%=request.getParameter("repositoryName")%>"/>
   		    			<input type="hidden" name="description" value="<%=request.getParameter("description")%>"/>
-  		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi")%>"/>
+  		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi").trim()%>"/>
+  		    			<input type="hidden" name="email" value="<%=request.getParameter("email")%>"/>
   		    			</td>
   		    		</tr>
   	     			 		
