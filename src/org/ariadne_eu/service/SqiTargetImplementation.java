@@ -39,26 +39,31 @@ import be.cenorm.www._SQIFaultException;
  * Time: 23:50:48
  * To change this template use File | Settings | File Templates.
  */
-@Path("/query")
+@Path("/sqitarget")
 public class SqiTargetImplementation extends SqiTargetSkeleton {
     private static Logger log = Logger.getLogger(SqiTargetImplementation.class);
 
     public GetTotalResultsCountResponse getTotalResultsCount(GetTotalResultsCount getTotalResultsCount)
        throws _SQIFaultException{
+    	int queryLanguage = -1;
     	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
     	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
     	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
     	String userAgent = (String) th.get("user-agent");
     	String host = (String) th.get("host");
         log.info("GetTotalResultsCountResponse:query="+getTotalResultsCount.getQueryStatement()+",sessionID="+getTotalResultsCount.getTargetSessionID()+",Forwarding IP="+fIP+",Original IP="+oIP+",User-Agent="+userAgent+",Host="+host);
-        int queryLanguage = getQueryLanguage(getTotalResultsCount.getTargetSessionID());
-        if (queryLanguage != TranslateLanguage.UNDEFINED)
-            return getTotalResultsCount(getTotalResultsCount, queryLanguage);
-
+        
+        Ticket ticket = null;
         try {
-            Ticket.getTicket(getTotalResultsCount.getTargetSessionID()); //throws exception if no valid ticket exists
+        	if (getTotalResultsCount.getTargetSessionID().equalsIgnoreCase("merlot")) {
+        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+        		queryLanguage = getQueryLanguage(ticket.toString());
+        	} else {
+        		ticket = Ticket.getTicket(getTotalResultsCount.getTargetSessionID());
+        		queryLanguage = getQueryLanguage(getTotalResultsCount.getTargetSessionID());
+        	}
         } catch (SessionExpiredException e) {
-            log.debug("GetTotalResultsCountResponse: ", e);
+        	log.error("GetTotalResultsCountResponse: ", e);
             _SQIFault fault = new _SQIFault();
             fault.setSqiFaultCode(FaultCodeType.SQI_00013);
             fault.setMessage("The given session ID is invalid");
@@ -66,8 +71,23 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
             exception.setFaultMessage(fault);
             throw exception;
         }
+        
+        if (queryLanguage != TranslateLanguage.UNDEFINED)
+            return getTotalResultsCount(getTotalResultsCount, queryLanguage);
 
-        log.warn("GetTotalResultsCountResponse:query="+getTotalResultsCount.getQueryStatement()+",sessionID="+getTotalResultsCount.getTargetSessionID()+",queryLanguage="+getQueryLanguage(getTotalResultsCount.getTargetSessionID()));
+//        try {
+//            Ticket.getTicket(getTotalResultsCount.getTargetSessionID()); //throws exception if no valid ticket exists
+//        } catch (SessionExpiredException e) {
+//            log.error("GetTotalResultsCountResponse: ", e);
+//            _SQIFault fault = new _SQIFault();
+//            fault.setSqiFaultCode(FaultCodeType.SQI_00013);
+//            fault.setMessage("The given session ID is invalid");
+//            _SQIFaultException exception = new _SQIFaultException();
+//            exception.setFaultMessage(fault);
+//            throw exception;
+//        }
+
+        log.error("GetTotalResultsCountResponse:query="+getTotalResultsCount.getQueryStatement()+",sessionID="+getTotalResultsCount.getTargetSessionID()+",queryLanguage="+getQueryLanguage(getTotalResultsCount.getTargetSessionID()));
         _SQIFault fault = new _SQIFault();
         fault.setSqiFaultCode(FaultCodeType.SQI_00001);
         fault.setMessage("Query has not been executed");
@@ -146,6 +166,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
     public  SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery)
        throws _SQIFaultException{
+    	int queryLanguage = -1, resultsFormat = -1;
     	String fIP = ((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)).getRemoteAddr();
     	String oIP = remoteAddr(((HttpServletRequest)MessageContext.getCurrentMessageContext().getProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST)));
     	TransportHeaders th = (TransportHeaders)(MessageContext.getCurrentMessageContext().getProperty("TRANSPORT_HEADERS"));
@@ -156,12 +177,19 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
         Ticket ticket = null;
         try {
-            ticket = Ticket.getTicket(synchronousQuery.getTargetSessionID());
+        	if (synchronousQuery.getTargetSessionID().equalsIgnoreCase("merlot")) {
+        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+        		queryLanguage = getQueryLanguage(ticket.toString());
+                resultsFormat = getResultsFormat(ticket.toString());
+        	} else {
+        		ticket = Ticket.getTicket(synchronousQuery.getTargetSessionID());
+        		queryLanguage = getQueryLanguage(synchronousQuery.getTargetSessionID());
+                resultsFormat = getResultsFormat(synchronousQuery.getTargetSessionID());
+        	}
         } catch (SessionExpiredException e) {
         }
 
-        int queryLanguage = getQueryLanguage(synchronousQuery.getTargetSessionID());
-        int resultsFormat = getResultsFormat(synchronousQuery.getTargetSessionID());
+        
         if (queryLanguage != TranslateLanguage.UNDEFINED) {
             int startResult = synchronousQuery.getStartResult();
             int nbResults = 25;

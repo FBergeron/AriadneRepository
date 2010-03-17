@@ -1,6 +1,10 @@
 package org.ariadne_eu.service;
 
 import javax.activation.DataHandler;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.apache.log4j.Logger;
 import org.ariadne_eu.coi.COIFaultException;
@@ -19,6 +23,7 @@ import org.w3.www._2005._05.xmlmime.Base64Binary;
  * Time: 19:05:27
  * To change this template use File | Settings | File Templates.
  */
+@Path("/coi")
 public class COIImplementation extends COISkeleton {
 
     /** log4j category */
@@ -32,6 +37,13 @@ public class COIImplementation extends COISkeleton {
         base64Binary.setBase64Binary(dataHandler);
         getResourceResponse.setBinaryData(base64Binary);
         return getResourceResponse;
+    }
+    
+    @GET
+    @Produces("text/html")
+    public String getResourceName(@QueryParam("id") String id) {
+    	return "<html><head> <meta content=\"0; URL=http://www.google.com\" http-equiv=\"refresh\"></head></html>";
+    	
     }
     
     public GetResourceNameResponse getResourceName(org.ariadne_eu.coi.GetResourceName getResourceName) throws COIFaultException {
