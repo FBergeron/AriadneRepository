@@ -91,6 +91,9 @@ public class TranslateLanguage {
                         case PLQL2:
                             cachedImplementations.put(new HashMapKey(startQueryLanguage, endQueryLanguage), new Plql_LuceneHandler(startQueryLanguage, endQueryLanguage));
                             break;
+                        case LUCENE:
+                            cachedImplementations.put(new HashMapKey(startQueryLanguage, endQueryLanguage), new Plql_LuceneHandler(startQueryLanguage, endQueryLanguage));
+                            break;
                     }
                     break;
             }
