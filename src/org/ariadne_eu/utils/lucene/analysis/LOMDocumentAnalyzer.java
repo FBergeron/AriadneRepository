@@ -26,7 +26,7 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("date.insert", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("untokenized.xmlns", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("xmlns", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("solr", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.solr", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.general.identifier.entry.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.general.identifier.entry", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.general.identifier.catalog", new KeywordAnalyzer());
