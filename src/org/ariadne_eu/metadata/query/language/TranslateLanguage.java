@@ -51,6 +51,8 @@ public class TranslateLanguage {
             return PLQL2;
         } else if (queryLanguage.equalsIgnoreCase("http://www.prolearn-project.org/PLQL/l2")) {
             return PLQL2;
+        } else if (queryLanguage.equalsIgnoreCase("lucene")) {
+            return LUCENE;
         } else {
             return UNDEFINED;
         }
