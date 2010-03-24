@@ -15,6 +15,7 @@ public class RepositoryConstants {
 	
 	public static final String REPO_USERNAME = "repository.username";
 	public static final String REPO_PASSWORD = "repository.password";
+	public static final String REPO_STATICKEY = "repository.statickey";
 	public static final String REPO_UPDATE_TARGET = "repository.username";
 	public static final String REPO_UPDATE_SESSION = "repository.password";
 	public static final String REPO_LOG4J_DIR = "repository.log4j.directory";

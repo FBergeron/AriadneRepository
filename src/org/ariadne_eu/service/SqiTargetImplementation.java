@@ -10,6 +10,7 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.TransportHeaders;
 import org.apache.log4j.Logger;
+import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
@@ -55,13 +56,13 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
         
         Ticket ticket = null;
         try {
-        	if (getTotalResultsCount.getTargetSessionID().equalsIgnoreCase("merlot")) {
-        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
-        		queryLanguage = getQueryLanguage(ticket.toString());
-        	} else {
+//        	if (getTotalResultsCount.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_STATICKEY))) {
+//        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+//        		queryLanguage = getQueryLanguage(ticket.toString());
+//        	} else {
         		ticket = Ticket.getTicket(getTotalResultsCount.getTargetSessionID());
         		queryLanguage = getQueryLanguage(getTotalResultsCount.getTargetSessionID());
-        	}
+//        	}
         } catch (SessionExpiredException e) {
         	log.error("GetTotalResultsCountResponse: ", e);
             _SQIFault fault = new _SQIFault();
@@ -177,16 +178,23 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
         Ticket ticket = null;
         try {
-        	if (synchronousQuery.getTargetSessionID().equalsIgnoreCase("merlot")) {
-        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
-        		queryLanguage = getQueryLanguage(ticket.toString());
-                resultsFormat = getResultsFormat(ticket.toString());
-        	} else {
+//        	if (synchronousQuery.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_STATICKEY))) {
+//        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+//        		queryLanguage = getQueryLanguage(ticket.toString());
+//                resultsFormat = getResultsFormat(ticket.toString());
+//        	} else {
         		ticket = Ticket.getTicket(synchronousQuery.getTargetSessionID());
         		queryLanguage = getQueryLanguage(synchronousQuery.getTargetSessionID());
                 resultsFormat = getResultsFormat(synchronousQuery.getTargetSessionID());
-        	}
+//        	}
         } catch (SessionExpiredException e) {
+        	log.error("synchronousQuery:sessionID="+synchronousQuery.getTargetSessionID());
+        	_SQIFault fault = new _SQIFault();
+            fault.setSqiFaultCode(FaultCodeType.SQI_00013);
+            fault.setMessage("The given session ID is invalid");
+            _SQIFaultException exception = new _SQIFaultException();
+            exception.setFaultMessage(fault);
+            throw exception;
         }
 
         
@@ -203,7 +211,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
                 Ticket.getTicket(synchronousQuery.getTargetSessionID());
                 log.debug("synchronousQuery:ticket=null");
             } catch (SessionExpiredException e) {
-                log.debug("synchronousQuery: ", e);
+                log.error("synchronousQuery: ", e);
             }
             _SQIFault fault = new _SQIFault();
             fault.setSqiFaultCode(FaultCodeType.SQI_00013);
@@ -240,7 +248,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
         }
     }
 
-    public  void setMaxDuration(SetMaxDuration setMaxDuration)
+    public void setMaxDuration(SetMaxDuration setMaxDuration)
        throws _SQIFaultException{
         log.info("setMaxDuration:maxDuration="+setMaxDuration.getMaxDuration()+",sessionID="+setMaxDuration.getTargetSessionID());
         _SQIFault fault = new _SQIFault();
