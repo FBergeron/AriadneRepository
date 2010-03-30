@@ -33,7 +33,7 @@ public class RepositoryConstants {
 	public static final String SR_XPATH_QRY_ID = "search.xpath.query.identifier";
 	public static final String SR_LUCENE_HANDLER_MACE = "search.lucene.handler.mace";
 	public static final String SR_SOLR_DATADIR = "search.solr.dataDir";
-	public static final String SR_SOLR_INSTANCEDIR = "search.solr.instancedir";
+//	public static final String SR_SOLR_INSTANCEDIR = "search.solr.instancedir";
 	public static final String SR_SOLR_FACETFIELD = "search.solr.facetfield";
 	
 	

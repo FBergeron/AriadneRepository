@@ -41,7 +41,8 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
     
     static {
         try {
-        	instanceDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
+//        	instanceDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
+        	instanceDir = (PropertiesManager.getInstance().getPropFile()).replaceAll("install/ariadne.properties", "solr/");
         	dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_DATADIR);
         	loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
         	
@@ -54,7 +55,8 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
         	
             if(instanceDir == null) {
 //            	instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-                log.error("initialize:property \""+ RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
+//                log.error("initialize:property \""+ RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
+            	log.error("Could not load Solr instance dir!");
             } else if (dataDir == null) {
 //            	dataDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
                 log.warn("initialize:property \""+ RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
@@ -74,10 +76,12 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
         this.start = start;
         this.max = max;
         this.lQuery = lQuery;
+        
         conn = new DirectSolrConnection(instanceDir, dataDir, loggingPath);
     }
 	
 	public String result(Hits hits) throws Exception {
+		log.debug(PropertiesManager.getInstance().getPropFile());
 	    StringBuilder sBuild = new StringBuilder();
 	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response>\n");
 	    
