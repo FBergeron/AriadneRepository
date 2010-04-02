@@ -253,6 +253,7 @@
 
 
 <%
+	closeSession(sessionId);
     }
 %>
 
@@ -395,6 +396,23 @@
         }
         return null;
     }
+	
+	public static void closeSession(String sessionId){
+	       if(!sessionId.equals("")) {
+	           DestroySession destroySession = new DestroySession();
+	           destroySession.setSessionID(sessionId);
+	           try {
+	               sqiSessionStub.destroySession(destroySession);
+	           } catch (RemoteException e) {
+	               e.printStackTrace();
+	           } catch (_SQIFaultException e) {
+	               e.printStackTrace();
+	           }
+	           finally {
+	               sessionId = "";
+	           }
+	       }
+	   }
 	
 %>
 

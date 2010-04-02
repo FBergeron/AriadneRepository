@@ -85,7 +85,7 @@
 			setResultSetFormat(sessionId, format);
 
 			result = query(sessionId, query, startResult);
-			closeSession(sessionId);
+			
 			
         } catch (Exception e) {
             StringWriter stringWriter = new StringWriter();
@@ -266,7 +266,7 @@
 					{	
 						try{
 							query_protocol = "(protocol.identifier.entry = \""+targetDescription.getProtocolIdentifier().getEntry()+"\") and (protocol.identifier.catalog= \""+targetDescription.getProtocolIdentifier().getCatalog()+"\")";	
-							sessionId = createAnonymousSession(axis2_url +  "/SqiSessionManagement");
+							
 							sqiStub = new SqiTargetStub(axis2_url + "/SqiTarget");
 							int startResult_protocol=1;
 							language = "plql1";
@@ -276,7 +276,7 @@
 							setResultSetFormat(sessionId, format);
 	
 							result_protocol = query(sessionId, query_protocol, startResult_protocol);
-							closeSession(sessionId);
+							
 							targetDescription.parseXMLProtocol(result_protocol);
 						if (targetDescription.getProtocol().getName() != null && targetDescription.getProtocol().getName().length()>0)
 						{%>					
@@ -318,6 +318,7 @@
 
 
 <%
+		
         }
         else
         {
@@ -350,6 +351,7 @@
 
 
 <%
+	closeSession(sessionId);
     }
 %>
 
