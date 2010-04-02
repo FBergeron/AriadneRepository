@@ -10,6 +10,7 @@ public class Sqi {
 	List<String> _resultFormat;
 	List<String> _supportedAsynchronousMethod;
 	List<String> _supportedSynchronousMethod;
+	String _persistentSessionId;
 	String _sessionService;
 	String _queryService;
 	
@@ -57,8 +58,16 @@ public class Sqi {
 		return _mode;
 	}
 	
+	public void setPersistentSessionId(String persistentSessionId){
+		_persistentSessionId=persistentSessionId;		
+	}
+	
 	public void setSessionService(String sessionService){
 		_sessionService = sessionService;
+	}
+	
+	public String getPresistentService(){
+		return _persistentSessionId;
 	}
 	
 	public String getSessionService(){
@@ -79,6 +88,10 @@ public class Sqi {
 	
 	public ArrayList<String> getQueryLanguage(){
 		return (ArrayList<String>)_queryLanguage;		
+	}
+	
+	public void addResultsFormat(String format){
+		_resultFormat.add(format);		
 	}
 	
 	public ArrayList<String> getResultsFormat(){
