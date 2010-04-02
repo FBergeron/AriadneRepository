@@ -67,10 +67,10 @@
   	   			<div class="form-block">
   	     			<table class="content2">
   	     			<tr>
-  		    			<td>URL Session Management:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="targetURLSqi" value=""/></td>
+  		    			<td>URL Session Management:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="sessionURLSqi" value=""/></td>
   		    		</tr>
   	     			<tr>
-  		    			<td>URL Sqi Target: <br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="sessionURLSqi" value=""/></td>
+  		    			<td>URL Sqi Target: <br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="targetURLSqi" value=""/></td>
   		    		</tr> 
   		    		<tr>
   		    			<td><input type="checkbox" name="sessionAuthSqi" value="auth" />Requires authentication</td>

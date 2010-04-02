@@ -148,8 +148,24 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (langcodeQEL!=null) sqi.addQueryLanguage("qel");
 	if (langcodeOther!=null){
 		String[] langcode = langcodeOther.split(",");
-		for(int i=0; i<langcode.length;i++) sqi.addQueryLanguage(langcode[i]);
+		for(int i=0; i<langcode.length;i++){
+			if (langcode[i].compareTo("")!=0) sqi.addQueryLanguage(langcode[i]);
+		}
 	}
+	if (resultFormatLOM!=null){
+		sqi.addResultsFormat("lom");
+	}
+	if (resultFormatRDF!=null){
+		sqi.addResultsFormat("rdf");
+	}
+	if (resultFormatOther!=null){
+		String[] format = resultFormatOther.split(",");
+		for(int i=0; i<format.length;i++){
+			if (format[i].compareTo("")!=0) sqi.addQueryLanguage(format[i]);
+		}
+	}
+	
+	
 	if (synchronous!=null) sqi.setModeSynchronous();
 	if (asynchronous!=null) sqi.setModeAsynchronous();
 	TargetDescription targetDescription = new TargetDescription();
