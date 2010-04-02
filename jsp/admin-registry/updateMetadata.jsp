@@ -14,7 +14,16 @@
 <%@page import="org.ariadne.config.PropertiesManager"%>
 <%@page import="org.ariadne_eu.utils.Stopwatch"%>
 <%@page import="org.ariadne_eu.utils.update.QueryOnId"%>
-<%@page import="org.ariadne_eu.utils.update.UpdateMetadataCollection"%><html>
+<%@page import="org.ariadne_eu.utils.update.UpdateMetadataCollection"%>
+<%@page import="java.net.URLConnection"%>
+<%@page import="java.io.InputStream"%>
+<%@page import="java.io.BufferedReader"%>
+<%@page import="java.io.InputStreamReader"%>
+<%@page import="org.ariadne.util.ClientHttpRequest"%>
+
+<%@page import="org.apache.commons.httpclient.HttpClient"%>
+<%@page import="org.apache.commons.httpclient.methods.PostMethod"%>
+<%@page import="org.apache.commons.httpclient.HttpStatus"%><html>
 
 	<script language="Javascript" type="text/javascript" src="../includes/editarea/edit_area/edit_area_full.js"></script>
 	<script language="Javascript" type="text/javascript">
@@ -86,10 +95,46 @@ if (metadata != null){
 	//metadata = metadata.replaceAll("&","&amp;");
 	if(getOrPublishString.equalsIgnoreCase("publish")){
 		try{
-	UpdateMetadataCollection.getInstance().publishMetadata(metadata);
-	result = "Publishing successful !";
+			StringBuilder sb = new StringBuilder();
+			
+			HttpClient client = new HttpClient();
+			client.getParams().setParameter("http.useragent", "Test Client");
+
+			BufferedReader br = null;
+
+			PostMethod method = new PostMethod("http://ariadne.cs.kuleuven.be/validationService/api/validate");
+			method.addParameter("metadata", metadata);
+			method.addParameter("scheme", "http://www.imsglobal.org/services/lode/validation/Registry");
+			try{
+				int returnCode = client.executeMethod(method);
+
+				if(returnCode == HttpStatus.SC_NOT_IMPLEMENTED) {
+					System.err.println("The Post method is not implemented by this URI");
+					// still consume the response body
+					result = method.getResponseBodyAsString();
+				} else {
+					br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+					String readLine;
+					while(((readLine = br.readLine()) != null)) {
+						System.out.println(readLine);
+						sb.append(readLine + "\n");
+					}
+				}
+			} catch (Exception e) {
+				System.err.println(e);
+			} finally {
+				method.releaseConnection();
+				if(br != null) try { br.close(); } catch (Exception fe) {}
+			}
+			if (!sb.toString().contains("Error")){
+				UpdateMetadataCollection.getInstance().publishMetadata(metadata);
+				result += "Publishing successful ! " +sb.toString();
+			}else{
+				result += sb.toString().length();
+			}
+				
 		}catch(Exception e){
-	error = e.getMessage();
+			error = e.getMessage();
 		}
 	} else if (getOrPublishString.equalsIgnoreCase("delete")) {
 		try{
