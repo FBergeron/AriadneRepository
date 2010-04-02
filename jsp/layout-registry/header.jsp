@@ -40,18 +40,17 @@
 			[null,'Search',null,null,'Search',
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/query.png" />','Search registry','<%=request.getContextPath()%>/search/',null,'Search registry'],
 			],		
-<%			
-if (isLoggedIn) {
-%>			_cmSplit,			
-			[null,'Insert-Modify',null,null,'Insert-Modify',
+			_cmSplit,			
+			[null,'Modify',null,null,'Insert-Modify',
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/content.png" />','Insert-Modify Metadata','<%=request.getContextPath()%>/admin/updateMetadata.jsp',null,'Insert-Modify Metadata'],
 			],			
+<%			
+		if (isLoggedIn) {
+%>	
 			_cmSplit,
 			[null,'Management',null,null,'Management',
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Configuration Wizard','<%=request.getContextPath()%>/init/index.jsp',null,''],
 				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Change Configuration','<%=request.getContextPath()%>/admin/changeConfiguration.jsp',null,''],
-				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Manage harvester Configuration','<%=request.getContextPath()%>/registryMgmt/index.jsp',null,''],
-				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/config.png" />','Add New Harvester','<%=request.getContextPath()%>/registryMgmt/registerNewHarvester.jsp',null,''],
 			],
 			_cmSplit,
 			[null,'Status',null,null,'Status',
