@@ -23,6 +23,10 @@ public class TranslateResultsformat {
     public static final int SOLR = 5;
     public static final int RLOM = 6;
     public static final int MELOM = 7;
+    public static final int ATOM_LOM = 8;
+    public static final int ICJS = 9;
+    public static final int ILCJS = 10;
+    public static final int IJS = 11;
 
     public static boolean isPLRF(int rfId) {
         return rfId >= 1 && rfId <= 4;
@@ -46,6 +50,14 @@ public class TranslateResultsformat {
         	return LOM;
         else if (rf.equalsIgnoreCase("maceenrichedlom"))
         	return MELOM;
+        else if (rf.equalsIgnoreCase("atomlom"))
+        	return ATOM_LOM;
+        else if (rf.equalsIgnoreCase("icopercompactjs"))
+        	return ICJS;
+        else if (rf.equalsIgnoreCase("icoperlodcompactjs"))
+        	return ILCJS;
+        else if (rf.equalsIgnoreCase("icoperjs"))
+        	return IJS;
         return UNDEFINED;
     }
 

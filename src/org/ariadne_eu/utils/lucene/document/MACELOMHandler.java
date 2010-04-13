@@ -70,6 +70,11 @@ public class MACELOMHandler extends DocumentHandler {
 		doc = new Document();
 		contents = new String();
 	}
+	
+	public void endDocument() {
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+	}
 
 	/*
 	 * Save the attribute in a map to reuse it when the element ends (only used
@@ -99,7 +104,12 @@ public class MACELOMHandler extends DocumentHandler {
 //						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + ""+ atts.getQName(i);
+						String tmpBranche = branche.substring(0, branche.length());
+						//remove the NS+colons on any element		
+						if (tmpBranche.contains(":")) {
+							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+						}
+						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
 //						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}
@@ -128,11 +138,6 @@ public class MACELOMHandler extends DocumentHandler {
 			branche = branche.substring(0, branche.length() - qName.length() - 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
-		}
-		
-
-		if (tmpBranche.matches("lom")) {
-			doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
 		}
 
 		if (elementBuffer.toString().trim().equals("")) {

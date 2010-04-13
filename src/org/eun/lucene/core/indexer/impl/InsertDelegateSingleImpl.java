@@ -49,7 +49,7 @@ public class InsertDelegateSingleImpl implements IndexInserterDelegate {
 	    	}
 	    	
 //			doc.add(new Field("contents", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-			doc.add(new Field("lom", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("md", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 			
 //			if (doc.get("xmlns") == null){
 ////				TODO check if it's in the correct format

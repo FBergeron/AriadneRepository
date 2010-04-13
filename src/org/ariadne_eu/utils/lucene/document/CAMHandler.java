@@ -49,10 +49,15 @@ public class CAMHandler extends DocumentHandler {
 
 		return doc;
 	}
-	
+
 	public void startDocument() {
 		doc = new Document();
 		contents = new String();
+	}
+
+	public void endDocument() {
+		doc.add(new Field("contents", contents, Field.Store.YES, Field.Index.TOKENIZED));
+		doc.add(new Field("cam.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -61,10 +66,9 @@ public class CAMHandler extends DocumentHandler {
 	 * string creation to represent the current branch parsed
 	 * 
 	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
-	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
+	 * java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
-	public void startElement(String uri, String localName, String qName,
-			Attributes atts) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 		branche += qName.toLowerCase();
 
 		elementBuffer.setLength(0);
@@ -77,24 +81,20 @@ public class CAMHandler extends DocumentHandler {
 				attributeMap.put(atts.getQName(i), atts.getValue(i));
 
 				if (!atts.getQName(i).equals("uniqueElementName")) {
-					if (atts.getQName(i).equalsIgnoreCase("xmlns")
-							|| atts.getQName(i).equalsIgnoreCase(
-									"xsi:schemaLocation")) {
+					if (atts.getQName(i).equalsIgnoreCase("xmlns") || atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
 						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + ""
-								+ atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts
-								.getValue(i).toLowerCase(), Field.Store.YES,
-								Field.Index.UN_TOKENIZED));// XXX
+						String tmpBranche = branche.substring(0, branche.length());
+						//remove the NS+colons on any element		
+						if (tmpBranche.contains(":")) {
+							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+						}
+						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}
 				}
@@ -107,8 +107,7 @@ public class CAMHandler extends DocumentHandler {
 		elementBuffer.append(text, start, length);
 	}
 
-	public void endElement(String uri, String localName, String qName)
-			throws SAXException {
+	public void endElement(String uri, String localName, String qName) throws SAXException {
 
 		String tmpBranche = branche.substring(0, branche.length() - 1);
 		String tmp2Branche = "";
@@ -119,16 +118,12 @@ public class CAMHandler extends DocumentHandler {
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
 
-		if (tmpBranche.matches("cam")) {
-			doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
-		}
-
 		if (elementBuffer.toString().trim().equals("")) {
 			return;
 		}
-		
+
 		// In all the other cases add a field !
-		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
 
 		// to store the contents without metatags
 		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());

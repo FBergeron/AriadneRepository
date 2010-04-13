@@ -63,6 +63,7 @@ public class PLQL1Translator {
 //		,
 //		"protocol.identifier.catalog = \"ariadne-protocols-targets\""
 		"lom.general.identifier.entry = \"Perro\""
+		
 };
 
 //	private static String plqlQuery = "hello and \" my name is /// ) \\\"sereyvath\" and dc.title = \"SQL\" and lom.generate.title = \"SQL\" and lom.title = 1299 " ;

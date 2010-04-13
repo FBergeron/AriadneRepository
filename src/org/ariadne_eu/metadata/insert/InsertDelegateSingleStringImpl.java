@@ -48,8 +48,8 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
 			doc.add(new Field("key", key, Field.Store.YES, Field.Index.UN_TOKENIZED ));
 			doc.add(new Field("collection", collection.toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED ));
 			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED));
-            doc.add(new Field("lom", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-            doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+            doc.add(new Field("md", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+//            doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             
             String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.MACELOMHandler")) {

@@ -253,7 +253,6 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Term termFrom = new Term(dateField, fromDate);
 		Term termUntil = new Term(dateField, untilDate);
 		RangeQuery rangeQuery = new RangeQuery(termFrom,termUntil,true);
-		//TermQuery termQuery = new TermQuery(new Term(LOMLuceneIndexCreator.lomfield_LifecycleContributeDate(), "lom")); //better way to do this ? + filtered on dates
 		try {
 			query = parser.parse(rangeQuery.toString());
 		} catch (Exception e1) {

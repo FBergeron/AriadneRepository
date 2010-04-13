@@ -116,7 +116,6 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 	}
 
 	@GET
-
 	@Produces("text/xml")
 	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size, @QueryParam("lang") String queryLanguage, @QueryParam("format") String resultFormat) {
 		Ticket ticket = null;
@@ -204,16 +203,6 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 			Ticket.destroy(ticket);
 			return fault.getMessage();
 		}
-
-		//		log.error("synchronousQuery:sessionID=" + ticket.toString());
-		//		_SQIFault fault = new _SQIFault();
-		//		fault.setSqiFaultCode(FaultCodeType.SQI_00001);
-		//		fault.setMessage("Query has not been executed");
-		//		_SQIFaultException exception = new _SQIFaultException();
-		//		exception.setFaultMessage(fault);
-		//		Ticket.destroy(ticket);
-		//		return fault.getMessage();
-
 	}
 
 	public  SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery)
@@ -281,7 +270,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 		throw exception;
 	}
 
-	private SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery, int queryLanguage, int resultsFormat, int startResult, int nbResults) throws _SQIFaultException {
+	public SynchronousQueryResponse synchronousQuery(SynchronousQuery synchronousQuery, int queryLanguage, int resultsFormat, int startResult, int nbResults) throws _SQIFaultException {
 		try {
 			String result = QueryMetadataFactory.getQueryImpl(queryLanguage).query(synchronousQuery.getQueryStatement(), startResult, nbResults, resultsFormat);
 			result = TranslateResultsformat.processResults(result, getResultsFormatString(synchronousQuery.getTargetSessionID()), getQueryLanguageString(synchronousQuery.getTargetSessionID()), synchronousQuery.getQueryStatement());

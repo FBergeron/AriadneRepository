@@ -48,7 +48,7 @@ public class UpdateDelegateSingleImpl implements IndexUpdaterDelegate {
 	    		sFile.append(line+"\n");
 	    	}
 //			doc.add(new Field("contents", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-			doc.add(new Field("lom", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("md", sFile.toString(), Field.Store.YES, Field.Index.TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 			
 			//TODO doc.add(new Field("date.insert", doc.get("date.insert"), Field.Store.YES, Field.Index.UN_TOKENIZED));
 			

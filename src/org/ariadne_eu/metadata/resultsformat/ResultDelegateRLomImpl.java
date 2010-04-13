@@ -54,7 +54,7 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
 	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 	    
 	    for (RankedLom rankedLom : results) {
-	    	sBuild.append((hits.doc((Integer)lRank.get(rankedLom.getId()))).get("lom"));
+	    	sBuild.append((hits.doc((Integer)lRank.get(rankedLom.getId()))).get("md"));
 	    	log.debug(rankedLom.getId()+":"+rankedLom.getRankingValue());
 		}
 	    sBuild.append("</results>");

@@ -177,7 +177,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		Term termFrom = new Term("lastModDate", fromDate);
 		Term termUntil = new Term("lastModDate", untilDate);
 		RangeQuery rangeQuery = new RangeQuery(termFrom,termUntil,true);
-		//TermQuery termQuery = new TermQuery(new Term(LOMLuceneIndexCreator.lomfield_LifecycleContributeDate(), "lom")); //better way to do this ? + filtered on dates
 		Hits hits = null;
 		if(hits.length() == 0) throw new NoItemsMatchException();
 

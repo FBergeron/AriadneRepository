@@ -98,7 +98,12 @@ public class CollectionHandler extends DocumentHandler {
 						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
+						String tmpBranche = branche.substring(0, branche.length());
+						//remove the NS+colons on any element		
+						if (tmpBranche.contains(":")) {
+							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+						}
+						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
 						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}

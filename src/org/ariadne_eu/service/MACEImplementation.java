@@ -727,7 +727,7 @@ public class MACEImplementation extends MACESkeleton {
 			doc = handler.getDocument(new ByteArrayInputStream(metadata.getBytes("UTF-8")));
 			doc.add(new Field("key", identifier, Field.Store.YES,Field.Index.UN_TOKENIZED));
 			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND),Field.Store.YES, Field.Index.UN_TOKENIZED));
-			doc.add(new Field("lom", insertMetadata, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("md", insertMetadata, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			doc.add(new Field("lom.solr", "all", Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			
 			//keywords

@@ -25,7 +25,7 @@ public class ResultDelegateLomImpl implements IndexSearchDelegate {
 		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 	    	doc = hits.doc(i);
 	    	log.debug(doc.get("key") + " = " + hits.score(i));
-	    	sBuild.append(doc.get("lom"));
+	    	sBuild.append(doc.get("md"));
 	    }
 	    sBuild.append("</results>");
     	return sBuild.toString();

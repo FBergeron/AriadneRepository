@@ -111,51 +111,6 @@ public class ReIndexExistDbImpl extends ReIndexImpl {
 					StringReader stringReader = new StringReader(results);
 					InputSource input = new InputSource(stringReader);
 					
-//					Document doc;
-//					SAXBuilder builder = new SAXBuilder();
-//					doc = builder.build(input);
-//					
-//					Element resultsNode = doc.getRootElement();
-//					Namespace ns = null;
-//					List mdNodes;
-//					if (resultsNode != null) {
-//						
-//						if (xmlns != null) {
-//							ns = Namespace.getNamespace("http://ltsc.ieee.org/xsd/LOM");
-//							mdNodes = resultsNode.getChildren("identifier",ns);
-//						} else {
-//							mdNodes = resultsNode.getChildren("lom");
-//						}
-//						log.info("startResult:" + startResult + "NodeListLength:"+ mdNodes.size());
-//						if (mdNodes.size() == 0)
-//							break;
-//						for (Iterator iterator = mdNodes.iterator(); iterator.hasNext();) {
-//							Element mdNode = (Element) iterator.next();
-//							String identifier = null;
-//
-//							for (int j = 0; j < xpathQueries.size()&& identifier == null; j++) {
-//								String xpathQuery = (String) xpathQueries.elementAt(j);
-//
-//								try {
-//									XPath xpIdentifier = XPath.newInstance("/lom/"+ xpathQuery);
-//									if (ns != null)
-//										xpIdentifier.addNamespace(ns);
-//									identifier = ((Text) xpIdentifier.selectSingleNode(mdNode)).getText();
-//									System.out.println(identifier);
-//								} catch (Exception e) {
-//								}
-//							}
-//							Document newMD = new org.jdom.Document((Element) mdNode.clone());
-//							XMLOutputter outputter = new XMLOutputter();
-//							Format format = Format.getPrettyFormat();
-//							outputter.setFormat(format);
-//							String output = outputter.outputString(newMD);
-//							if (identifier != null)
-//								luceneImpl.insertMetadata(identifier, output);
-//						}
-//						
-//					}
-					
 					
 					
 					Document doc = null;

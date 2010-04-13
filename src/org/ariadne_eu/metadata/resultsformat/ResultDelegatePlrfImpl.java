@@ -23,7 +23,7 @@ public class ResultDelegatePlrfImpl implements IndexSearchDelegate {
 		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 	    	doc = hits.doc(i);
             //sBuild.append("<Metadata>").append(doc.get("contents")).append("</Metadata>").append("\n\n");//TODO: only return the part reguired for the given plrf level
-	    	sBuild.append("<Metadata>").append(doc.get("lom")).append("</Metadata>").append("\n\n");//TODO: only return the part reguired for the given plrf level
+	    	sBuild.append("<Metadata>").append(doc.get("md")).append("</Metadata>").append("\n\n");//TODO: only return the part reguired for the given plrf level
 	    }
 	    sBuild.append("</Record>");
 

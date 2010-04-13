@@ -33,7 +33,7 @@ public class ResultDelegatePLQL_1_2_LomImpl implements IndexSearchDelegate {
 		for (int i = 0; i < hits.length(); i++) {
 	    	doc = hits.doc(i);
 //	    	sBuild.append(doc.get("contents")+"\n\n");
-	    	sBuild.append(doc.get("lom")+"\n\n");
+	    	sBuild.append(doc.get("md")+"\n\n");
 	    }
 	    sBuild.append("</Metadata>"+
 					  "</Record>"+

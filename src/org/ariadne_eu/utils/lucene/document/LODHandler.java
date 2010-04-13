@@ -26,13 +26,12 @@ import org.xml.sax.SAXException;
  * @author gonzalo
  *
  */
-public class GENERICHandler extends DocumentHandler {
-
-	private static final String[] MIN_MAX = { "min", "max" };
+public class LODHandler extends DocumentHandler {
+	
 	/** A buffer for each XML element */
 	private StringBuffer elementBuffer = new StringBuffer();
 	private HashMap<String, String> attributeMap = new HashMap<String, String>();
-	private String branche = "";
+	private String branche = "", catalog;
 	private Document doc;
 	private String contents;
 	private final String BRANCH_SEPARATOR = ".";
@@ -63,6 +62,7 @@ public class GENERICHandler extends DocumentHandler {
 	
 	public void endDocument() {
 		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		doc.add(new Field("learningoutcome.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -79,6 +79,8 @@ public class GENERICHandler extends DocumentHandler {
 
 		elementBuffer.setLength(0);
 		attributeMap.clear();// No need for a map :D
+		
+		
 
 		if (atts.getLength() > 0) {
 			attributeMap = new HashMap<String, String>();
@@ -117,34 +119,40 @@ public class GENERICHandler extends DocumentHandler {
 
 		String tmpBranche = branche.substring(0, branche.length() - 1);
 		
+		//remove the NS+colons on any element		
 		if (tmpBranche.contains(":")) {
 			tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
 		}
 		
 		String tmp2Branche = "";
-
+		
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
 			branche = branche.substring(0, branche.length() - qName.length()- 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
 
+		if (tmpBranche.matches("learningoutcome")) {
+			doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		}
+
 		if (elementBuffer.toString().trim().equals("")) {
 			return;
 		}
 
-		// Attributes for string element ... (ex. Save the field by language)
-		if (qName.equalsIgnoreCase("string")) {
-			Iterator iter = attributeMap.keySet().iterator();
-			while (iter.hasNext()) {
-				String attName = ((String) iter.next()).toLowerCase();
-				String attValue = ((String) attributeMap.get(attName)).toLowerCase();
-				String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + attName + "" + EQUAL_SEPARATOR + "" + attValue;
+		if (tmpBranche.matches(".*identifier\\.((catalog)|(entry))")) {
+			if (tmpBranche.endsWith("identifier.catalog")) {
+				catalog = elementBuffer.toString().trim();
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+
+			} else if (tmpBranche.endsWith("identifier.entry")) {
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+//				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR+ "catalog" + BRANCH_SEPARATOR + "entry";
+//				doc.add(new Field(fieldName.toLowerCase(), catalog + ":"+ elementBuffer.toString().toLowerCase().trim(),Field.Store.YES, Field.Index.TOKENIZED));
 			}
 		}
 
-		
-		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
 		// to store the contents without metatags
 		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		elementBuffer.setLength(0);
@@ -163,5 +171,5 @@ public class GENERICHandler extends DocumentHandler {
 		}
 
 	}
-	
+
 }

@@ -97,12 +97,12 @@ public class IbmDb2LomCatalog extends AbstractCatalog {
 		} else {
 			IbmDb2LomCatalog.column_id = column_id;
 		}
-		String column_datestamp = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN);
-		if (column_datestamp == null) {
-			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN + " is missing from the properties file");
-		} else {
-			IbmDb2LomCatalog.column_datestamp = column_datestamp;
-		}
+//		String column_datestamp = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN);
+//		if (column_datestamp == null) {
+//			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATECOLUMN + " is missing from the properties file");
+//		} else {
+//			IbmDb2LomCatalog.column_datestamp = column_datestamp;
+//		}
 
 		try {
 

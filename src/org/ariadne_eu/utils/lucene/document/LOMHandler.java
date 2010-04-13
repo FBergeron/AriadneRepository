@@ -54,6 +54,11 @@ public class LOMHandler extends DocumentHandler {
 		doc = new Document();
 		contents = new String();
 	}
+	
+	public void endDocument() {
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+	}
 
 	/*
 	 * Save the attribute in a map to reuse it when the element ends (only used
@@ -84,7 +89,12 @@ public class LOMHandler extends DocumentHandler {
 						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					} else {
-						String fieldName = branche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
+						String tmpBranche = branche.substring(0, branche.length());
+						//remove the NS+colons on any element		
+						if (tmpBranche.contains(":")) {
+							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
+						}
+						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
 						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 					}
@@ -111,15 +121,9 @@ public class LOMHandler extends DocumentHandler {
 		String tmp2Branche = "";
 
 		if (branche.endsWith(qName.toLowerCase() + "" + BRANCH_SEPARATOR)) {
-			branche = branche.substring(0, branche.length() - qName.length()
-					- 1);
+			branche = branche.substring(0, branche.length() - qName.length()- 1);
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
-		}
-
-		if (tmpBranche.matches("lom")) {
-			doc.add(new Field("contents", contents, Field.Store.YES,
-					Field.Index.TOKENIZED));
 		}
 
 		if (elementBuffer.toString().trim().equals("")) {
@@ -400,8 +404,7 @@ public class LOMHandler extends DocumentHandler {
 		}
 		// <---
 		// to store the contents without metatags
-		contents = contents
-				.concat(" " + elementBuffer.toString().toLowerCase());
+		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		elementBuffer.setLength(0);
 	}
 	

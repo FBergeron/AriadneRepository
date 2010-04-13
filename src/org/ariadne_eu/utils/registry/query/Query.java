@@ -177,7 +177,7 @@ public class Query {
 			sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
 			for (int i = 0; i < hits.length() ; i++) {
 				doc = hits.doc(i);
-				sBuild.append(doc.get("lom"));
+				sBuild.append(doc.get("md"));
 			}
 			sBuild.append("</results>");
 			return sBuild.toString();

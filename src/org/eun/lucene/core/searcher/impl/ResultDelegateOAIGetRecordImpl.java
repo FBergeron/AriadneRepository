@@ -40,7 +40,7 @@ public class ResultDelegateOAIGetRecordImpl implements IndexSearchDelegate {
 	    
 	    
 //	    sBuild.append(doc.get("contents")+"\n\n");
-	    sBuild.append(doc.get("lom")+"\n\n");
+	    sBuild.append(doc.get("md")+"\n\n");
 	    
 	    sBuild.append("</metadata>"+
 	    			"</record>"+

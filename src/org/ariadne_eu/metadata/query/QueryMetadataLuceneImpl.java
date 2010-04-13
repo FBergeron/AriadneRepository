@@ -14,6 +14,9 @@ import org.apache.lucene.search.IndexSearcher;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
+import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERCompactJS;
+import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERJS;
+import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERLODCompactJS;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateLomImpl;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateMACEEnrichedLomImpl;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegatePlrfImpl;
@@ -92,6 +95,14 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             	result = new ResultDelegateSolrImpl(start,max,lQuery);
             } else if (resultsFormat == TranslateResultsformat.MELOM) {
             	result = new ResultDelegateMACEEnrichedLomImpl(start,max);
+            } else if (resultsFormat == TranslateResultsformat.ATOM_LOM) {
+            	result = new ResultDelegateLomImpl(start, max);
+            } else if (resultsFormat == TranslateResultsformat.ICJS) {
+            	result = new ResultDelegateICOPERCompactJS(start,max);
+            } else if (resultsFormat == TranslateResultsformat.ILCJS) {
+            	result = new ResultDelegateICOPERLODCompactJS(start,max);
+            } else if (resultsFormat == TranslateResultsformat.IJS) {
+            	result = new ResultDelegateICOPERJS(start,max);
             }else {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);
