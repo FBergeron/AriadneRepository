@@ -46,7 +46,7 @@ import org.oclc.oai.server.verb.OAIInternalServerError;
 import org.oclc.oai.util.OAIUtil;
 
 public class LuceneLomCatalog extends AbstractCatalog {
-	
+
 	private static Logger log = Logger.getLogger(QueryMetadataLuceneImpl.class);
 
 	/**
@@ -63,7 +63,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	private static String dateField;
 	private static String identifierField;
 	private static File indexDir;
-	
+
 	private static IndexReader reader;
 
 	public LuceneLomCatalog(Properties properties) {
@@ -94,7 +94,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		indexDir = new File(LuceneLomCatalog.lucenePath);
 		docAnalyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
 		try {
-			
+
 			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
 			String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
@@ -128,8 +128,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
-			String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
+		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+		String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 		if(keys.length == 0) {
 			throw new NoSetHierarchyException();
 		}
@@ -199,7 +199,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	private Object getIndexRecord(String identifier) {
 		loadIndexReader(indexDir);
 		IndexSearcher searcher = new IndexSearcher(reader);
-//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
 
 
@@ -214,7 +214,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Hits hits = null;
 		try {
 			hits = searcher.search(query);
-//			hits = SingletonIndexSearcher.search(query);
+			//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();  
 		} catch (Exception e) {
@@ -234,7 +234,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
 		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
-//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
 		Map listIdentifiersMap = new HashMap();
 		ArrayList headers = new ArrayList();
@@ -262,7 +262,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Hits hits = null;
 		try {
 			hits = searcher.search(query);
-//			hits = SingletonIndexSearcher.search(query);
+			//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -405,11 +405,8 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		 * perform the query on your DB according to the given parameters from, until and set
 		 ************************************************************************************/
 
-		if(set != null) {
+		if(sets.get(set) != null) {
 			set = sets.get(set);
-			if (set == null) {
-				set = "";
-			}
 		}
 
 		QueryParser parser = new QueryParser(dateField, docAnalyzer.getAnalyzer());
@@ -435,7 +432,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			q = new BooleanQuery();
 
 			q.add(rangeQuery, Occur.MUST);
-//			BooleanQuery.setMaxClauseCount(1000000); 
+			//			BooleanQuery.setMaxClauseCount(1000000); 
 			if(set != null)q.add(new TermQuery(new Term(PropertiesManager.getInstance().getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_SETFIELD),set)), Occur.MUST);
 			log.debug(q);
 
@@ -571,7 +568,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Hits hits = null;
 		try {
 			hits = searcher.search(query);
-//			hits = SingletonIndexSearcher.search(query);
+			//			hits = SingletonIndexSearcher.search(query);
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		} catch (Exception e) {
@@ -707,7 +704,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
 		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
-//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
+		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
 		String localIdentifier = oaiIdentifier;
 		localIdentifier = localIdentifier.replaceAll("[:]", "\\\\:");
@@ -716,7 +713,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		Hits hits = null;
 		try {
 			hits = searcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
-//			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
+			//			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
 		} catch (IOException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		} catch (ParseException e) {

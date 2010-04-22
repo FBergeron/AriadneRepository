@@ -306,7 +306,8 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		if(sets.get(set) != null) {
 			set = sets.get(set);
 		}
-
+		if (set == null)set = "";
+		
 		return listRecords(from, until, set, metadataPrefix, 0, new Vector<Integer>());
 	}
 
@@ -319,7 +320,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		/************************************************************************************
 		 * perform the query on your DB according to the given parameters from, until and set
 		 ************************************************************************************/
-		if (set == null)set = "";
 		File dir = new File(basePath + File.separator + set);
 
 		/** End Query **/
