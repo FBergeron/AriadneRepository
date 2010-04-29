@@ -141,7 +141,7 @@ public class ICOPERImplementation {
 		return "";
     }
 	
-	@GET @Path("/getLearningAssements")
+	@GET @Path("/getLearningAssessments")
     @Produces("application/json")
     public String getLearningAssements(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
 		if (query.equalsIgnoreCase("")) {

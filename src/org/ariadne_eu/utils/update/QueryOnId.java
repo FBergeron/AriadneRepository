@@ -34,7 +34,7 @@ public class QueryOnId {
 		return instance;
 	}
 
-	public String getMaceInstance(String metadataIdentifier) throws Exception {
+	public String getMACEInstance(String metadataIdentifier) throws Exception {
 
 		try {
 			XMLOutputter outputter = new XMLOutputter();
@@ -48,6 +48,42 @@ public class QueryOnId {
 			log.info("Requesting : " + metadataIdentifier);
 
 			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);
+
+			Document doc = OaiUtils.parseXmlString2Lom(resultString);
+
+			List results = doc.getRootElement().getChildren();
+			if(results.size() == 1) {
+				
+					Element el = (Element)results.get(0);
+					el.detach();
+					log.info("Successfully Requested : " + metadataIdentifier);
+					return outputter.outputString(el);
+					
+			}else if (results.size() < 1) {
+				String msg = "No records found, please check the identifier";
+				throw new Exception(msg);
+			}else if (results.size() > 1) {
+				String msg = "Too many records found, please check the identifier";
+				throw new Exception(msg);
+			}
+
+		} catch (Exception e) {
+			log.error("getMDInstance: identifier = " + metadataIdentifier, e);
+			throw e;
+		}
+
+		return null;
+	}
+	
+	public String getMDInstance(String metadataIdentifier) throws Exception {
+
+		try {
+			XMLOutputter outputter = new XMLOutputter();
+
+			String query = "key : \"" + metadataIdentifier + "\"";
+			log.info("Requesting : " + metadataIdentifier);
+
+			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(query, 1, 12, TranslateResultsformat.LOM);
 
 			Document doc = OaiUtils.parseXmlString2Lom(resultString);
 

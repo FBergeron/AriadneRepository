@@ -54,15 +54,11 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate{
             }
         	
             if(instanceDir == null) {
-//            	instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-//                log.error("initialize:property \""+ RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
             	log.error("Could not load Solr instance dir!");
             } else if (dataDir == null) {
-//            	dataDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-                log.warn("initialize:property \""+ RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
+                log.error("initialize:property \""+ RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
             } else if (loggingPath == null) {
-//            	loggingPath = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-                log.warn("initialize:property \""+ RepositoryConstants.REPO_LOG4J_DIR +"\" not defined");
+                log.error("initialize:property \""+ RepositoryConstants.REPO_LOG4J_DIR +"\" not defined");
             } else if (! (facetFields.size() > 0)) {
             	log.error("initialize:property \"" + RepositoryConstants.SR_SOLR_FACETFIELD + ".n\" not defined");
             }

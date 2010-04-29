@@ -9,9 +9,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Vector;
 
 import javax.activation.DataHandler;
@@ -85,6 +88,10 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
     }
     
     public DataHandler retrieveContent(String identifier) {
+		OutputStream outStream = null;
+		URLConnection uCon = null;
+		InputStream is = null;
+		
     	initialize();
     	
     	String location = null;
@@ -94,14 +101,32 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 			if (cntMetadata == null) {
 				location = retrieveMetadataLocation(identifier);	       		
 				if (location != null) {
-					BufferedInputStream in = new BufferedInputStream(new URL(location).openStream());
-					FileOutputStream fos = new FileOutputStream(file);
-					BufferedOutputStream bout = new BufferedOutputStream(fos,DATA_BLOCK_SIZE);
-					byte data[] = new byte[DATA_BLOCK_SIZE];
-					while(in.read(data,0,DATA_BLOCK_SIZE)>=0)
-						bout.write(data);
-					bout.close();
-					in.close();
+
+					URL Url;
+					byte[] buf;
+					int ByteRead, ByteWritten = 0;
+					Url = new URL(location);
+					outStream = new BufferedOutputStream(new FileOutputStream(file));
+
+					uCon = Url.openConnection();
+					is = uCon.getInputStream();
+					buf = new byte[DATA_BLOCK_SIZE];
+					while ((ByteRead = is.read(buf)) != -1) {
+						outStream.write(buf, 0, ByteRead);
+						ByteWritten += ByteRead;
+					}
+					log.info("Downloaded Successfully: No ofbytes :" + ByteWritten);
+
+					// BufferedInputStream in = new BufferedInputStream(new
+					// URL(location).openStream());
+					// FileOutputStream fos = new FileOutputStream(file);
+					// BufferedOutputStream bout = new
+					// BufferedOutputStream(fos,DATA_BLOCK_SIZE);
+					// byte data[] = new byte[DATA_BLOCK_SIZE];
+					// while(in.read(data,0,DATA_BLOCK_SIZE)>=0)
+					// bout.write(data);
+					// bout.close();
+					// in.close();
 				}
 			} else {
 				file = getFileFromMetadata(identifier,cntMetadata);
@@ -114,6 +139,13 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 			log.error("retrieveContent:identifier=" + identifier, e);
 		} catch (IOException e) {
 			log.error("retrieveContent:identifier=" + identifier, e);
+		} finally {
+			try {
+				is.close();
+				outStream.close();
+			} catch (IOException e) {
+				log.error("fileUrl", e);
+			}
 		}
     	
         if (file == null || !file.exists()) {
@@ -125,7 +157,7 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
     private String retrieveMetadataLocation (String identifier) {
     	
     	try {
-    		String xml = QueryOnId.getMACEquery().getMaceInstance(identifier);
+    		String xml = QueryOnId.getMACEquery().getMDInstance(identifier);
     		Document doc = getDoc(xml);
     		return getTechnicalLocation(doc);
 			
@@ -141,6 +173,7 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 
 	@Override
 	public String retrieveFileName(String identifier) {
+		String location;
 		String metadata = null;
         String name = identifier.replaceAll(":", "_");
         name = name.replaceAll("/", ".s.");
@@ -152,6 +185,14 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 					File file = subFiles[i];
 					return file.getName();
 				}
+			}
+		} else {
+			location = retrieveMetadataLocation(identifier);	       		
+			if (location != null) {
+				int slashIndex = location.lastIndexOf('/');
+
+				return (location.substring(slashIndex + 1));
+
 			}
 		}
 		return identifier;
@@ -201,18 +242,15 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
     
     private static String getTechnicalLocation (Document doc) {
     	String location = null;
-		
-		for (int i = 0; i < xpathIdentifiers.size() && location == null; i++) {
-			String xpathIdentifier = (String) xpathIdentifiers.elementAt(i);
-			for (int j = 0; j < xpathLocations.size() && location == null; j++) {
-				String xpathLocation = (String) xpathLocations.elementAt(j);
-				try {
-					location = XPathAPI.selectSingleNode(doc.getFirstChild(),xpathLocation).getNodeValue();
-				} catch (Exception e) {}
-				
-			}
+		for (int j = 0; j < xpathLocations.size() && location == null; j++) {
+			String xpathLocation = (String) xpathLocations.elementAt(j);
+			try {
+				location = XPathAPI.selectSingleNode(doc.getFirstChild(),xpathLocation).getNodeValue();
+			} catch (Exception e) {}
 		} 
 		return location;
 	}
+    
+    
 
 }

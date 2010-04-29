@@ -153,7 +153,9 @@ public class ReIndexFSImpl extends ReIndexImpl {
 			String xpathQuery = (String) xpathQueries.elementAt(j);
 			try {
 				identifier = XPathAPI.selectSingleNode(doc.getFirstChild(),xpathQuery).getNodeValue();
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				log.debug("getIdentifier", e);
+			}
 		}
 		return identifier;
 	}
