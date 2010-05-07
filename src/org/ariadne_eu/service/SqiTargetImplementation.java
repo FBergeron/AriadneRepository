@@ -117,8 +117,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
 	@GET
 	
-	@Produces({"text/xml", "application/json"})
-//	@Produces("application/json")
+	@Produces({"application/xml", "application/json"})
 	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size, @QueryParam("lang") String queryLanguage, @QueryParam("format") String resultFormat) {
 		Ticket ticket = null;
 		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");

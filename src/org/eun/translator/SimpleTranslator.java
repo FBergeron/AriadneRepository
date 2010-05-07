@@ -125,7 +125,7 @@ public class SimpleTranslator
 		SimpleTranslator translator = new SimpleTranslator() ;
 		try 
         {
-			log.debug(translator.transformQueryToLuceneQL(sQuery)) ;
+			System.out.println(translator.transformQueryToLuceneQL(sQuery)) ;
 		}
         catch (Exception e) 
         {

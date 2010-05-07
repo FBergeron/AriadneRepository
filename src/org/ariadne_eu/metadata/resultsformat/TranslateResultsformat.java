@@ -15,18 +15,19 @@ public class TranslateResultsformat {
     private static Logger log = Logger.getLogger(TranslateResultsformat.class);
 
     public static final int UNDEFINED = -1;
-    public static final int LOM = 0;
-    public static final int PLRF0 = 1;
-    public static final int PLRF1 = 2;
-    public static final int PLRF2 = 3;
-    public static final int PLRF3 = 4;
-    public static final int SOLR = 5;
-    public static final int RLOM = 6;
-    public static final int MELOM = 7;
-    public static final int ATOM_LOM = 8;
-    public static final int ICJS = 9;
-    public static final int ILCJS = 10;
-    public static final int IJS = 11;
+    public static final int LOM = 0; //default
+    public static final int PLRF0 = 1; // prolearn
+    public static final int PLRF1 = 2; // prolearn
+    public static final int PLRF2 = 3; // prolearn
+    public static final int PLRF3 = 4; // prolearn
+    public static final int SOLR = 5; // facets: mace
+    public static final int RLOM = 6; // mace
+    public static final int MELOM = 7; // mace
+    public static final int ATOM_LOM = 8; // to be implemented
+    public static final int ICJS = 9; //ICOPER COMPACT JSON
+    public static final int ILCJS = 10; //ICOPER LOD COMPACT JSON
+    public static final int IJS = 11; //ICOPER JSON
+    public static final int ARFJS = 13; //ARIADNE JS
 
     public static boolean isPLRF(int rfId) {
         return rfId >= 1 && rfId <= 4;
@@ -58,6 +59,8 @@ public class TranslateResultsformat {
         	return ILCJS;
         else if (rf.equalsIgnoreCase("icoperjs"))
         	return IJS;
+        else if (rf.equalsIgnoreCase("ariadne"))
+        	return ARFJS;
         return UNDEFINED;
     }
 

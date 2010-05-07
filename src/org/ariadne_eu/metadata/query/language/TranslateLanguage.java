@@ -19,6 +19,7 @@ public class TranslateLanguage {
     public static final int PLQL2 = 3;
     public static final int XQUERY = 4;
     public static final int LUCENE = 5;
+    public static final int JSON = 6;
 
     private static HashMap cachedImplementations = new HashMap();
 
@@ -53,7 +54,9 @@ public class TranslateLanguage {
             return PLQL2;
         } else if (queryLanguage.equalsIgnoreCase("lucene")) {
             return LUCENE;
-        } else {
+        } else if (queryLanguage.equalsIgnoreCase("json")) {
+    		return JSON;
+    	} else {
             return UNDEFINED;
         }
     }
@@ -93,6 +96,9 @@ public class TranslateLanguage {
                             break;
                         case LUCENE:
                             cachedImplementations.put(new HashMapKey(startQueryLanguage, endQueryLanguage), new Plql_LuceneHandler(startQueryLanguage, endQueryLanguage));
+                            break;
+                        case JSON:
+                            cachedImplementations.put(new HashMapKey(startQueryLanguage, endQueryLanguage), new Json_LuceneHandler(startQueryLanguage, endQueryLanguage));
                             break;
                     }
                     break;

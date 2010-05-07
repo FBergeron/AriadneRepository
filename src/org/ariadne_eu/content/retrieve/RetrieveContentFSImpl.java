@@ -14,13 +14,14 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Vector;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.apache.xpath.XPathAPI;
 import org.ariadne.config.PropertiesManager;
@@ -87,72 +88,51 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
         }
     }
     
-    public DataHandler retrieveContent(String identifier) {
-		OutputStream outStream = null;
-		URLConnection uCon = null;
-		InputStream is = null;
-		
-    	initialize();
-    	
-    	String location = null;
-		File file = new File(identifier);
-    	try {
-			String cntMetadata = getMetadataForID(identifier);
-			if (cntMetadata == null) {
-				location = retrieveMetadataLocation(identifier);	       		
-				if (location != null) {
+	public DataHandler retrieveContent(String identifier) {
 
-					URL Url;
-					byte[] buf;
-					int ByteRead, ByteWritten = 0;
-					Url = new URL(location);
-					outStream = new BufferedOutputStream(new FileOutputStream(file));
 
-					uCon = Url.openConnection();
-					is = uCon.getInputStream();
-					buf = new byte[DATA_BLOCK_SIZE];
-					while ((ByteRead = is.read(buf)) != -1) {
-						outStream.write(buf, 0, ByteRead);
-						ByteWritten += ByteRead;
+		initialize();
+
+		String location = null;
+		File file = null;
+
+		String cntMetadata = getMetadataForID(identifier);
+		if (cntMetadata == null) {
+			location = retrieveMetadataLocation(identifier);
+			if (location != null) {
+				URL Url = null;
+				if (location.contains("/blocks/formats/logrequest.php?url=")) {
+					location = location.replace("/blocks/formats/logrequest.php?url=", "");
+					File tempFile = new File("temp");
+					FileOutputStream fos;
+					try {
+						fos = new FileOutputStream(tempFile);
+						download(location, fos);
+					} catch (FileNotFoundException e) {
+						log.error("retrieveContent", e);
+					} catch (IOException e) {
+						log.error("retrieveContent", e);
 					}
-					log.info("Downloaded Successfully: No ofbytes :" + ByteWritten);
-
-					// BufferedInputStream in = new BufferedInputStream(new
-					// URL(location).openStream());
-					// FileOutputStream fos = new FileOutputStream(file);
-					// BufferedOutputStream bout = new
-					// BufferedOutputStream(fos,DATA_BLOCK_SIZE);
-					// byte data[] = new byte[DATA_BLOCK_SIZE];
-					// while(in.read(data,0,DATA_BLOCK_SIZE)>=0)
-					// bout.write(data);
-					// bout.close();
-					// in.close();
+					
+					return new DataHandler(new FileDataSource(tempFile));
 				}
-			} else {
-				file = getFileFromMetadata(identifier,cntMetadata);
+				try {
+					Url = new URL(location);
+				} catch (MalformedURLException e) {
+					log.error("retrieveContent:identifier=" + identifier, e);
+				}
+				return new DataHandler(Url);
 			}
-			
-			
-		} catch (MalformedURLException e) {
-			log.error("retrieveContent:identifier=" + identifier, e);
-		} catch (FileNotFoundException e) {
-			log.error("retrieveContent:identifier=" + identifier, e);
-		} catch (IOException e) {
-			log.error("retrieveContent:identifier=" + identifier, e);
-		} finally {
-			try {
-				is.close();
-				outStream.close();
-			} catch (IOException e) {
-				log.error("fileUrl", e);
+		} else {
+			file = getFileFromMetadata(identifier, cntMetadata);
+			if (file == null || !file.exists()) {
+				return null;
+			} else {
+				return new DataHandler(new FileDataSource(file));
 			}
 		}
-    	
-        if (file == null || !file.exists()) {
-            return null;
-        }
-        return new DataHandler(new FileDataSource(file));
-    }
+		return null;
+	}
     
     private String retrieveMetadataLocation (String identifier) {
     	
@@ -251,6 +231,45 @@ public class RetrieveContentFSImpl extends RetrieveContentImpl {
 		return location;
 	}
     
+    public OutputStream download( String url, OutputStream out) throws IOException {
+        HttpClient client = new HttpClient();
+        GetMethod authget = new GetMethod(url);
+        //Login as a guest
+        client.executeMethod(authget);
+
+        authget = new GetMethod(url);
+        client.executeMethod(authget);
+        
+        out = stream2stream(authget.getResponseBodyAsStream(), out);
+        authget.releaseConnection();
+        return out;
+//        out.close();
+    }
+    
+    public static OutputStream stream2stream( InputStream in, OutputStream out) throws java.io.IOException {
+		BufferedInputStream reader = new BufferedInputStream( in);
+		BufferedOutputStream writer = new BufferedOutputStream( out, 1024);
+		byte byteInputArray[] = new byte[1024];
+
+//		System.out.println("Transferring ");
+		int count;
+		int i = 0;
+		while ( (count = reader.read(byteInputArray, 0, 1024) ) > 0 ) {
+			writer.write(byteInputArray, 0, count);
+//			System.out.print(".");
+			i++;
+			if( (i % 80) == 0 ) {
+//				System.out.print("\n");
+				i = 1;
+			}
+		}
+//		System.out.println(" Done!");
+		writer.flush();	
+		writer.close();
+		reader.close();
+		return out;
+		
+	}
     
 
 }

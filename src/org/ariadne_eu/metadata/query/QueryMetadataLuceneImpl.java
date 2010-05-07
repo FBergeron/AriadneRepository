@@ -14,6 +14,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
+import org.ariadne_eu.metadata.resultsformat.ResultDelegateARIADNERFJS;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERCompactJS;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERJS;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateICOPERLODCompactJS;
@@ -103,6 +104,8 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             	result = new ResultDelegateICOPERLODCompactJS(start,max);
             } else if (resultsFormat == TranslateResultsformat.IJS) {
             	result = new ResultDelegateICOPERJS(start,max);
+            } else if (resultsFormat == TranslateResultsformat.ARFJS) {
+            	result = new ResultDelegateARIADNERFJS(start,max,lQuery);
             }else {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);

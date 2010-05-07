@@ -1,20 +1,16 @@
-/**
- * 
- */
 package org.ariadne_eu.metadata.resultsformat;
 
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
-
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Hits;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -22,29 +18,27 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.servlet.DirectSolrConnection;
 import org.ariadne.config.PropertiesManager;
-import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
-/**
- * @author gonzalo
- * 
- */
-public class ResultDelegateSolrImpl implements IndexSearchDelegate {
+import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
-	private static Logger log = Logger.getLogger(QueryMetadataLuceneImpl.class);
-	private int start;
-	private int max;
-	private String lQuery;
+public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
+	private static Logger log = Logger.getLogger(ResultDelegateARIADNERFJS.class);
+
+    private int start;
+    private int max;
+    private String lQuery;
 	private static String instanceDir;
 	private static String dataDir;
 	private static String loggingPath;
 	private DirectSolrConnection conn;
 	private static Vector facetFields;
-
-	static {
+    
+    static {
 		try {
-			// instanceDir =
-			// PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
 			instanceDir = (PropertiesManager.getInstance().getPropFile()).replaceAll("install/ariadne.properties", "solr/");
 			dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_DATADIR);
 			loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
@@ -57,17 +51,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 				facetFields.add((String) object);
 			}
 
-			// while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD
-			// + "." + i) != null) {
-			// facetFields.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD
-			// + "." + i));
-			// i++;
-			// }
-
 			if (instanceDir == null) {
-				// instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-				// log.error("initialize:property \""+
-				// RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
 				log.error("Could not load Solr instance dir!");
 			} else if (dataDir == null) {
 				log.warn("initialize:property \"" + RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
@@ -82,18 +66,53 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		}
 	}
 
-	public ResultDelegateSolrImpl(int start, int max, String lQuery) {
-		this.start = start;
-		this.max = max;
-		this.lQuery = lQuery;
+    public ResultDelegateARIADNERFJS(int start, int max, String lQuery) {
+        this.start = start;
+        this.max = max;
+        this.lQuery = lQuery;
+        conn = new DirectSolrConnection(instanceDir, dataDir, loggingPath);
+    }
 
-		conn = new DirectSolrConnection(instanceDir, dataDir, loggingPath);
+    //TODO: fix the returning keywords (it only returns the first one!)
+    public String result(Hits hits) throws Exception {
+	    Document doc;
+	    
+	    JSONObject resultsJson = new JSONObject();
+	    JSONObject resultJson = new JSONObject();
+	    JSONArray idArrayJson = new JSONArray();
+	    JSONArray metadataArrayJson = new JSONArray();
+	    
+	    resultJson.put("nrOfResults", hits.length());
+	    
+		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
+			JSONObject json = new JSONObject();
+	    	doc = hits.doc(i);
+	    	try {
+	    		idArrayJson.put(doc.get("lom.general.identifier.entry"));
+	    		
+	    		json.put("title", doc.get("lom.general.title.string"));
+	    		json.put("description", doc.get("lom.general.description.string"));
+	    		json.put("keywords", doc.get("lom.general.keyword.string"));
+	    		json.put("location", doc.get("lom.technical.location"));
+	    		json.put("identifier", doc.get("lom.general.identifier.entry"));
+			} catch (JSONException ex) {
+				log.error(ex);
+			}
+			metadataArrayJson.put(json);
+	    	log.debug(doc.get("key") + " = " + hits.score(i));
+	    }
+		resultJson.put("id", idArrayJson);
+		resultJson.put("metadata", metadataArrayJson);
+		resultJson.put("facets", getFacets());
+		resultJson.put("error", "");
+		resultJson.put("errorMessage", "");
+		resultsJson.put("result",resultJson);
+		return resultsJson.toString();
 	}
-
-	public String result(Hits hits) throws Exception {
-		log.debug(PropertiesManager.getInstance().getPropFile());
-		StringBuilder sBuild = new StringBuilder();
-		sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response>\n");
+    
+    private JSONArray getFacets() {
+    	JSONArray facetsJson = new JSONArray();
+    	JSONObject facetJson = new JSONObject();
 
 		SolrCore core = SolrCore.getSolrCore();
 		SolrServer server = new EmbeddedSolrServer(core);
@@ -104,50 +123,51 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		params.set("queryResultWindowSize", Integer.toString(max));
 		solrQuery.add(params);
 
-		// System.out.println(solrQuery.get("query/queryResultWindowSize"));
-		// System.out.println(solrQuery.get("queryResultWindowSize"));
-
-		// ModifiableSolrParams params = new ModifiableSolrParams();
-		// System.out.println(params.get("query/queryResultWindowSize"));
-		// params.set("queryResultWindowSize", Integer.toString(max));
-
-		// QueryResponse response = solr.query(params);
-		// .setParam("queryResultWindowSize", Integer.toString(max))
-
 		for (Iterator iterator = facetFields.iterator(); iterator.hasNext();) {
 			String facetField = (String) iterator.next();
 			solrQuery.addFacetField(facetField);
 		}
 
-		QueryResponse rsp = server.query(solrQuery);
-		System.out.println(rsp.getResults().getNumFound());
+		QueryResponse rsp;
+		try {
+			rsp = server.query(solrQuery);
+		
 
 		List facetsFields = rsp.getFacetFields();
-		sBuild.append("<facets>\n");
 		if (facetsFields.size() > 0) {
 			List facetValues;
 			FacetField facetField;
 			FacetField.Count innerFacetField;
 			for (Iterator facetIterator = facetsFields.iterator(); facetIterator.hasNext();) {
 				facetField = (FacetField) facetIterator.next();
-				sBuild.append("<facet_field name=\"" + facetField.getName() + "\">\n");
-
+				facetJson.put("field", facetField.getName());
 				facetValues = facetField.getValues();
 				if (facetValues != null) {
+					JSONArray valuesJson = new JSONArray();
 					for (Iterator ifacetIterator = facetValues.iterator(); ifacetIterator.hasNext();) {
+						JSONObject value = new JSONObject();
 						innerFacetField = (FacetField.Count) ifacetIterator.next();
-						sBuild.append("<facet_count name=\"" + innerFacetField.getName() + "\">" + innerFacetField.getCount() + "</facet_count>\n");
+						value.put("val", innerFacetField.getName());
+						value.put("count", innerFacetField.getCount());
+						valuesJson.put(value);
 					}
+					facetJson.put("numbers", valuesJson);
 				}
-				sBuild.append("</facet_field>\n");
+				facetsJson.put(facetJson);
 			}
+			
 		}
-		sBuild.append("</facets>\n");
-		sBuild.append("</response>");
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		conn.close();
+		System.out.println(facetsJson.toString());
 
-		return sBuild.toString();
-	}
-
+		return facetsJson;
+    }
 }
