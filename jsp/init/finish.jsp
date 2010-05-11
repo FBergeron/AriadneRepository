@@ -141,7 +141,12 @@ else{
 	PropertiesManager.getInstance().saveProperty("oaicat.identify.deletedrecord","no");
 	PropertiesManager.getInstance().saveProperty("oaicat.identify.repoid","oaicat.ariadne.org");
 	PropertiesManager.getInstance().saveProperty("oaicat.identify.description.1","<description><oai-identifier xmlns=\\\"http://www.openarchives.org/OAI/2.0/oai-identifier\\\" xmlns:xsi=\\\"http://www.w3.org/2001/XMLSchema-instance\\\" xsi:schemaLocation=\\\"http://www.openarchives.org/OAI/2.0/oai-identifier http://www.openarchives.org/OAI/2.0/oai-identifier.xsd\\\"><scheme>oai</scheme><repositoryIdentifier>oaicat.ariadne.org</repositoryIdentifier><delimiter>:</delimiter><sampleIdentifier>oai:oaicat.ariadne.org:hdl:OCLCNo/ocm00000012</sampleIdentifier></oai-identifier></description>");
-	PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_lom");
+	if (request.getParameter("handler").compareTo("org.ariadne_eu.utils.lucene.document.CollectionHandler")!=0) {
+		PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_lom");
+	}else{
+		PropertiesManager.getInstance().removeKeyFromPropertiesFile("oaicat.crosswalk.lom");
+		PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_reg");		
+	}
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomCatalog");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.record.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomRecordFactory");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.md","lom");
