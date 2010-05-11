@@ -145,7 +145,7 @@ else{
 		PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_lom");
 	}else{
 		PropertiesManager.getInstance().removeKeyFromPropertiesFile("oaicat.crosswalk.lom");
-		PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_reg");		
+		PropertiesManager.getInstance().saveProperty("oaicat.crosswalk.lom","org.ariadne_eu.oai.server.lucene.crosswalk.Lucene2oai_reg");  		
 	}
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomCatalog");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.record.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomRecordFactory");
