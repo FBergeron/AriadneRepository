@@ -144,7 +144,7 @@
                                       <td><input type="submit" name="search" value="search" /></td>
                                   </tr>
                                   <tr>
-                                      <td align="center"><A href="index.jsp?query=http&search=search">Show all the content</A></td>
+                                      <td align="center"><A href="index.jsp?query=http&search=search">Show all the content</A></td>                                      
                                   </tr>
                               </table>
 
@@ -299,7 +299,7 @@
 %>
 					</td></tr>					
 <%
-				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;metadataCollection.identifier.entry%3D&#34;"+metadataCollection.getIdentifier().getEntry()+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td/></tr><tr><td/></tr>
+				}%><tr class="searchResultsRow<%=(currentResultCounter%2==1) ? "Odd" : "Even"%>"><td><%out.println("<A href=\"showMetadata.jsp?query&#61;metadataCollection.identifier.entry%3D&#34;"+metadataCollection.getIdentifier().getEntry()+"&#34;&#38;search&#61;search\">Show all metadata</A>");%></td><td align="right"><A href=<%out.println("\"../admin/updateMetadata.jsp?id="+metadataCollection.getIdentifier().getEntry()+"&getOrPublishField=get\"");%>>Edit Metadata</A></td></tr><tr><td/></tr>
 <%				
 				currentResultCounter++;
 
