@@ -95,11 +95,13 @@
 		<delete file="${output.basedir}/jsp/search/index.jsp" />
 		<delete file="${output.basedir}/jsp/admin/updateMetadata.jsp" />
     	<delete file="${output.basedir}/jsp/layout/header.jsp" />
+    	<delete file="${output.basedir}/jsp/layout/footer.jsp" />
     	<delete file="${output.basedir}/jsp/WEB-INF/web.xml" />
 		<copy file="${output.basedir}/jsp/search-registry/index.jsp" todir="${output.basedir}/jsp/search/"/>
     	<copy file="${output.basedir}/jsp/search-registry/showMetadata.jsp" todir="${output.basedir}/jsp/search/"/>
 		<copy file="${output.basedir}/jsp/admin-registry/updateMetadata.jsp" todir="${output.basedir}/jsp/admin/"/>
     	<copy file="${output.basedir}/jsp/layout-registry/header.jsp" todir="${output.basedir}/jsp/layout/"/>
+    	<copy file="${output.basedir}/jsp/layout-registry/footer.jsp" todir="${output.basedir}/jsp/layout/"/>
     	<copy file="${output.basedir}/jsp/WEB-INF-registry/web.xml" todir="${output.basedir}/jsp/WEB-INF/"/>
     	<copy file="${output.basedir}/jsp/index-registry/index.jsp" todir="${output.basedir}/jsp/"/>
 		<delete dir="${output.basedir}/jsp/search-registry" />
