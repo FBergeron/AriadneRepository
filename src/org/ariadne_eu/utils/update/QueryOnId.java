@@ -116,7 +116,7 @@ public class QueryOnId {
 		try {
 
 			XMLOutputter outputter = new XMLOutputter();
-			String query = "metadataCollection.identifier.entry = \"" + metadataIdentifier + "\"";
+			String query = "metadatacollection.identifier.entry = \"" + metadataIdentifier + "\"";
 
 			log.info("Requesting : " + metadataIdentifier);
 			String resultString = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, 1, 12, TranslateResultsformat.LOM);	
