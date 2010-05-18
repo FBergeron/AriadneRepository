@@ -143,7 +143,7 @@ public class Query {
 			
 		
 			String result = query(sessionId, query, startResult);
-			
+
 			return result;
 			
 		} catch (AxisFault e) {
@@ -221,6 +221,7 @@ public class Query {
 		}
 		
 	}
+
 	
 	public static void main(String[] args){
 		doQueryLucene();
