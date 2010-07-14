@@ -66,7 +66,10 @@
   	   			<div class="form-block">
   	     			<table class="content2">
   	     			<tr>
-  		    			<td>Repository Name:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="repositoryName" value=""/></td>
+  		    			<td>Catalog:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="catalog" value=""/></td>
+  		    		</tr>
+  	     			<tr>
+  		    			<td>Repository name:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="repositoryName" value=""/></td>
   		    		</tr>
   	     			<tr>
   		    			<td>Description: <br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="description" value=""/></td>

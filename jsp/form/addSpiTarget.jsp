@@ -67,6 +67,7 @@
   	     			<table class="content2">
   	     			<tr>
   		    			<td>URL Spi Target:<br/><input class="inputbox" style="width:100%;" type="text" class="inputboxadd" name="targetURLSpi" value=""/>
+  		    			<input type="hidden" name="catalog" value="<%=request.getParameter("catalog")%>"/>
   		    			<input type="hidden" name="repositoryName" value="<%=request.getParameter("repositoryName")%>"/>
   		    			<input type="hidden" name="description" value="<%=request.getParameter("description")%>"/>
   		    			<input type="hidden" name="email" value="<%=request.getParameter("email")%>"/>

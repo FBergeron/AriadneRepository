@@ -81,7 +81,7 @@ boolean exists (String dir) {
 <div class="clr"></div>
 
 <%
-
+String catalog = request.getParameter("catalog");
 String repositoryName = request.getParameter("repositoryName");
 String description = request.getParameter("description");
 String email = request.getParameter("email");
@@ -123,7 +123,8 @@ do{
 }while (result!=null);
 
 MetadataCollection metadataCollection = new MetadataCollection();
-metadataCollection.getIdentifier().setCatalog("ariadne-registry");
+if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog("ariadne-registry");
+else metadataCollection.getIdentifier().setCatalog(catalog);
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
 metadataCollection.getDescription().setString(description);
@@ -169,9 +170,11 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (synchronous!=null) sqi.setModeSynchronous();
 	if (asynchronous!=null) sqi.setModeAsynchronous();
 	TargetDescription targetDescription = new TargetDescription();
-	targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
-	targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
 	targetDescription.setLocation(targetURLSqi);
 	targetDescription.getProtocolImplementationDescription().setSqi(sqi);
@@ -186,7 +189,7 @@ if (targetURLOai.compareTo("")!=0) {
 		oairepository.setBaseURL(targetURLOai);
 		OaiPmh oaiPmh = new OaiPmh();
 		OAIMetadataFormatList metadataFormatList = oairepository.listMetadataFormats();
-		while (metadataFormatList.moreItems()){
+		for (int i=0; i<metadataFormatList.getCompleteSize(); i++){
 			MetadataFormat metadataFormat = new MetadataFormat();
 			OAIMetadataFormat oaiMetadataFormat = metadataFormatList.getCurrentItem();
 			metadataFormat.setMetadataPrefix(oaiMetadataFormat.getMetadataPrefix());
@@ -196,7 +199,7 @@ if (targetURLOai.compareTo("")!=0) {
 			metadataFormatList.moveNext();
 		}
 		OAISetList oaiSetList = oairepository.listSets();
-		while (oaiSetList.moreItems()){
+		for (int i=0; i<oaiSetList.getCompleteSize(); i++){
 			oaiPmh.addSets(oaiSetList.getCurrentItem().getSetName());
 			oaiSetList.moveNext();
 		}
@@ -204,23 +207,29 @@ if (targetURLOai.compareTo("")!=0) {
 		oaiPmh.setGranularuty(oairepository.getGranularity());
 		oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
 		TargetDescription targetDescription = new TargetDescription();
-		targetDescription.getIdentifier().setCatalog("ariadne_targets");
+		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
 		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
-		targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+		else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 		targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
 		targetDescription.setLocation(targetURLOai);
 		targetDescription.getProtocolImplementationDescription().setOaiPmh(oaiPmh);
 		metadataCollection.addTarget(targetDescription);
 	}catch(Exception e){
+		e.printStackTrace();
+		out.println(e);
 		oairepository=null;
 	}	
 }
 
 if (targetURLSpi.compareTo("")!=0){
 	TargetDescription targetDescription = new TargetDescription();
-	targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-spi-"+temp);
-	targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("spi");
 	targetDescription.setLocation(targetURLSpi);
 	metadataCollection.addTarget(targetDescription);
@@ -234,7 +243,7 @@ if (metadataCollection.getTarget().size()==0){
 	try{
 		UpdateMetadataCollection.getInstance().publishMetadata(metadataCollection.getXMLMetadataCollection().trim());
 		out.println("<h1>Target published successfully!</h1>");
-		out.println("<a href=\"../search/index.jsp?query=metadataCollection.identifier.entry="+temp+"\">Consult your target published</a>");
+		out.println("<a href=\"../search/index.jsp?query=metadatacollection.identifier.entry="+temp+"\">Consult your target published</a>");
 		
 	}catch(Exception e){
 		out.println(e); 

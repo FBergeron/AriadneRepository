@@ -126,6 +126,7 @@
                                          style="width:100%;"
                                          name="resultFormatOther"
                                          value="">
+                        <input type="hidden" name="catalog" value="<%=request.getParameter("catalog")%>"/>
                         <input type="hidden" name="repositoryName" value="<%=request.getParameter("repositoryName")%>"/>
   		    			<input type="hidden" name="description" value="<%=request.getParameter("description")%>"/>
   		    			<input type="hidden" name="targetURLSpi" value="<%=request.getParameter("targetURLSpi").trim()%>"/>
