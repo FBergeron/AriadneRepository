@@ -62,6 +62,15 @@
 		<url-pattern>/status/*</url-pattern>
 	</filter-mapping>
 
+    <filter-mapping>
+        <filter-name>admin-only</filter-name>
+        <url-pattern>/init/*</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>admin-only</filter-name>
+        <url-pattern>/registryMgmt/*</url-pattern>
+    </filter-mapping>
 
 
 	<!-- Servlets -->
