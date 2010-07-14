@@ -62,7 +62,7 @@ public class LODHandler extends DocumentHandler {
 	
 	public void endDocument() {
 		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
-		doc.add(new Field("learningoutcome.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+		doc.add(new Field("md.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -131,11 +131,6 @@ public class LODHandler extends DocumentHandler {
 			if (!branche.equals(""))
 				tmp2Branche = branche.substring(0, branche.length() - 1);
 		}
-
-		if (tmpBranche.matches("learningoutcome")) {
-			doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
-		}
-
 		if (elementBuffer.toString().trim().equals("")) {
 			return;
 		}
@@ -147,12 +142,22 @@ public class LODHandler extends DocumentHandler {
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
-//				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR+ "catalog" + BRANCH_SEPARATOR + "entry";
-//				doc.add(new Field(fieldName.toLowerCase(), catalog + ":"+ elementBuffer.toString().toLowerCase().trim(),Field.Store.YES, Field.Index.TOKENIZED));
 			}
 		}
+		else if (tmpBranche.matches(".*title.*")) {
+			if (tmpBranche.endsWith("title.string")) {
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));
 
-		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+			}
+		}
+		else if (tmpBranche.matches(".*description.string")) {
+			String format = elementBuffer.toString().toLowerCase().trim();
+			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.TOKENIZED));// XXX
+		}
+		else {
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+		}
+		
 		// to store the contents without metatags
 		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		elementBuffer.setLength(0);

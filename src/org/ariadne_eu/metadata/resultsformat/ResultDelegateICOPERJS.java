@@ -30,7 +30,7 @@ public class ResultDelegateICOPERJS implements IndexSearchDelegate {
 			JSONObject json = new JSONObject();
 	    	doc = hits.doc(i);
 	    	try {
-	    		json.put("id", doc.get("lom.general.identifier.entry"));
+	    		json.put("id", doc.get("lom.metametadata.identifier.entry"));
 	    		json.put("md", doc.get("md"));
 			} catch (JSONException ex) {
 				log.error(ex);

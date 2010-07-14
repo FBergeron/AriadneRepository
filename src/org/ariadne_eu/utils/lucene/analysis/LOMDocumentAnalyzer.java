@@ -27,21 +27,7 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("untokenized.xmlns", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("xmlns", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.solr", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.general.identifier.entry.exact", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.general.identifier.entry", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.general.identifier.catalog", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.general.title.string.exact", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.general.title.string", new SnowballAnalyzer("English"));
-		pfanalyzer.addAnalyzer("lom.general.keyword.string", new SnowballAnalyzer("English"));
-		pfanalyzer.addAnalyzer("lom.general.language", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.rights.description.string.language", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.rights.description.string", new SnowballAnalyzer("English"));
-		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry.exact", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.metametadata.identifier.catalog", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.rights.cost.value", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.rights.copyrightandotherrestrictions.value", new KeywordAnalyzer());
-		pfanalyzer.addAnalyzer("lom.technical.format", new KeywordAnalyzer());
+		
 		pfanalyzer.addAnalyzer("lom.classification.purpose.value.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.entry.string.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id", new KeywordAnalyzer());
@@ -51,6 +37,33 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.eqf.range", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id.competency", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id.domain", new KeywordAnalyzer());
+		
+		pfanalyzer.addAnalyzer("lom.educational.context.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.difficulty.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.interactivitylevel.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.semanticdensity.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.typicalagerange.string", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.learningresourcetype.value", new KeywordAnalyzer());
+		
+		pfanalyzer.addAnalyzer("lom.general.identifier.entry.exact", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.general.identifier.entry", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.general.identifier.catalog", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.general.title.string.exact", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.general.title.string", new SnowballAnalyzer("English"));
+		pfanalyzer.addAnalyzer("lom.general.keyword.string", new SnowballAnalyzer("English"));
+		pfanalyzer.addAnalyzer("lom.general.language", new KeywordAnalyzer());
+		
+		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry.exact", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.metametadata.identifier.catalog", new KeywordAnalyzer());
+		
+		pfanalyzer.addAnalyzer("lom.rights.description.string.language", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.rights.description.string", new SnowballAnalyzer("English"));
+		pfanalyzer.addAnalyzer("lom.rights.cost.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.rights.copyrightandotherrestrictions.value", new KeywordAnalyzer());
+		
+		pfanalyzer.addAnalyzer("lom.technical.format", new KeywordAnalyzer());
+		
 	}
 
 	public PerFieldAnalyzerWrapper getAnalyzer() {

@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
@@ -20,6 +21,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class LOMHandler extends DocumentHandler {
+	
+	private static Logger log = Logger.getLogger(LOMHandler.class);
 
 	private static final String[] MIN_MAX = { "min", "max" };
 	/** A buffer for each XML element */

@@ -1,5 +1,6 @@
 package org.ariadne_eu.metadata.resultsformat;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.search.Hits;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -18,6 +20,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.servlet.DirectSolrConnection;
 import org.ariadne.config.PropertiesManager;
+import org.ariadne.util.Stopwatch;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -74,22 +77,23 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
     }
 
     //TODO: fix the returning keywords (it only returns the first one!)
-    public String result(Hits hits) throws Exception {
+    public String result(Hits hits) throws JSONException, CorruptIndexException, IOException {
 	    Document doc;
 	    
 	    JSONObject resultsJson = new JSONObject();
 	    JSONObject resultJson = new JSONObject();
 	    JSONArray idArrayJson = new JSONArray();
 	    JSONArray metadataArrayJson = new JSONArray();
+	    resultJson.put("error", "");
+		resultJson.put("errorMessage", "");
+		resultJson.put("facets", getFacets());
 	    
-	    resultJson.put("nrOfResults", hits.length());
 	    
-		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
+		for (int i = start; i < hits.length() && (max < 0 || i < start+max); i++) {
 			JSONObject json = new JSONObject();
 	    	doc = hits.doc(i);
 	    	try {
 	    		idArrayJson.put(doc.get("lom.general.identifier.entry"));
-	    		
 	    		json.put("title", doc.get("lom.general.title.string"));
 	    		json.put("description", doc.get("lom.general.description.string"));
 	    		json.put("keywords", doc.get("lom.general.keyword.string"));
@@ -103,21 +107,21 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 	    }
 		resultJson.put("id", idArrayJson);
 		resultJson.put("metadata", metadataArrayJson);
-		resultJson.put("facets", getFacets());
-		resultJson.put("error", "");
-		resultJson.put("errorMessage", "");
+		resultJson.put("nrOfResults", hits.length());
+		
+		
 		resultsJson.put("result",resultJson);
 		return resultsJson.toString();
 	}
     
     private JSONArray getFacets() {
     	JSONArray facetsJson = new JSONArray();
-    	JSONObject facetJson = new JSONObject();
+    	
 
 		SolrCore core = SolrCore.getSolrCore();
 		SolrServer server = new EmbeddedSolrServer(core);
 
-		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(true);
+		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(1).setFacetSort(true);
 
 		ModifiableSolrParams params = new ModifiableSolrParams();
 		params.set("queryResultWindowSize", Integer.toString(max));
@@ -131,7 +135,6 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		QueryResponse rsp;
 		try {
 			rsp = server.query(solrQuery);
-		
 
 		List facetsFields = rsp.getFacetFields();
 		if (facetsFields.size() > 0) {
@@ -139,6 +142,7 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 			FacetField facetField;
 			FacetField.Count innerFacetField;
 			for (Iterator facetIterator = facetsFields.iterator(); facetIterator.hasNext();) {
+				JSONObject facetJson = new JSONObject();
 				facetField = (FacetField) facetIterator.next();
 				facetJson.put("field", facetField.getName());
 				facetValues = facetField.getValues();
@@ -158,15 +162,12 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 			
 		}
 		} catch (SolrServerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("getFacets: Solr server error", e);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("getFacets: JSON format error", e);
 		}
 
 		conn.close();
-		System.out.println(facetsJson.toString());
 
 		return facetsJson;
     }

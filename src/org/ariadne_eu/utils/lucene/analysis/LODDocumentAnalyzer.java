@@ -28,6 +28,7 @@ public class LODDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("learningoutcome.identifier.entry", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("learningoutcome.identifier.catalog", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("learningoutcome.description.string", new SnowballAnalyzer("English"));
+		pfanalyzer.addAnalyzer("learningoutcome.title.string", new SnowballAnalyzer("English"));
 		pfanalyzer.addAnalyzer("learningoutcome.type.source", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("learningoutcome.type.value", new KeywordAnalyzer());
 	}

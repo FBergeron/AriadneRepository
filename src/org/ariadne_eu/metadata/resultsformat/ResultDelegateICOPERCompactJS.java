@@ -29,7 +29,7 @@ public class ResultDelegateICOPERCompactJS implements IndexSearchDelegate {
 			JSONObject json = new JSONObject();
 	    	doc = hits.doc(i);
 	    	try {
-	    		json.put("id", doc.get("lom.general.identifier.entry"));
+	    		json.put("id", doc.get("lom.metametadata.identifier.entry"));
 	    		json.put("title", doc.get("lom.general.title.string"));
 			} catch (JSONException ex) {
 				log.error(ex);

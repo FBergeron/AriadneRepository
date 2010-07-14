@@ -55,6 +55,28 @@ public class ICOPERImplementation {
 		return "";
 	}
 	
+	@GET @Path("/getLearningOutcomeDefinition")
+    @Produces("application/json")
+    public String getLearningOutcomeDefinition(@QueryParam("objId") String objectIdentifier) {
+		if (objectIdentifier.equalsIgnoreCase("")) {
+			log.error("getMetadata: Not a valid object identifier");
+			return "";
+		}
+		
+		log.info("getLearningOutcomeDefinition: objectIdentifier="+objectIdentifier);
+		try {
+			String fullquery = "learningoutcome.identifier.entry : \"" + objectIdentifier + "\"";
+			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, 1, 1, TranslateResultsformat.ILCJS);
+			return result;
+		} catch (QueryTranslationException e) {
+			log.error("getMetadata:QueryTranslationException", e);
+		} catch (QueryMetadataException e) {
+			log.error("getMetadata:QueryMetadataException", e);
+		}
+		return "";
+    	
+    }
+	
 	@GET @Path("/getTeachingMethods")
     @Produces("application/json")
     public String getTeachingMethods(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
@@ -80,6 +102,35 @@ public class ICOPERImplementation {
 			log.error("getTeachingMethods:QueryTranslationException", e);
 		} catch (QueryMetadataException e) {
 			log.error("getTeachingMethods:QueryMetadataException", e);
+		}
+		return "";
+    }
+	
+	@GET @Path("/getAssessmentMethods")
+    @Produces("application/json")
+    public String getAssessmentMethods(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
+		if (query.equalsIgnoreCase("")) {
+			query = "lom.solr = \"all\"";
+		}
+		if (page_size < 1) {
+			page_size = 10;
+		}
+		int start = 1;
+		if (page_number > 1)
+			start = ((page_number-1) * page_size) + 1;
+		
+		
+		log.info("getAssessmentMethods: query=" + query + ", page_number=" + page_number + ", page_size=" + page_size);
+		
+		try {
+			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
+			String fullquery = "lom.educational.learningResourceType.value : \"assessment method\" AND " + lQuery;
+			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
+			return result;
+		} catch (QueryTranslationException e) {
+			log.error("getAssessmentMethods:QueryTranslationException", e);
+		} catch (QueryMetadataException e) {
+			log.error("getAssessmentMethods:QueryMetadataException", e);
 		}
 		return "";
     }
@@ -111,6 +162,8 @@ public class ICOPERImplementation {
 		return "";
     }
 	
+	
+	//son todos!
 	@GET @Path("/getLearningResources")
     @Produces("application/json")
     public String getLearningResources(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
@@ -129,7 +182,7 @@ public class ICOPERImplementation {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
 			String fullquery = "NOT lom.educational.learningResourceType.value:\"teaching method\" NOT lom.educational.learningResourceType.value:\"assessment method\"" +
 					" NOT lom.educational.learningResourceType.value:\"unit of learning\"" +
-					" NOT lom.educational.learningResourceType.value:\"assessment ressources\"" +
+					" NOT lom.educational.learningResourceType.value:\"learning assessment\"" +
 					" AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
@@ -154,7 +207,7 @@ public class ICOPERImplementation {
 		log.info("getLearningAssements: query=" + query + ", start=" + start + ", page_size=" + page_size);
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "lom.educational.learningResourceType.value : \"assessment ressources\" AND " + lQuery;
+			String fullquery = "lom.educational.learningResourceType.value : \"learning assessment\" AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
 		} catch (QueryTranslationException e) {
@@ -176,8 +229,8 @@ public class ICOPERImplementation {
 		
 		log.info("getMetadata: objectIdentifier="+objectIdentifier+", metadataIdentifier="+metadataIdentifier);
 		try {
-			String fullquery = "lom.general.identifier.entry = \"" + objectIdentifier + "\"";
-			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(fullquery, 1, 1, TranslateResultsformat.IJS);
+			String fullquery = "lom.metametadata.identifier.entry : \"" + objectIdentifier + "\"";
+			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, 1, 1, TranslateResultsformat.IJS);
 			return result;
 		} catch (QueryTranslationException e) {
 			log.error("getMetadata:QueryTranslationException", e);
@@ -187,5 +240,7 @@ public class ICOPERImplementation {
 		return "";
     	
     }
+	
+	
 
 }

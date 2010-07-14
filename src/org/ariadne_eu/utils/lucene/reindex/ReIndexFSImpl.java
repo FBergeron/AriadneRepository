@@ -103,10 +103,11 @@ public class ReIndexFSImpl extends ReIndexImpl {
 						for (int j = 0; j < collection.length; j++) {
 							mdInnerFile = collection[j];
 							xml = readFile(mdInnerFile, "UTF-8");
+							String identifier = "";
 							try {
 								
 								Document doc = getDoc(xml);
-								String identifier = getIdentifier(doc);
+								identifier = getIdentifier(doc);
 
 								StringWriter out = new StringWriter();
 								XMLSerializer serializer = new XMLSerializer(out, new OutputFormat(doc));
@@ -116,7 +117,7 @@ public class ReIndexFSImpl extends ReIndexImpl {
 								if (identifier != null)
 									luceneImpl.insertMetadata(identifier, lom, mdFile.getName());
 							} catch (Exception e) {
-								log.error("reIndexMetadata", e);
+								log.error("reIndexMetadata :: file="+ mdInnerFile.getName(), e);
 							}
 
 						}

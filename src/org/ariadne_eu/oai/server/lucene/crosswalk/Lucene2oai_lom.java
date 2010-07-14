@@ -22,8 +22,10 @@ public class Lucene2oai_lom extends Crosswalk {
 
 	public String createMetadata(Object nativeItem) throws CannotDisseminateFormatException {
 		//Cast the nativeItem to your object
-		Document doc = (Document)nativeItem; 
-		String lom = doc.getField(fullLomField).stringValue();
+		Document doc = (Document)nativeItem;
+		String lom = "";
+		if (doc.getField(fullLomField) != null)
+			lom = doc.getField(fullLomField).stringValue();
 
 		return lom;
 	}
