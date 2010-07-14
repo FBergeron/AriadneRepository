@@ -149,7 +149,7 @@ else{
 	}
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomCatalog");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.record.class","org.ariadne_eu.oai.server.lucene.catalog.LuceneLomRecordFactory");
-	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.md","lom");
+	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.md","md");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.date","date.insert");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.field.id","key");
 	PropertiesManager.getInstance().saveProperty("oaicat.server.catalog.repoid","oaicat.ariadne.org");
@@ -166,7 +166,7 @@ else{
 	PropertiesManager.getInstance().saveProperty("LuceneLomCatalog.dateField","date.insert"); 
 	PropertiesManager.getInstance().saveProperty("LuceneLomCatalog.identifierField","key"); 
 	PropertiesManager.getInstance().saveProperty("LuceneLomRecordFactory.repositoryIdentifier","oaicat.ariadne.org"); 
-	PropertiesManager.getInstance().saveProperty("Lucene2oai_lom.fullLomField","lom"); 
+	PropertiesManager.getInstance().saveProperty("Lucene2oai_lom.fullLomField","md"); 
 	PropertiesManager.getInstance().saveProperty("Identify.adminEmail","ariadne@cs.kuleuven.be"); 
 	PropertiesManager.getInstance().saveProperty("Identify.repositoryName","AriadneNext Repository"); 
 	PropertiesManager.getInstance().saveProperty("Identify.earliestDatestamp","1000-01-01T00:00:00Z"); 
