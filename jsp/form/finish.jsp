@@ -123,7 +123,7 @@ do{
 }while (result!=null);
 
 MetadataCollection metadataCollection = new MetadataCollection();
-if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog("ariadne-registry");
+if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog"));
 else metadataCollection.getIdentifier().setCatalog(catalog);
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
@@ -170,10 +170,10 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (synchronous!=null) sqi.setModeSynchronous();
 	if (asynchronous!=null) sqi.setModeAsynchronous();
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
 	targetDescription.setLocation(targetURLSqi);
@@ -207,10 +207,10 @@ if (targetURLOai.compareTo("")!=0) {
 		oaiPmh.setGranularuty(oairepository.getGranularity());
 		oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
 		TargetDescription targetDescription = new TargetDescription();
-		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
 		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
 		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
-		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
 		else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 		targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
 		targetDescription.setLocation(targetURLOai);
@@ -225,10 +225,10 @@ if (targetURLOai.compareTo("")!=0) {
 
 if (targetURLSpi.compareTo("")!=0){
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog("ariadne_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-spi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("spi");
 	targetDescription.setLocation(targetURLSpi);
