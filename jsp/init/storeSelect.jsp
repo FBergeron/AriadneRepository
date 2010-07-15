@@ -24,7 +24,7 @@
 <div class="step-off">Pre-installation</div>
 <div class="step-on">Store selection</div>
 <div class="step-off">Connection</div>
-<div class="step-off">Logging</div>
+<div class="step-off">Admin</div>
 <div class="step-off">Options</div>
 <div class="step-off">Finish</div>
 

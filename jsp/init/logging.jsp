@@ -47,7 +47,7 @@ function check()
 <div class="step-off">Store selection</div>
 <div class="step-off">Store properties</div>
 <div class="step-off">Index properties</div>
-<div class="step-on">Logging</div>
+<div class="step-on">Admin</div>
 <div class="step-off">Finish</div>
 
 </div>

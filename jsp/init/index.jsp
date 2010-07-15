@@ -29,7 +29,7 @@
 <div class="step-off">Store selection</div>
 <div class="step-off">Store properties</div>
 <div class="step-off">Index properties</div>
-<div class="step-off">Logging</div>
+<div class="step-off">Admin</div>
 <div class="step-off">Finish</div>
 
 </div>
