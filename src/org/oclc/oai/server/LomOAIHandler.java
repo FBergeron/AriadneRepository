@@ -28,6 +28,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import org.ariadne.config.PropertiesManager;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.oclc.oai.server.catalog.AbstractCatalog;
 import org.oclc.oai.server.verb.BadVerb;
 import org.oclc.oai.server.verb.OAIInternalServerError;
@@ -79,6 +81,7 @@ public class LomOAIHandler extends HttpServlet {
 			InputStream in;
 			try {
 				in = new FileInputStream(propertiesFile);
+				PropertiesManager.getInstance().init(propertiesFile);
 			} catch (FileNotFoundException e) {
 				in = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFile);
 			}
@@ -124,11 +127,11 @@ public class LomOAIHandler extends HttpServlet {
 		if ("true".equals(properties.getProperty("OAIHandler.forceRender"))) {
 			forceRender = true;
 		}
-		String xsltName = properties.getProperty("OAIHandler.styleSheet");
-		String appBase = properties.getProperty("OAIHandler.appBase");
+		String xsltName = properties.getProperty(RepositoryConstants.OAICAT_HANDLER_STYLESHEET);
+		String appBase = properties.getProperty(RepositoryConstants.OAICAT_HANDLER_BASEURL);
 		if (appBase == null) appBase = "webapps";
 		if (xsltName != null
-				&& ("true".equalsIgnoreCase(properties.getProperty("OAIHandler.renderForOldBrowsers"))
+				&& ("true".equalsIgnoreCase(properties.getProperty(RepositoryConstants.OAICAT_HANDLER_OLDBROWSER))
 						|| forceRender)) {
 			InputStream is;
 			try {
@@ -208,7 +211,7 @@ public class LomOAIHandler extends HttpServlet {
 			(Transformer) attributes.get("OAIHandler.transformer");
 
 		boolean forceRender = false;
-		if ("true".equals(properties.getProperty("OAIHandler.forceRender"))) {
+		if ("true".equals(properties.getProperty(RepositoryConstants.OAICAT_HANDLER_OLDBROWSER))) {
 			forceRender = true;
 		}
 

@@ -140,7 +140,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 			for(String key : keys) {
 				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
-				sets.add(getSetXML(key,setSpec));
+				sets.add(getSetXML(PropertiesManager.getInstance().getProperty(key),setSpec));
 			}
 
 			listSetsMap.put("sets", sets.iterator());
@@ -161,7 +161,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public String getSetXML(String key, String setSpec)
 	throws IllegalArgumentException {
 		String setName = "Metadata originating from " + setSpec;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getInstance().getProperty(key);
+		String setDescription = "RepositoryIdentifier is " + key;
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");

@@ -1,7 +1,6 @@
 package org.ariadne_eu.oai.server.filesystem.catalog;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,10 +15,6 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.oclc.oai.server.catalog.AbstractCatalog;
@@ -92,7 +87,8 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
 		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
 		String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
-		if(keys.length == 0) {
+		Vector<String> folderSets = getFolderSets();
+		if(keys.length == 0 && folderSets.size() == 0) {
 			throw new NoSetHierarchyException();
 		}
 		else {
@@ -102,7 +98,10 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 
 			for(String key : keys) {
 				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
-				sets.add(getSetXML(key,setSpec));
+				sets.add(getSetXMLRepository(PropertiesManager.getInstance().getProperty(key),setSpec));
+			}
+			for(String folderString : folderSets) {
+				sets.add(getSetXML(folderString));
 			}
 
 			listSetsMap.put("sets", sets.iterator());
@@ -116,10 +115,10 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	 * @param setItem individual set instance in native format
 	 * @return an XML String containing the XML &lt;set&gt; content
 	 */
-	public String getSetXML(String key, String setSpec)
+	public String getSetXMLRepository(String key, String setSpec)
 	throws IllegalArgumentException {
 		String setName = "Metadata originating from " + setSpec;
-		String setDescription = "RepositoryIdentifier is " + PropertiesManager.getInstance().getProperty(key);
+		String setDescription = "RepositoryIdentifier is " + key;
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("<set>");
@@ -134,6 +133,28 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			sb.append(OAIUtil.xmlEncode(setDescription));
 			sb.append("</setDescription>");
 		}
+		sb.append("</set>");
+		return sb.toString();
+	}
+
+	/**
+	 * Extract &lt;set&gt; XML string from setItem object
+	 *
+	 * @param setItem individual set instance in native format
+	 * @return an XML String containing the XML &lt;set&gt; content
+	 */
+	public String getSetXML(String setSpec)
+	throws IllegalArgumentException {
+		String setName = "Metadata originating from " + setSpec;
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<set>");
+		sb.append("<setSpec>");
+		sb.append(OAIUtil.xmlEncode(setSpec));
+		sb.append("</setSpec>");
+		sb.append("<setName>");
+		sb.append(OAIUtil.xmlEncode(setName));
+		sb.append("</setName>");
 		sb.append("</set>");
 		return sb.toString();
 	}
@@ -159,84 +180,12 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
-		purge(); // clean out old resumptionTokens
-		Map listIdentifiersMap = new HashMap();
-		ArrayList headers = new ArrayList();
-		ArrayList identifiers = new ArrayList();
-
-		Query query = null;
-		String fromDate = from.replaceAll("-", "");
-		fromDate = fromDate.replaceAll(":", "");
-		fromDate = fromDate.replaceAll("T", "");
-		fromDate = fromDate.replaceAll("Z", "");
-		String untilDate = until.replaceAll("-", "");
-		untilDate = untilDate.replaceAll(":", "");
-		untilDate = untilDate.replaceAll("T", "");
-		untilDate = untilDate.replaceAll("Z", "");
-		Term termFrom = new Term("lastModDate", fromDate);
-		Term termUntil = new Term("lastModDate", untilDate);
-		RangeQuery rangeQuery = new RangeQuery(termFrom,termUntil,true);
-		Hits hits = null;
-		if(hits.length() == 0) throw new NoItemsMatchException();
-
-		/* Get some records from your database */
-		int count = 0;
-		/* load the records ArrayList */
-		Object[] nativeItem = new Object[hits.length()];
-		for (int i = 0; i < hits.length(); i++) {
-			try {
-				nativeItem[i] = hits.doc(i);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-
-			}
-		}	
-		for (count=0; count < maxListSize && count < hits.length(); ++count) {
-			//record = constructRecord(nativeItem[count], metadataPrefix);
-			//records.add(record);
-			/* Use the RecordFactory to extract header/identifier pairs for each item */
-			String[] header = getRecordFactory().createHeader(nativeItem[count]);
-			headers.add(header[0]);
-			identifiers.add(header[1]);
-		}
-
-		/* decide if you're done */
-		if (count < hits.length()) {
-			String resumptionId = getResumptionId();
-
-			/*****************************************************************
-			 * Store an object appropriate for your database API in the
-			 * resumptionResults Map in place of nativeItems. This object
-			 * should probably encapsulate the information necessary to
-			 * perform the next resumption of ListIdentifiers. It might even
-			 * be possible to encode everything you need in the
-			 * resumptionToken, in which case you won't need the
-			 * resumptionResults Map. Here, I've done a silly combination
-			 * of the two. Stateless resumptionTokens have some advantages.
-			 *****************************************************************/
-			resumptionResults.put(resumptionId, nativeItem);
-
-			/*****************************************************************
-			 * Construct the resumptionToken String however you see fit.
-			 *****************************************************************/
-			StringBuffer resumptionTokenSb = new StringBuffer();
-			resumptionTokenSb.append(resumptionId);
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(Integer.toString(count));
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(metadataPrefix);
-
-			listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-					hits.length(),
-					0));
-		}
-
-		listIdentifiersMap.put("headers", headers.iterator());
-		listIdentifiersMap.put("identifiers", identifiers.iterator());
-		return listIdentifiersMap;
+	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {		if(sets.get(set) != null) {
+		set = sets.get(set);
 	}
+	if (set == null)set = "";
+
+	return listIdentifiers(from, until, set, metadataPrefix, 0, new Vector<Integer>());	}
 
 	private String constructRecord(Object nativeItem, String metadataPrefix)
 	throws CannotDisseminateFormatException {
@@ -307,8 +256,107 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 			set = sets.get(set);
 		}
 		if (set == null)set = "";
-		
+
 		return listRecords(from, until, set, metadataPrefix, 0, new Vector<Integer>());
+	}
+
+	public Vector<String> getFolderSets() {
+		File dir = new File(basePath);
+		Vector<String> folder = new Vector<String>();
+		if(dir.exists() && dir.isDirectory()) {
+			String[] files = dir.list();
+			for(String fileString : files) {
+				if(new File(dir, fileString).isDirectory())folder.add(fileString);
+			}
+		}
+
+		return folder;
+	}
+
+	private Map listIdentifiers(String from, String until, String set,
+			String metadataPrefix, int start, Vector<Integer> pointerVector) throws CannotDisseminateFormatException {
+		purge(); // clean out old resumptionTokens
+
+		Map listIdentifiersMap = new HashMap();
+		ArrayList headers = new ArrayList();
+		ArrayList identifiers = new ArrayList();
+
+		File dir = new File(basePath + File.separator + set);
+
+		/** End Query **/
+
+		int count = 0;
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+		Date fromParsed = null;
+		Date untilParsed = null;
+		try {
+			untilParsed = format.parse(until);
+			fromParsed = format.parse(from);
+		} catch (ParseException e) {
+			throw new CannotDisseminateFormatException(e.getMessage());
+		}
+		Vector nativeItem = getMatchingFiles(dir, fromParsed, untilParsed, start, maxListSize, pointerVector);
+		if(pointerVector.size() > 0)pointerVector.remove(0);
+
+		/** End Create **/
+		String record;
+		for (count=0; count < maxListSize && count < nativeItem.size(); ++count) {
+			String[] header = getRecordFactory().createHeader(nativeItem.get(count));
+			headers.add(header[0]);
+			identifiers.add(header[1]);
+		}
+
+		/* decide if you're done */
+		if (nativeItem.size() == maxListSize) {
+			String resumptionId = getResumptionId();
+
+			/*****************************************************************
+			 * Store an object appropriate for your database API in the
+			 * resumptionResults Map in place of nativeItems. This object
+			 * should probably encapsulate the information necessary to
+			 * perform the next resumption of ListIdentifiers. It might even
+			 * be possible to encode everything you need in the
+			 * resumptionToken, in which case you won't need the
+			 * resumptionResults Map. Here, I've done a silly combination
+			 * of the two. Stateless resumptionTokens have some advantages.
+			 *****************************************************************/
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("from", from);
+			params.put("until", until);
+			params.put("set", set);
+			params.put("pointerVector", pointerVector);
+			resumptionResults.put(resumptionId, params);
+
+			/*****************************************************************
+			 * Construct the resumptionToken String however you see fit.
+			 *****************************************************************/
+			StringBuffer resumptionTokenSb = new StringBuffer();
+			resumptionTokenSb.append(resumptionId);
+			resumptionTokenSb.append(":");
+			resumptionTokenSb.append(start+maxListSize);
+			resumptionTokenSb.append(":");
+			resumptionTokenSb.append(metadataPrefix);
+
+			//			listRecordsMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+			//					dir.list().length,
+			//					start+maxListSize));
+			//		}
+			//
+			//		listRecordsMap.put("records", records.iterator());
+			//		return listRecordsMap;
+
+
+			listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
+					dir.list().length,
+					start+maxListSize));
+		}
+
+		listIdentifiersMap.put("headers", headers.iterator());
+		listIdentifiersMap.put("identifiers", identifiers.iterator());
+		return listIdentifiersMap;
 	}
 
 	private Map listRecords(String from, String until, String set,
@@ -519,11 +567,6 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String resumptionToken) throws BadResumptionTokenException, OAIInternalServerError {
-		purge(); // clean out old resumptionTokens
-		Map listIdentifiersMap = new HashMap();
-		ArrayList headers = new ArrayList();
-		ArrayList identifiers = new ArrayList();
-
 		StringTokenizer tokenizer = new StringTokenizer(resumptionToken, ":");
 		String resumptionId;
 		int oldCount;
@@ -535,45 +578,15 @@ public class FileSystemLomCatalog extends AbstractCatalog {
 		} catch (NoSuchElementException e) {
 			throw new BadResumptionTokenException();
 		}
-
-		/* Get some more records from your database */
-		Object[] nativeItems = (Object[])resumptionResults.remove(resumptionId);
-		if (nativeItems == null) {
+		HashMap<String, Object> params = (HashMap<String, Object>)resumptionResults.remove(resumptionId);
+		if (params == null) {
 			throw new BadResumptionTokenException();
 		}
-		int count;
-
-		/* load the headers and identifiers ArrayLists. */
-		for (count = 0; count < maxListSize && count+oldCount < nativeItems.length; ++count) {
-			/* Use the RecordFactory to extract header/identifier pairs for each item */
-			String[] header = getRecordFactory().createHeader(nativeItems[count+oldCount]);
-			headers.add(header[0]);
-			identifiers.add(header[1]);
+		try {
+			return listIdentifiers((String)params.get("from"), (String)params.get("until"), (String)params.get("set"), metadataPrefix, oldCount, (Vector<Integer>)params.get("pointerVector"));
+		} catch (CannotDisseminateFormatException e) {
+			throw new BadResumptionTokenException();
 		}
-
-		/* decide if you're done. */
-		if (count+oldCount < nativeItems.length) {
-			resumptionId = getResumptionId();
-
-			resumptionResults.put(resumptionId, nativeItems);
-
-			/*****************************************************************
-			 * Construct the resumptionToken String however you see fit.
-			 *****************************************************************/
-			StringBuffer resumptionTokenSb = new StringBuffer();
-			resumptionTokenSb.append(resumptionId);
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(Integer.toString(oldCount + count));
-			resumptionTokenSb.append(":");
-			resumptionTokenSb.append(metadataPrefix);
-
-			listIdentifiersMap.put("resumptionMap", getResumptionMap(resumptionTokenSb.toString(),
-					nativeItems.length,
-					oldCount));
-		}
-		listIdentifiersMap.put("headers", headers.iterator());
-		listIdentifiersMap.put("identifiers", identifiers.iterator());
-		return listIdentifiersMap;
 	}
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
