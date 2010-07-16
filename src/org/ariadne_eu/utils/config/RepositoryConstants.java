@@ -1,4 +1,4 @@
-/**
+	/**
  * 
  */
 package org.ariadne_eu.utils.config;
@@ -21,6 +21,9 @@ public class RepositoryConstants {
 	public static final String REPO_LOG4J_DIR = "repository.log4j.directory";
 	public static final String REPO_LOG4J_FILENAME = "repository.log4j.filename";
 	
+	
+	
+	public static final String REG_CATALOG = "registry.catalog";
 	
 	
 	
