@@ -35,8 +35,8 @@
         try {
             SqiSessionManagementStub sm = new SqiSessionManagementStub(axis2_url + "/SqiSessionManagement");
             CreateSession createSession = new CreateSession();
-            createSession.setUserID(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME));
-            createSession.setPassword(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD));
+            createSession.setUserID(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME));
+            createSession.setPassword(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_PASSWORD));
             CreateSessionResponse sessionM = sm.createSession(createSession);
 
             SPIStub spi = new SPIStub(axis2_url + "/SPI");

@@ -10,8 +10,8 @@
     if (username != null || password != null)
         loginAttempt = true;
     boolean loginSuccess = false;
-    if (username != null && username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) &&
-            password != null && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
+    if (username != null && username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME)) &&
+            password != null && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_PASSWORD))) {
         loginSuccess = true;
         request.getSession().setAttribute("login", "true");
         request.getSession().setAttribute("username", username);
