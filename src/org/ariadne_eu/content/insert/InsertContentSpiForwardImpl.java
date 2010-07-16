@@ -31,18 +31,18 @@ public class InsertContentSpiForwardImpl extends InsertContentImpl {
     void initialize() {
         super.initialize();
 
-        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL + "." + getNumber());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_URL + "." + getNumber());
         if (smURI == null)
-            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_URL);
-        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL + "." + getNumber());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SPI_URL + "." + getNumber());
         if (spiURI == null)
-            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SPI_URL);
-        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME + "." + getNumber());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_USERNAME + "." + getNumber());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_USERNAME);
-        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD + "." + getNumber());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_PASSWORD + "." + getNumber());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_SPIFWD_SM_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_SPIFWD_SM_PASSWORD);
 //        catalog = PropertiesManager.getInstance().getProperty("spiforward.content.spi.catalog."+getNumber());
 //        if (catalog == null)
 //            catalog = PropertiesManager.getInstance().getProperty("spiforward.content.spi.catalog");

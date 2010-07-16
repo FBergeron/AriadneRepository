@@ -53,16 +53,16 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
     void initialize() {
         super.initialize();
         try {
-            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
+            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI);
             try {
-//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_DRIVER);
+//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_DRIVER);
 //                Class cl = Class.forName(driver);
             	Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
                 Database database = (Database)cl.newInstance();
                 DatabaseManager.registerDatabase(database);
 
-                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
-                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME);
+                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD);
 
                 cntCollection = DatabaseManager.getCollection(URI, username, password);
                 //TODO: auto generate?
@@ -82,31 +82,31 @@ public class RetrieveContentExistDbImpl extends RetrieveContentImpl {
             log.error("initialize: ", t);
         }
      // to get the location
-        xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+        xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
         xpathIdentifiers = new Vector();
-        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + ".1") == null)
         	xpathIdentifiers.add("general/identifier/entry/text()");
         else {
             int i = 1;
-            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-            	xpathIdentifiers.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i) != null) {
+            	xpathIdentifiers.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i));
                 i++;
             }
         }
         xpathLocations = new Vector();
-        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + ".1") == null)
+        if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + ".1") == null)
         	xpathLocations.add("technical/location/text()");
         else {
             int i = 1;
-            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
-            	xpathLocations.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i));
+            while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
+            	xpathLocations.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + "." + i));
                 i++;
             }
         }
-        mdCollection = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+        mdCollection = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_LOC);
         if(mdCollection == null) {
         	mdCollection = "collection(\"metadatastore\")";
-            log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
+            log.warn("initialize:property \""+ RepositoryConstants.getInstance().MD_DB_XMLDB_LOC +"\" not defined");
         }
         
         

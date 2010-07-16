@@ -32,7 +32,7 @@ import org.jdom.xpath.XPath;
 public class MACEUtils {
 	private static HashMap<String, Element> classificationValues;
 //	private static File classificationFile = new File ("/Sandbox/eclipse/hmdb/AriadneRepository/jsp/install/MACE_LOM_Category_9_CLASSIFICATION_v4.xml");
-	private static File classificationFile = new File (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER_MACE));
+	private static File classificationFile = new File (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_HANDLER_MACE));
 	
 	private MACEUtils() {
 		classificationValues = loadClassification();

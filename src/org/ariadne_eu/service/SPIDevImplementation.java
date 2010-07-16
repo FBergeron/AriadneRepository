@@ -138,8 +138,8 @@ public class SPIDevImplementation extends SPIDevSkeleton {
 	}
 
 	private void checkValidTicket(Ticket ticket) throws SpiDevFaultException {
-		if (ticket.getParameter("username") == null || !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME))
-				|| ticket.getParameter("password") == null || !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
+		if (ticket.getParameter("username") == null || !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME))
+				|| ticket.getParameter("password") == null || !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_PASSWORD))) {
 			SpiDevFault fault = new SpiDevFault();
 			fault.setSpiDevFaultCode(FaultCodeType.SPIDev_00000);
 			fault.setMessage("The given session ID is invalid");

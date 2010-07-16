@@ -31,7 +31,7 @@ public class AdminOnlyFilter implements Filter {
         HttpServletResponse hresponse = (HttpServletResponse) response;
 
         if (hrequest.getSession().getAttribute("login") != null && hrequest.getSession().getAttribute("login").equals("true") &&
-                hrequest.getSession().getAttribute("username") != null && hrequest.getSession().getAttribute("username").equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)))
+                hrequest.getSession().getAttribute("username") != null && hrequest.getSession().getAttribute("username").equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME)))
             // Allow request to proceed
             chain.doFilter(hrequest, hresponse);
         else

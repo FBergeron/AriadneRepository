@@ -34,21 +34,21 @@ public class InsertMetadataIBMDB2DbImpl extends InsertMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
+//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER + "." + getLanguage());
 //            if (driver == null)
-//                driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER);
+//                driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER);
 //            Class.forName(driver);
         	Class.forName("com.ibm.db2.jcc.DB2Driver");
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Metadatastore";
-            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "lomxml";
-            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } catch (ClassNotFoundException e) {
@@ -63,15 +63,15 @@ public class InsertMetadataIBMDB2DbImpl extends InsertMetadataImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI + "." + getLanguage());
         if (URI == null)
-            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
+            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME + "." + getLanguage());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getLanguage());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD + "." + getLanguage());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 

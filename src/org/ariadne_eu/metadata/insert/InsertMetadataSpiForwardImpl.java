@@ -28,18 +28,18 @@ public class InsertMetadataSpiForwardImpl extends InsertMetadataImpl {
     void initialize() {
         super.initialize();
 
-        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getLanguage());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_URL + "." + getLanguage());
         if (smURI == null)
-            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
-        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getLanguage());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SPI_URL + "." + getLanguage());
         if (spiURI == null)
-            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
-        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getLanguage());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_USERNAME + "." + getLanguage());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
-        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getLanguage());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_PASSWORD + "." + getLanguage());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_PASSWORD);
     }
 
     /*

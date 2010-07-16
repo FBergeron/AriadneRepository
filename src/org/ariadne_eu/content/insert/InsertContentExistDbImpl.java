@@ -45,21 +45,21 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI + "." + getNumber());
+			String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI + "." + getNumber());
 			if (URI == null)
-				URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
+				URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI);
 			try {
 				Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
 				Database database = (Database) cl.newInstance();
 				DatabaseManager.registerDatabase(database);
 
 				String username = PropertiesManager.getInstance()
-						.getProperty(RepositoryConstants.CNT_DB_USERNAME + "." + getNumber());
+						.getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME + "." + getNumber());
 				if (username == null)
-					username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
-				String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD + "." + getNumber());
+					username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME);
+				String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD + "." + getNumber());
 				if (password == null)
-					password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+					password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD);
 
 				collection = DatabaseManager.getCollection(URI, username,password);
 				//TODO: auto generate?
@@ -177,7 +177,7 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 //		byte[] bytes = getMD5Bytes(input.getBytes());
 //		String relativePath = new BigInteger(bytes).abs().toString();
 //
-//		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+//		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
 //		if (!basePath.endsWith(File.separator))
 //			basePath += File.separator;
 //		String fullPath = basePath + relativePath;
@@ -201,7 +201,7 @@ public class InsertContentExistDbImpl extends InsertContentImpl {
 		byte[] bytes = getMD5Bytes(input.getBytes());
 		String relativePath = new BigInteger(bytes).abs().toString();
 
-		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+		String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
 		if (!basePath.endsWith(File.separator))
 			basePath += File.separator;
 		String fullPath = basePath + relativePath;

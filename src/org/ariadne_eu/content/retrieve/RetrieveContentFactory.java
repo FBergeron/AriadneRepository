@@ -30,9 +30,9 @@ public class RetrieveContentFactory {
         for (int nb = -1; nb < 0; nb++) {
             String implementation;
             if (nb >= 0) {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_RETREIVE_IMPLEMENTATION + "." + nb);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_RETREIVE_IMPLEMENTATION + "." + nb);
             } else {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_RETREIVE_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_RETREIVE_IMPLEMENTATION);
             }
             if (implementation != null) {
                 try {

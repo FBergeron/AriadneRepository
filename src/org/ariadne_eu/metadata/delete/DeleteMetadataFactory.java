@@ -23,9 +23,9 @@ public class DeleteMetadataFactory {
         for (int implementation = -1; implementation < 10; implementation++) {
             String className;
             if (implementation >= 0) {
-            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION + "." + implementation);
+            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DELETE_IMPLEMENTATION + "." + implementation);
             } else {
-            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DELETE_IMPLEMENTATION);
+            	className = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DELETE_IMPLEMENTATION);
             }
             if (className != null) {
                 try {

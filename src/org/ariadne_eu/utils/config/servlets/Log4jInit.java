@@ -22,8 +22,8 @@ public class Log4jInit extends HttpServlet {
 	}
 
 	public void reloadLogging(){
-		logDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
-		logFile = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_FILENAME);
+		logDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
+		logFile = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_FILENAME);
 		if(!logDir.equals("")){
 			System.setProperty("logdir", logDir);
 		}
@@ -42,8 +42,8 @@ public class Log4jInit extends HttpServlet {
 	}
 
 	public static void reloadLive() {
-		logDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
-		logFile = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_FILENAME);
+		logDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
+		logFile = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_FILENAME);
 		if (!logDir.equals("")) {
 			System.setProperty("logdir", logDir);
 		}

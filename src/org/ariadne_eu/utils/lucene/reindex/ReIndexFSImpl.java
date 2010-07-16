@@ -45,19 +45,19 @@ public class ReIndexFSImpl extends ReIndexImpl {
 		super.initialize();
 
 		try {
-			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR );
+			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFS_DIR );
 			if (dirString == null)
-				log.error("initialize failed: no " + RepositoryConstants.MD_SPIFS_DIR + " found");
+				log.error("initialize failed: no " + RepositoryConstants.getInstance().MD_SPIFS_DIR + " found");
 			File dir = new File(dirString);
 			if (!dir.isDirectory())
-				log.error("initialize failed: " + RepositoryConstants.MD_SPIFS_DIR + " invalid directory");
+				log.error("initialize failed: " + RepositoryConstants.getInstance().MD_SPIFS_DIR + " invalid directory");
 			xpathQueries = new Vector();
-            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + ".1") == null)
                 xpathQueries.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i) != null) {
+                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }
@@ -90,7 +90,7 @@ public class ReIndexFSImpl extends ReIndexImpl {
 
 		luceneImpl.createLuceneIndex();
 
-		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_IMPLEMENTATION);
 		if (implementation != null) {
 
 			for (int i = 0; i < files.length; i++) {

@@ -40,19 +40,19 @@ public class RetrieveContentOracleDbImpl extends RetrieveContentImpl {
     void initialize() {
         super.initialize();
         try {
-//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_DRIVER);
+//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_DRIVER);
 //            Class.forName(driver);
         	Class.forName("oracle.jdbc.driver.OracleDriver");
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Contentstore";
-            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "contentxml";
-            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } catch (ClassNotFoundException e) {
@@ -155,9 +155,9 @@ public class RetrieveContentOracleDbImpl extends RetrieveContentImpl {
 
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 }

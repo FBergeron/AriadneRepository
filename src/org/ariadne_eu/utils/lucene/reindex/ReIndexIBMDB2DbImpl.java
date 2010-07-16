@@ -51,19 +51,19 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
         super.initialize();
         
         try {
-            collection = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+            collection = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_LOC);
             if(collection == null) {
                 collection = "collection(\"metadatastore\")";
-                log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
+                log.warn("initialize:property \""+ RepositoryConstants.getInstance().MD_DB_XMLDB_LOC +"\" not defined");
             }
-            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
             xpathQueries = new Vector();
-            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + ".1") == null)
                 xpathQueries.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i) != null) {
+                    xpathQueries.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }
@@ -93,7 +93,7 @@ public class ReIndexIBMDB2DbImpl extends ReIndexImpl {
 
 		luceneImpl.createLuceneIndex();
 
-		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+		String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_IMPLEMENTATION);
 		if (implementation != null) {
 
 			startResult = 1;

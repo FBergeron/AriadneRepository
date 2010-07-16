@@ -37,9 +37,9 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
         super.initialize();
         try {
             try {
-//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
+//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER + "." + getLanguage());
 //                if (driver == null)
-//                    driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER);
+//                    driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER);
 //                Class.forName(driver);
             	Class.forName("oracle.jdbc.driver.OracleDriver");
             } catch (ClassNotFoundException e) {
@@ -51,15 +51,15 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI + "." + getLanguage());
         if (URI == null)
-            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
+            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME + "." + getLanguage());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getLanguage());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD + "." + getLanguage());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
     
@@ -70,8 +70,8 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
             con = getConnection();
             stmt = (Statement) con.createStatement();
             
-            String column_xml = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
-            String table = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            String column_xml = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_COLUMNNAME);
+            String table = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_TABLENAME);
             
             xQuery = xQuery.replaceAll("\"\"", "\"");
             xQuery = xQuery.replaceAll("count\\(for","\\(for");
@@ -116,8 +116,8 @@ public class QueryMetadataOracleDbImpl extends QueryMetadataImpl {
             con = getConnection();
             stmt = (Statement) con.createStatement();
             
-            String column_xml = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
-            String table = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            String column_xml = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_COLUMNNAME);
+            String table = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_TABLENAME);
             
             xQuery = xQuery.replaceAll("\"\"", "\"");
             xQuery = xQuery.replaceAll("\\<results\\>\\{for \\$x at \\$y in \\(","");

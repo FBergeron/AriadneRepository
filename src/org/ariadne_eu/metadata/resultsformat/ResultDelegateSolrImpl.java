@@ -44,22 +44,22 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 	static {
 		try {
 			// instanceDir =
-			// PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_INSTANCEDIR);
+			// PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_INSTANCEDIR);
 			instanceDir = (PropertiesManager.getInstance().getPropFile()).replaceAll("install/ariadne.properties", "solr/");
-			dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_DATADIR);
-			loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_LOG4J_DIR);
+			dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_DATADIR);
+			loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
 
 			facetFields = new Vector();
 			int i = 1;
 
-			Collection solrs = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.SR_SOLR_FACETFIELD + ".").values();
+			Collection solrs = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD + ".").values();
 			for (Object object : solrs) {
 				facetFields.add((String) object);
 			}
 
-			// while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD
+			// while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD
 			// + "." + i) != null) {
-			// facetFields.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_SOLR_FACETFIELD
+			// facetFields.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD
 			// + "." + i));
 			// i++;
 			// }
@@ -67,14 +67,14 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 			if (instanceDir == null) {
 				// instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
 				// log.error("initialize:property \""+
-				// RepositoryConstants.SR_SOLR_INSTANCEDIR +"\" not defined");
+				// RepositoryConstants.getInstance().SR_SOLR_INSTANCEDIR +"\" not defined");
 				log.error("Could not load Solr instance dir!");
 			} else if (dataDir == null) {
-				log.warn("initialize:property \"" + RepositoryConstants.SR_SOLR_DATADIR + "\" not defined");
+				log.warn("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_DATADIR + "\" not defined");
 			} else if (loggingPath == null) {
-				log.warn("initialize:property \"" + RepositoryConstants.REPO_LOG4J_DIR + "\" not defined");
+				log.warn("initialize:property \"" + RepositoryConstants.getInstance().REPO_LOG4J_DIR + "\" not defined");
 			} else if (!(facetFields.size() > 0)) {
-				log.error("initialize:property \"" + RepositoryConstants.SR_SOLR_FACETFIELD + ".n\" not defined");
+				log.error("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_FACETFIELD + ".n\" not defined");
 			}
 
 		} catch (Throwable t) {

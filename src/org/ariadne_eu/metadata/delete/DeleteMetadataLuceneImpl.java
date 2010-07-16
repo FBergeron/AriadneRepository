@@ -30,14 +30,14 @@ public class DeleteMetadataLuceneImpl extends DeleteMetadataImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR + "." + getImplementation());
+			String indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + "." + getImplementation());
 			if (indexDirString == null)
-				indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
+				indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR);
 			if (indexDirString == null)
-				log.error("initialize failed: no " + RepositoryConstants.SR_LUCENE_INDEXDIR + " found");
+				log.error("initialize failed: no " + RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + " found");
 			indexDir = new File(indexDirString);
 			if (!indexDir.isDirectory())
-				log.error("initialize failed: " + RepositoryConstants.SR_LUCENE_INDEXDIR + " invalid directory");
+				log.error("initialize failed: " + RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + " invalid directory");
 			//TODO: check for valid lucene index
 		} catch (Throwable t) {
 			log.error("initialize: ", t);

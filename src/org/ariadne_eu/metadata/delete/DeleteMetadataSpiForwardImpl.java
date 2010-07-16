@@ -28,18 +28,18 @@ public class DeleteMetadataSpiForwardImpl extends DeleteMetadataImpl {
     void initialize() {
         super.initialize();
 
-        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL + "." + getImplementation());
+        smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_URL + "." + getImplementation());
         if (smURI == null)
-            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_URL);
-        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL + "." + getImplementation());
+            smURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_URL);
+        spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SPI_URL + "." + getImplementation());
         if (spiURI == null)
-            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SPI_URL);
-        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME + "." + getImplementation());
+            spiURI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SPI_URL);
+        username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_USERNAME + "." + getImplementation());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_USERNAME);
-        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD + "." + getImplementation());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_USERNAME);
+        password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_PASSWORD + "." + getImplementation());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFWD_SM_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFWD_SM_PASSWORD);
     }
 
     public synchronized void deleteMetadata(String identifier) {

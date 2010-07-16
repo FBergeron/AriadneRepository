@@ -34,13 +34,13 @@ public class DeleteMetadataOracleDbImpl extends DeleteMetadataImpl {
         super.initialize();
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Metadatastore";
-            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "lomxml";
-            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } 
@@ -50,15 +50,15 @@ public class DeleteMetadataOracleDbImpl extends DeleteMetadataImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getImplementation());
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI + "." + getImplementation());
         if (URI == null)
-            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getImplementation());
+            URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME + "." + getImplementation());
         if (username == null)
-            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getImplementation());
+            username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD + "." + getImplementation());
         if (password == null)
-            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
+            password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 

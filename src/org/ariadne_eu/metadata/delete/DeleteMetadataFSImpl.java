@@ -22,14 +22,14 @@ public class DeleteMetadataFSImpl extends DeleteMetadataImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR + "." + getImplementation());
+			dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFS_DIR + "." + getImplementation());
 			if (dirString == null)
-				dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_SPIFS_DIR);
+				dirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_SPIFS_DIR);
 			if (dirString == null)
-				log.error("initialize failed: no " + RepositoryConstants.MD_SPIFS_DIR + " found");
+				log.error("initialize failed: no " + RepositoryConstants.getInstance().MD_SPIFS_DIR + " found");
 			File dir = new File(dirString);
 			if (!dir.isDirectory())
-				log.error("initialize failed: " + RepositoryConstants.MD_SPIFS_DIR + " invalid directory");
+				log.error("initialize failed: " + RepositoryConstants.getInstance().MD_SPIFS_DIR + " invalid directory");
 		} catch (Throwable t) {
 			log.error("initialize: ", t);
 		}

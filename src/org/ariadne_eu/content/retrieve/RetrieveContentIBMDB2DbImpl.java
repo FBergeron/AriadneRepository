@@ -60,43 +60,43 @@ public class RetrieveContentIBMDB2DbImpl extends RetrieveContentImpl {
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Contentstore";
-            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "contentxml";
-            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
             // to get the location
-            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
             xpathIdentifiers = new Vector();
-            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + ".1") == null)
             	xpathIdentifiers.add("general/identifier/entry/text()");
             else {
                 int i = 1;
-                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i) != null) {
-                	xpathIdentifiers.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_XPATH_QRY_ID + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i) != null) {
+                	xpathIdentifiers.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_XPATH_QRY_ID + "." + i));
                     i++;
                 }
             }
             
             xpathLocations = new Vector();
-            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + ".1") == null)
+            if (PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + ".1") == null)
             	xpathLocations.add("technical/location/text()");
             else {
                 int i = 1;
-                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
-                	xpathLocations.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_MD_XPATHQRY_LOCATION + "." + i));
+                while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + "." + i) != null) {
+                	xpathLocations.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_MD_XPATHQRY_LOCATION + "." + i));
                     i++;
                 }
             }
             
-            collection = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+            collection = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_LOC);
             if(collection == null) {
                 collection = "collection(\"metadatastore\")";
-                log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
+                log.warn("initialize:property \""+ RepositoryConstants.getInstance().MD_DB_XMLDB_LOC +"\" not defined");
             }
         } catch (ClassNotFoundException e) {
             log.error("initialize: ", e);
@@ -254,9 +254,9 @@ public class RetrieveContentIBMDB2DbImpl extends RetrieveContentImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 }

@@ -30,9 +30,9 @@ public class InsertContentFactory {
         for (int nb = -1; nb < 10; nb++) {
             String implementation;
             if (nb >= 0) {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION + "." + nb);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_INSERT_IMPLEMENTATION + "." + nb);
             } else {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_INSERT_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_INSERT_IMPLEMENTATION);
             }
             if (implementation != null) {
                 try {

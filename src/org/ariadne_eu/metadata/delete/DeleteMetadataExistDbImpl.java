@@ -32,20 +32,20 @@ public class DeleteMetadataExistDbImpl extends DeleteMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getImplementation());
+            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI + "." + getImplementation());
             if (URI == null)
-                URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
+                URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI);
             try {
             	Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
                 Database database = (Database)cl.newInstance();
                 DatabaseManager.registerDatabase(database);
 
-                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getImplementation());
+                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME + "." + getImplementation());
                 if (username == null)
-                    username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
-                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "." + getImplementation());
+                    username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME);
+                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD + "." + getImplementation());
                 if (password == null)
-                    password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
+                    password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD);
 
                 collection = DatabaseManager.getCollection(URI, username, password);
             } catch (ClassNotFoundException e) {

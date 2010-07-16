@@ -24,9 +24,9 @@ public class QueryMetadataFactory {
 
     public static QueryMetadataImpl getQueryImpl(int language) {
         if (cachedImplementations.get(new Integer(language)) == null) {
-            String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION + "." + language);
+            String implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_QUERY_IMPLEMENTATION + "." + language);
             if (implementation == null)
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_QUERY_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_QUERY_IMPLEMENTATION);
             try {
                 Class implClass = Class.forName(implementation);
                 QueryMetadataImpl query = (QueryMetadataImpl) implClass.newInstance();

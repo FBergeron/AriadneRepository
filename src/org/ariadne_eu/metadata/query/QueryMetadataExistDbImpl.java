@@ -37,25 +37,25 @@ public class QueryMetadataExistDbImpl extends QueryMetadataImpl {
     void initialize() {
         super.initialize();
         try {
-            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI + "." + getLanguage());
+            String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI + "." + getLanguage());
             if (URI == null)
-                URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_URI);
+                URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_URI);
 
             try {
-//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER + "." + getLanguage());
+//                String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER + "." + getLanguage());
 //                if (driver == null)
-//                    driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_DRIVER);
+//                    driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_DRIVER);
 //                Class cl = Class.forName(driver);
             	Class cl = Class.forName("org.exist.xmldb.DatabaseImpl");
                 Database database = (Database)cl.newInstance();
                 DatabaseManager.registerDatabase(database);
 
-                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME + "." + getLanguage());
+                String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME + "." + getLanguage());
                 if (username == null)
-                    username = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_USERNAME);
-                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD + "."+getLanguage());
+                    username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_USERNAME);
+                String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD + "."+getLanguage());
                 if (password == null)
-                    password = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_PASSWORD);
+                    password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_PASSWORD);
                 
                 collection = DatabaseManager.getCollection(URI, username, password);
             } catch (ClassNotFoundException e) {

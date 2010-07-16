@@ -51,7 +51,7 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             doc.add(new Field("md", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 //            doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             
-            String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_HANDLER);
+            String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.MACELOMHandler")) {
             	MACEUtils.getClassification();
             	String exml = MACEUtils.enrichWClassification(insertMetadata);

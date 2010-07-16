@@ -28,9 +28,9 @@ public class InsertMetadataFactory {
         for (int language = -1; language < 10; language++) {
             String implementation;
             if (language >= 0) {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION + "." + language);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_IMPLEMENTATION + "." + language);
             } else {
-                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_IMPLEMENTATION);
+                implementation = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_IMPLEMENTATION);
             }
             if (implementation != null) {
                 try {

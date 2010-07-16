@@ -30,15 +30,15 @@ public class Plql_XQueryHandler extends Translate {
 
     public void initialize() {
         try {
-            collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC + "." + getStartQueryLanguage());
+            collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_LOC + "." + getStartQueryLanguage());
             if(collectionName == null)
-                collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_DB_XMLDB_LOC);
+                collectionName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_DB_XMLDB_LOC);
             if(collectionName == null) {
                 collectionName = "collection(\"metadatastore\")";
-                log.warn("initialize:property \""+ RepositoryConstants.MD_DB_XMLDB_LOC +"\" not defined");
+                log.warn("initialize:property \""+ RepositoryConstants.getInstance().MD_DB_XMLDB_LOC +"\" not defined");
             }
-            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
-            wholeWord = PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD) == null || !PropertiesManager.getInstance().getProperty(RepositoryConstants.MD_XQUERY_WHOLEWORD).equalsIgnoreCase("false");
+            xmlns = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_INSERT_XMLNS_XSD); //XMLNS is not query-language dependent
+            wholeWord = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_XQUERY_WHOLEWORD) == null || !PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().MD_XQUERY_WHOLEWORD).equalsIgnoreCase("false");
         } catch (Throwable t) {
             log.error("initialize: ", t);
         }

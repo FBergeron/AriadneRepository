@@ -51,21 +51,21 @@ public class InsertContentOracleDbImpl extends InsertContentImpl {
     void initialize() {
         super.initialize();
         try {
-//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_DRIVER + "." + getNumber());
+//            String driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_DRIVER + "." + getNumber());
 //            if (driver == null)
-//                driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_DRIVER);
+//                driver = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_DRIVER);
 //            Class.forName(driver);
         	Class.forName("oracle.jdbc.driver.OracleDriver");
             //TODO: auto generate?
 //                if(collection == null)
 //                    generateCollection(URI, collectionString, username, password);
-            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_TABLENAME);
+            tableName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_TABLENAME);
             if (tableName == null)
                 tableName = "Contentstore";
-            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_COLUMNNAME);
+            columnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_COLUMNNAME);
             if (columnName == null)
                 columnName = "contentxml";
-            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
+            identifierColumnName = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_XMLDB_SQL_IDCOLUMNNAME);
             if (identifierColumnName == null)
                 identifierColumnName = "GLOBAL_IDENTIFIER";
         } catch (ClassNotFoundException e) {
@@ -177,7 +177,7 @@ public class InsertContentOracleDbImpl extends InsertContentImpl {
 //        byte[] bytes = getMD5Bytes(input.getBytes());
 //        String name = new BigInteger(bytes).abs().toString();
 //
-//        String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+//        String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
 //        if (!basePath.endsWith(File.separator))
 //            basePath += File.separator;
 //        String fullPath = basePath + name;
@@ -201,7 +201,7 @@ public class InsertContentOracleDbImpl extends InsertContentImpl {
         byte[] bytes = getMD5Bytes(input.getBytes());
         String relativePath = new BigInteger(bytes).abs().toString();
 
-        String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+        String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
         if (!basePath.endsWith(File.separator))
             basePath += File.separator;
         String fullPath = basePath + relativePath;
@@ -215,7 +215,7 @@ public class InsertContentOracleDbImpl extends InsertContentImpl {
     }
     
 //    private File createUniqueFile(String identifier) {
-//      String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+//      String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
 //      if (!basePath.endsWith(File.separator))
 //          basePath += File.separator;
 //      String fullPath = basePath + identifier + ".zip";
@@ -295,9 +295,9 @@ public class InsertContentOracleDbImpl extends InsertContentImpl {
     }
 
     private Connection getConnection() throws SQLException {
-        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_URI);
-        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_USERNAME);
-        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DB_PASSWORD);
+        String URI = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_URI);
+        String username = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_USERNAME);
+        String password = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DB_PASSWORD);
         return DriverManager.getConnection(URI,username, password);
     }
 

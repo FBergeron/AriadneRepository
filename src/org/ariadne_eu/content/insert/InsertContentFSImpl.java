@@ -24,9 +24,9 @@ public class InsertContentFSImpl extends InsertContentImpl {
 	void initialize() {
 		super.initialize();
 		try {
-			String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.CNT_DR_BASEPATH);
+			String basePath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().CNT_DR_BASEPATH);
 			if (basePath == null)
-				log.error("initialize failed: no " + RepositoryConstants.CNT_DR_BASEPATH + " found");
+				log.error("initialize failed: no " + RepositoryConstants.getInstance().CNT_DR_BASEPATH + " found");
 			else
 				baseFolder = new File(basePath);
 		} catch (Throwable t) {

@@ -164,9 +164,9 @@ public class SPIImplementation extends SPISkeleton {
 
     private void checkValidTicket(Ticket ticket) throws SpiFaultException {
         if (ticket.getParameter("username") == null ||
-            !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) ||
+            !ticket.getParameter("username").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME)) ||
             ticket.getParameter("password") == null ||
-            !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
+            !ticket.getParameter("password").equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_PASSWORD))) {
             SpiFault fault = new SpiFault();
 //            fault.setSpiFaultCode(SpiFaultCodeType.SPI_00000);
             fault.setSpiFaultCode(FaultCodeType.SPI_00000);
@@ -180,7 +180,7 @@ public class SPIImplementation extends SPISkeleton {
     private String remoteAddr(HttpServletRequest request) {
         String remoteAddr = request.getRemoteAddr();
         String x;
-        if ((x = request.getHeader(RepositoryConstants.HEADER_X_FORWARDED_FOR)) != null) {
+        if ((x = request.getHeader(RepositoryConstants.getInstance().HEADER_X_FORWARDED_FOR)) != null) {
             remoteAddr = x;
             int idx = remoteAddr.indexOf(',');
             if (idx > -1) {

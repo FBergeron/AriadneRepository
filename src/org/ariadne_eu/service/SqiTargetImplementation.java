@@ -56,7 +56,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
 		Ticket ticket = null;
 		try {
-			//        	if (getTotalResultsCount.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_STATICKEY))) {
+			//        	if (getTotalResultsCount.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_STATICKEY))) {
 			//        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
 			//        		queryLanguage = getQueryLanguage(ticket.toString());
 			//        	} else {
@@ -219,7 +219,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 
 		Ticket ticket = null;
 		try {
-			//        	if (synchronousQuery.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_STATICKEY))) {
+			//        	if (synchronousQuery.getTargetSessionID().equalsIgnoreCase(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_STATICKEY))) {
 			//        		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
 			//        		queryLanguage = getQueryLanguage(ticket.toString());
 			//                resultsFormat = getResultsFormat(ticket.toString());
@@ -458,7 +458,7 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 	private String remoteAddr(HttpServletRequest request) {
 		String remoteAddr = request.getRemoteAddr();
 		String x;
-		if ((x = request.getHeader(RepositoryConstants.HEADER_X_FORWARDED_FOR)) != null) {
+		if ((x = request.getHeader(RepositoryConstants.getInstance().HEADER_X_FORWARDED_FOR)) != null) {
 			remoteAddr = x;
 			int idx = remoteAddr.indexOf(',');
 			if (idx > -1) {

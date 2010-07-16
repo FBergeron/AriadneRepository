@@ -36,7 +36,7 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
 		try {
 			String username = createSession.getUserID();
 			String password = createSession.getPassword();
-			if (username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_USERNAME)) && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_PASSWORD))) {
+			if (username.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_USERNAME)) && password.equals(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_PASSWORD))) {
 				Ticket t = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
 				t.setParameter("username", username);
 				t.setParameter("password", password);
@@ -113,7 +113,7 @@ public class SqiSessionManagementImplementation extends SqiSessionManagementSkel
 private String remoteAddr(HttpServletRequest request) {
 	String remoteAddr = request.getRemoteAddr();
 	String x;
-	if ((x = request.getHeader(RepositoryConstants.HEADER_X_FORWARDED_FOR)) != null) {
+	if ((x = request.getHeader(RepositoryConstants.getInstance().HEADER_X_FORWARDED_FOR)) != null) {
 		remoteAddr = x;
 		int idx = remoteAddr.indexOf(',');
 		if (idx > -1) {

@@ -56,9 +56,9 @@ public class InitServlet extends HttpServlet {
 			PropertiesManager.getInstance().setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			if (PropertiesManager.getInstance().getPropertiesFile().exists()){
 				PropertiesManager.getInstance().init();
-//				dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.REPO_DATADIR);
+//				dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_DATADIR);
 //			    if(!dataDir.equals("")){
-//			    	System.setProperty(RepositoryConstants.REPO_DATADIR, dataDir);
+//			    	System.setProperty(RepositoryConstants.getInstance().REPO_DATADIR, dataDir);
 //			    }
 //			    else {
 //			    	throw new ServletException();
