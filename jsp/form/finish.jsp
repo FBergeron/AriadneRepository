@@ -17,8 +17,8 @@
 <%@page import="uiuc.oai.OAIMetadataFormatList"%>
 <%@page import="uiuc.oai.OAISetList"%>
 <%@page import="org.ariadne_eu.utils.update.UpdateMetadataCollection"%>
-
-
+<%@page import="org.ariadne.config.PropertiesManager,org.ariadne_eu.utils.config.servlets.Log4jInit,org.ariadne.config.PropertiesManager"%>
+<%@page import="org.ariadne_eu.utils.config.RepositoryConstants"%>
 <%!
 
 boolean exists (String dir) {
@@ -35,8 +35,9 @@ boolean exists (String dir) {
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@page import="org.ariadne.config.PropertiesManager,org.ariadne_eu.utils.config.servlets.Log4jInit,org.ariadne.config.PropertiesManager"%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -123,7 +124,7 @@ do{
 }while (result!=null);
 
 MetadataCollection metadataCollection = new MetadataCollection();
-if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog"));
+if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG));
 else metadataCollection.getIdentifier().setCatalog(catalog);
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
@@ -170,10 +171,10 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (synchronous!=null) sqi.setModeSynchronous();
 	if (asynchronous!=null) sqi.setModeAsynchronous();
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
 	targetDescription.setLocation(targetURLSqi);
@@ -207,10 +208,10 @@ if (targetURLOai.compareTo("")!=0) {
 		oaiPmh.setGranularuty(oairepository.getGranularity());
 		oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
 		TargetDescription targetDescription = new TargetDescription();
-		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
+		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
 		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
 		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
-		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
+		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
 		else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 		targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
 		targetDescription.setLocation(targetURLOai);
@@ -225,10 +226,10 @@ if (targetURLOai.compareTo("")!=0) {
 
 if (targetURLSpi.compareTo("")!=0){
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-spi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty("registry.catalog")+"-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("spi");
 	targetDescription.setLocation(targetURLSpi);
