@@ -12,6 +12,14 @@
     </context-param>
     
     <context-param>
+		<param-name>constantsClass</param-name>
+		<param-value>org.ariadne_eu.utils.config.RepositoryConstants</param-value>
+		<description>
+			The class where the constants are defined.
+      </description>
+	</context-param>
+    
+    <context-param>
 		<param-name>sword-server-class</param-name>
 		<param-value>org.celstec.ariadne.app.SpiServer</param-value>
 		<description>The SPI server target</description>
@@ -119,7 +127,7 @@
         filename extension is removed).  The corresponding value is the
         name of the action class that will be used to process this request.
       </description>
-      <servlet-class>org.oclc.oai.server.LomOAIHandler</servlet-class>
+      <servlet-class>org.ariadne.oai.server.OAIHandler</servlet-class>
       <!-- Load this servlet at server startup time -->
       <load-on-startup>15</load-on-startup>
     </servlet>
