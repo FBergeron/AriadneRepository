@@ -14,9 +14,9 @@ public class Lucene2oai_reg extends Crosswalk {
 	public Lucene2oai_reg(Properties properties) {
 		super("http://www.imsglobal.org/services/lode/imsloreg_v1p0 http://fire.eun.org/xsd/registry/imsloreg_v1p0.xsd");
 		String classname = "Lucene2oai_reg";
-		fullLomField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_MDFIELD);
+		fullLomField = properties.getProperty(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_MDFIELD);
 		if (fullLomField == null) {
-		    throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MDFIELD + " is missing from the properties file");
+		    throw new IllegalArgumentException(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_MDFIELD + " is missing from the properties file");
 		}
 	}
 

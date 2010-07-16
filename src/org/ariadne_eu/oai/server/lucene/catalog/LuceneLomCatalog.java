@@ -67,27 +67,27 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	private static IndexReader reader;
 
 	public LuceneLomCatalog(Properties properties) {
-		String maxListSize = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE);
+		String maxListSize = properties.getProperty(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_MAXLSTSIZE);
 		if (maxListSize == null) {
-			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_MAXLSTSIZE + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.maxListSize = Integer.parseInt(maxListSize);
 		}
-		String lucenePath = properties.getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR);
+		String lucenePath = properties.getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR);
 		if (lucenePath == null) {
-			throw new IllegalArgumentException(RepositoryConstants.SR_LUCENE_INDEXDIR + " is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.lucenePath = lucenePath;
 		}
-		String dateField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD);
+		String dateField = properties.getProperty(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_DATEFIELD);
 		if (lucenePath == null) {
-			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_DATEFIELD + " is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_DATEFIELD + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.dateField = dateField;
 		}
-		String identifierField = properties.getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD);
+		String identifierField = properties.getProperty(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_IDFIELD);
 		if (identifierField == null) {
-			throw new IllegalArgumentException(RepositoryConstants.OAICAT_SERVER_CATALOG_IDFIELD + " is missing from the properties file");
+			throw new IllegalArgumentException(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_IDFIELD + " is missing from the properties file");
 		} else {
 			LuceneLomCatalog.identifierField = identifierField;
 		}
@@ -95,11 +95,11 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		docAnalyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
 		try {
 
-			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+			Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.getInstance().OAICAT_SETS);
 			String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 			String reposIdentifier = "";
 			for(String key : keys) {
-				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				String setSpec = key.replace(RepositoryConstants.getInstance().OAICAT_SETS + ".", "").replace("."+RepositoryConstants.getInstance().OAICAT_SETS_ID,"");
 				reposIdentifier = PropertiesManager.getInstance().getProperty(key);
 				sets.put(setSpec, reposIdentifier);
 			}
@@ -128,7 +128,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	}
 
 	public Map listSets() throws NoSetHierarchyException, OAIInternalServerError {
-		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.OAICAT_SETS);
+		Hashtable setKeys = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.getInstance().OAICAT_SETS);
 		String[] keys = (String[]) setKeys.keySet().toArray(new String[0]);
 		if(keys.length == 0) {
 			throw new NoSetHierarchyException();
@@ -139,7 +139,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			ArrayList sets = new ArrayList();
 
 			for(String key : keys) {
-				String setSpec = key.replace(RepositoryConstants.OAICAT_SETS + ".", "").replace("."+RepositoryConstants.OAICAT_SETS_ID,"");
+				String setSpec = key.replace(RepositoryConstants.getInstance().OAICAT_SETS + ".", "").replace("."+RepositoryConstants.getInstance().OAICAT_SETS_ID,"");
 				sets.add(getSetXML(PropertiesManager.getInstance().getProperty(key),setSpec));
 			}
 
@@ -232,7 +232,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 	@SuppressWarnings("unchecked")
 	public Map listIdentifiers(String from, String until, String set, String metadataPrefix) throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException, NoSetHierarchyException, OAIInternalServerError {
-		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
@@ -395,7 +395,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String from, String until, String set, String metadataPrefix)
 	throws CannotDisseminateFormatException {
-		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		purge(); // clean out old resumptionTokens
 		Map listRecordsMap = new HashMap();
@@ -433,7 +433,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 
 			q.add(rangeQuery, Occur.MUST);
 			//			BooleanQuery.setMaxClauseCount(1000000); 
-			if(set != null)q.add(new TermQuery(new Term(PropertiesManager.getInstance().getProperty(RepositoryConstants.OAICAT_SERVER_CATALOG_SETFIELD),set)), Occur.MUST);
+			if(set != null)q.add(new TermQuery(new Term(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().OAICAT_SERVER_CATALOG_SETFIELD),set)), Occur.MUST);
 			log.debug(q);
 
 			try {
@@ -534,7 +534,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	@SuppressWarnings("unchecked")
 	public Map listRecords(String resumptionToken)
 	throws BadResumptionTokenException {
-		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		Map listRecordsMap = new HashMap();
 		ArrayList records = new ArrayList();
@@ -702,7 +702,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	//	}
 
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
-		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.SR_LUCENE_INDEXDIR)));
+		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
 		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
