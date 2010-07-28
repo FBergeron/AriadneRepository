@@ -201,7 +201,7 @@ if (targetURLOai.compareTo("")!=0) {
 		}
 		OAISetList oaiSetList = oairepository.listSets();
 		for (int i=0; i<oaiSetList.getCompleteSize(); i++){
-			oaiPmh.addSets(oaiSetList.getCurrentItem().getSetName());
+			oaiPmh.addSets(oaiSetList.getCurrentItem().getSetSpec());
 			oaiSetList.moveNext();
 		}
 		oaiPmh.setDeletedRecord(oairepository.getDeletedRecord());
@@ -211,8 +211,7 @@ if (targetURLOai.compareTo("")!=0) {
 		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
 		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
 		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
-		if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
-		else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
+		targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
 		targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
 		targetDescription.setLocation(targetURLOai);
 		targetDescription.getProtocolImplementationDescription().setOaiPmh(oaiPmh);
