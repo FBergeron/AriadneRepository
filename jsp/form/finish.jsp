@@ -84,7 +84,7 @@ boolean exists (String dir) {
 <%
 String catalog = request.getParameter("catalog");
 String repositoryName = request.getParameter("repositoryName");
-out.println("Repo name:"+repositoryName);
+
 String description = request.getParameter("description");
 String email = request.getParameter("email");
 String targetURLSqi = request.getParameter("targetURLSqi");
@@ -109,7 +109,7 @@ if (targetURLSpi!=null) targetURLSpi=targetURLSpi.trim();
 
 
 String id_repository = repositoryName.replaceAll(" ","");
-out.println("<br/>Id name:"+id_repository);
+
 String result = null;
 int j = 0;
 
