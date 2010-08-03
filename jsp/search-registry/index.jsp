@@ -22,7 +22,6 @@
 <%@ page import=" javax.xml.transform.stream.*" %>
 <%@ page import="org.ariadne.config.PropertiesManager"%>
 <%@ page import="org.ariadne_eu.utils.registry.*"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
 <%! static SqiSessionManagementStub sqiSessionStub; %>
@@ -36,7 +35,8 @@
 <%! static GetTotalResultsCountResponse countResponse = null; %>
 <%! static SynchronousQueryResponse synchronousQueryResponse = null; %>
 
-<%  String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
+<%  
+	String logSystemDir = PropertiesManager.getInstance().getProperty("repository.log4j.directory");
 	if (logSystemDir.compareTo("")==0){
 		response.sendRedirect("../init/index.jsp");
 	}
@@ -103,6 +103,7 @@
   <head>
       <link media="all" href="<%=request.getContextPath()%>/style.css" type="text/css" rel="stylesheet">
       <title>Search page</title>
+      <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
       pageContext.include("/layout/headLinks.jsp");
 %>
@@ -138,7 +139,7 @@
                                       <td><p>Enter search query:</p></td>
                                   </tr>
                                   <tr>
-                                      <td><input type="text" name="query" value="<%=query != null ? StringEscapeUtils.escapeHtml(query) : ""%>" /></td>
+                                      <td><input type="text" name="query" value="<%=query != null ? StringEscapeUtils.escapeHtml(query) : ""%>" /><%=query%></td>
                                   </tr>
                                   <tr>
                                       <td><input type="submit" name="search" value="search" /></td>
