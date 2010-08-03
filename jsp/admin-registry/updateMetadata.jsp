@@ -1,5 +1,3 @@
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <%@page import="org.jdom.output.XMLOutputter"%>
 <%@page import="org.jdom.output.Format"%>
 <%@page import="org.jdom.input.SAXBuilder"%>
@@ -44,7 +42,7 @@
 		});
 	
 	</script>
-
+	
 <head>
 <script type="text/javascript">
  
@@ -57,8 +55,9 @@ function feature(getOrPublish)
   </script>
 
 <title>Online ASPECT Admin Tool</title>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
-	request.setCharacterEncoding("UTF-8");
+	//request.setCharacterEncoding("UTF-8");
 String time = "";
 Stopwatch watch = new Stopwatch();
 String id = request.getParameter("id");
