@@ -390,7 +390,7 @@
             Transformer transformer = factory.newTransformer();
 
             transformer.transform(source, result);
-            return new String(stringWriter.getBuffer().toString().getBytes(),"UTF-8");
+            return stringWriter.getBuffer().toString();
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {
