@@ -19,8 +19,6 @@
 <%@ page import="javax.xml.transform.*" %>
 <%@ page import="javax.xml.transform.dom.*" %>
 <%@ page import=" javax.xml.transform.stream.*" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 
 <%! static SqiSessionManagementStub sqiSessionStub; %>
 <%! static SqiTargetStub sqiStub; %>
@@ -34,6 +32,7 @@
 <%! static SynchronousQueryResponse synchronousQueryResponse = null; %>
 
 <%
+
 	String format, language;
 	int resultSize, startResult;
 	Vector metadataFormats = new Vector();
@@ -96,6 +95,7 @@
   <head>
       <link media="all" href="<%=request.getContextPath()%>/style.css" type="text/css" rel="stylesheet">
       <title>Search page</title>
+      <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
       pageContext.include("/layout/headLinks.jsp");
 %>
@@ -384,11 +384,13 @@
         try {
             Source source = new DOMSource(node);
             StringWriter stringWriter = new StringWriter();
+            
             Result result = new StreamResult(stringWriter);
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer();
+
             transformer.transform(source, result);
-            return stringWriter.getBuffer().toString();
+            return new String(stringWriter.getBuffer().toString().getBytes(),"UTF-8");
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
         } catch (TransformerException e) {
