@@ -36,13 +36,13 @@ boolean exists (String dir) {
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Ariadne OAI Harvester - Web Installer</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <link rel="stylesheet" href="css/install.css" type="text/css" />
 <script type="text/javascript">
@@ -54,7 +54,7 @@ boolean exists (String dir) {
 <%
       pageContext.include("/layout/headLinks.jsp");
 %>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
   </head>
   <body>
 <%
@@ -84,6 +84,7 @@ boolean exists (String dir) {
 <%
 String catalog = request.getParameter("catalog");
 String repositoryName = request.getParameter("repositoryName");
+out.println("Repo name:"+repositoryName);
 String description = request.getParameter("description");
 String email = request.getParameter("email");
 String targetURLSqi = request.getParameter("targetURLSqi");
@@ -108,6 +109,7 @@ if (targetURLSpi!=null) targetURLSpi=targetURLSpi.trim();
 
 
 String id_repository = repositoryName.replaceAll(" ","");
+out.println("<br/>Id name:"+id_repository);
 String result = null;
 int j = 0;
 
@@ -191,6 +193,7 @@ if (targetURLOai.compareTo("")!=0) {
 		OaiPmh oaiPmh = new OaiPmh();
 		OAIMetadataFormatList metadataFormatList = oairepository.listMetadataFormats();
 		for (int i=0; i<metadataFormatList.getCompleteSize(); i++){
+			try{
 			MetadataFormat metadataFormat = new MetadataFormat();
 			OAIMetadataFormat oaiMetadataFormat = metadataFormatList.getCurrentItem();
 			metadataFormat.setMetadataPrefix(oaiMetadataFormat.getMetadataPrefix());
@@ -198,11 +201,24 @@ if (targetURLOai.compareTo("")!=0) {
 			metadataFormat.setSchema(oaiMetadataFormat.getSchema());
 			oaiPmh.addMetadataFormat(metadataFormat);
 			metadataFormatList.moveNext();
+			}catch(NullPointerException e){
+				MetadataFormat metadataFormat = new MetadataFormat();			
+				metadataFormat.setMetadataPrefix("null");
+				metadataFormat.setMetadataNameSpace("null");
+				metadataFormat.setSchema("null");
+				oaiPmh.addMetadataFormat(metadataFormat);
+				metadataFormatList.moveNext();
+			}
 		}
 		OAISetList oaiSetList = oairepository.listSets();
 		for (int i=0; i<oaiSetList.getCompleteSize(); i++){
-			oaiPmh.addSets(oaiSetList.getCurrentItem().getSetSpec());
-			oaiSetList.moveNext();
+			try{
+				oaiPmh.addSets(oaiSetList.getCurrentItem().getSetSpec());
+				oaiSetList.moveNext();
+			}catch(NullPointerException e){
+				oaiPmh.addSets("null");
+				oaiSetList.moveNext();
+			}
 		}
 		oaiPmh.setDeletedRecord(oairepository.getDeletedRecord());
 		oaiPmh.setGranularuty(oairepository.getGranularity());
