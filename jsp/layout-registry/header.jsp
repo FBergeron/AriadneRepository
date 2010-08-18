@@ -31,6 +31,16 @@
         <!--# reload repository-->
         <!--# log out-->
         <script language="JavaScript" type="text/javascript">
+        function popup(mylink, windowname){
+            if (! window.focus)return true;
+            var href;
+            if (typeof(mylink) == 'string')href=mylink;
+            else href=mylink.href;
+            window.open(href, windowname, 'width=800,height=600,scrollbars=yes');
+            return false;
+	    }
+
+        
 		var myMenu =
 		[			
 			[null,'New',null,null,'New',
@@ -63,6 +73,7 @@
 <%
 		}
 %>
+		[_cmNoAction, '<A HREF="http://ariadne.cs.kuleuven.be/trac/newticket?summary=Registry Service&version=1.0&priority=minor&component=registry" onClick="return popup(this,\'notes\')">Found a Bug ?</A>', null, null, null]
 		];
 		cmDraw ('myMenuID', myMenu, 'hbr', cmThemeOffice, 'ThemeOffice');
 		</script>
