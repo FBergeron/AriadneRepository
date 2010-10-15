@@ -26,6 +26,9 @@ import com.sun.jersey.spi.resource.Singleton;
 public class ICOPERImplementation {
 	private static Logger log = Logger.getLogger(ICOPERImplementation.class);
 	
+	//learningOpportunities
+	//
+	
 	@GET @Path("/getLearningOutcomeDefinitions")
     @Produces("application/json")
 	public String getLearningOutcomeDefinitions(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
@@ -79,7 +82,7 @@ public class ICOPERImplementation {
 	
 	@GET @Path("/getTeachingMethods")
     @Produces("application/json")
-    public String getTeachingMethods(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
+    public String getTeachingMethods(@QueryParam("q") String query, @QueryParam("p n") int page_number, @QueryParam("ps") int page_size) {
 		if (query.equalsIgnoreCase("")) {
 			query = "lom.solr = \"all\"";
 		}
@@ -95,7 +98,7 @@ public class ICOPERImplementation {
 		
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "lom.educational.learningResourceType.value : \"teaching method\" OR lom.educational.learningResourceType.value : \"assessment method\" AND " + lQuery;
+			String fullquery = "(lom.educational.learningresourcetype.value : \"teaching method\" OR lom.educational.learningresourcetype.value : \"assessment method\") AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
 		} catch (QueryTranslationException e) {
@@ -124,7 +127,7 @@ public class ICOPERImplementation {
 		
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "lom.educational.learningResourceType.value : \"assessment method\" AND " + lQuery;
+			String fullquery = "lom.educational.learningresourcetype.value : \"assessment method\" AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
 		} catch (QueryTranslationException e) {
@@ -135,7 +138,7 @@ public class ICOPERImplementation {
 		return "";
     }
 	
-	@GET @Path("/getUnitsOfLearning")
+	@GET @Path("/getLearningDesigns")
     @Produces("application/json")
     public String getUnitsOfLearning(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
 		if (query.equalsIgnoreCase("")) {
@@ -151,7 +154,7 @@ public class ICOPERImplementation {
 		log.info("getUnitsOfLearning: query=" + query + ", start=" + start + ", page_size=" + page_size);
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "lom.educational.learningResourceType.value : \"unit of learning\" AND " + lQuery;
+			String fullquery = "(lom.educational.learningresourcetype.value : \"unit of learning\" OR lom.educational.learningresourcetype.value : \"learning design\") AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
 		} catch (QueryTranslationException e) {
@@ -163,7 +166,6 @@ public class ICOPERImplementation {
     }
 	
 	
-	//son todos!
 	@GET @Path("/getLearningResources")
     @Produces("application/json")
     public String getLearningResources(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
@@ -180,9 +182,11 @@ public class ICOPERImplementation {
 		log.info("getLearningResources: query=" + query + ", start=" + start + ", page_size=" + page_size);
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "NOT lom.educational.learningResourceType.value:\"teaching method\" NOT lom.educational.learningResourceType.value:\"assessment method\"" +
-					" NOT lom.educational.learningResourceType.value:\"unit of learning\"" +
-					" NOT lom.educational.learningResourceType.value:\"learning assessment\"" +
+			String fullquery = "(lom.educational.learningresourcetype.value:\"teaching method\" OR lom.educational.learningresourcetype.value:\"assessment method\"" +
+					" OR lom.educational.learningresourcetype.value:\"unit of learning\"" +
+					" OR lom.educational.learningresourcetype.value:\"learning design\"" +
+					" OR lom.educational.learningresourcetype.value:\"learning assessment\"" +
+					" OR lom.educational.learningresourcetype.value:\"other\")" +
 					" AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
@@ -194,7 +198,7 @@ public class ICOPERImplementation {
 		return "";
     }
 	
-	@GET @Path("/getLearningAssessments")
+	@GET @Path("/getLearnerAssessments")
     @Produces("application/json")
     public String getLearningAssements(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
 		if (query.equalsIgnoreCase("")) {
@@ -207,7 +211,7 @@ public class ICOPERImplementation {
 		log.info("getLearningAssements: query=" + query + ", start=" + start + ", page_size=" + page_size);
 		try {
 			String lQuery = TranslateLanguage.translateToQuery(query, TranslateLanguage.PLQL1, TranslateLanguage.LUCENE, start, page_size, TranslateResultsformat.ICJS);
-			String fullquery = "lom.educational.learningResourceType.value : \"learning assessment\" AND " + lQuery;
+			String fullquery = "(lom.educational.learningresourcetype.value : \"learning assessment\" OR lom.educational.learningresourcetype.value : \"learner assessment\") AND " + lQuery;
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, start, page_size, TranslateResultsformat.ICJS);
 			return result;
 		} catch (QueryTranslationException e) {

@@ -253,6 +253,7 @@
    <field name="collection" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="contents" type="text_en" indexed="true" stored="true"/>
    <field name="md" type="string" indexed="true" stored="true"/>
+   <field name="lom" type="string" indexed="true" stored="true"/>
    <field name="lom.general.identifier.entry" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.general.identifier.catalog" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="lom.general.title.string" type="string" indexed="true" stored="true"/>

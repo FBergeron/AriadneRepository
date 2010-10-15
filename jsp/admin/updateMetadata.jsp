@@ -74,7 +74,7 @@ if(id == null){
 	id = "";
 }else if(getOrPublishString.equalsIgnoreCase("get")){
 	try{
-		metadata = QueryOnId.getMACEquery().getMaceInstance(id);
+		metadata = QueryOnId.getMACEquery().getMDInstance(id);
 	}catch(Exception e){
 		error = e.getMessage();
 		metadata = "";

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sourceforge.minor.lucene.core.searcher.MemoryReaderManagement;
+
 import org.ariadne.config.Constants;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
@@ -34,20 +36,18 @@ public class InitServlet extends HttpServlet {
 	}
 	
 	public static void initializeServices() {
-        //TODO
         TranslateLanguage.initialize();
         InsertMetadataFactory.initialize();
         QueryMetadataFactory.initialize();
+        
     }
 	
 	public static void initializePropertiesManager(){
 		try {
 			PropertiesManager.getInstance().init();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -63,18 +63,11 @@ public class InitServlet extends HttpServlet {
 		}
 		
 		try {
-//			System.out.println(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			PropertiesManager.getInstance().setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			if (PropertiesManager.getInstance().getPropertiesFile().exists()){
 				PropertiesManager.getInstance().init();
-//				dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_DATADIR);
-//			    if(!dataDir.equals("")){
-//			    	System.setProperty(RepositoryConstants.getInstance().REPO_DATADIR, dataDir);
-//			    }
-//			    else {
-//			    	throw new ServletException();
-//			    }
 			}
+//			MemoryReaderManagement.initialize();
 			
 		} catch (Exception e) {
 			throw new ServletException(e.getMessage());

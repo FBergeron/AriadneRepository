@@ -48,8 +48,6 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
 			doc.add(new Field("key", key, Field.Store.YES, Field.Index.UN_TOKENIZED ));
 			doc.add(new Field("collection", collection.toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED ));
 			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED));
-            doc.add(new Field("md", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-//            doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             
             String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_HANDLER);
             if (luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.MACELOMHandler")) {
@@ -57,10 +55,14 @@ public class InsertDelegateSingleStringImpl implements IndexInserterDelegate {
             	String exml = MACEUtils.enrichWClassification(insertMetadata);
             	exml = exml.substring(38); //to remove the opening xml element
             	doc.add(new Field("maceenrichedlom", exml, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+            } else if (!luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.LOMLiteHandler")) {
+            	doc.add(new Field("md", insertMetadata, Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
             }
 
 //			writer.addDocument(doc);
             Term term = new Term("key", key);
+            writer.setMergeFactor(15);
+            writer.setRAMBufferSizeMB(48);
             writer.updateDocument(term, doc);
 		} catch (DocumentHandlerException e) {
 			log.error("insert: ", e);

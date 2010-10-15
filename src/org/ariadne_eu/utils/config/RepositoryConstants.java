@@ -80,6 +80,9 @@ public class RepositoryConstants extends Constants {
 
 	
 	public RepositoryConstants() {
+		
+		REPO_LOG4J_DIR = "repository.log4j.directory";
+		REPO_LOG4J_FILENAME = "repository.log4j.filename";
 
 		MD_DB_URI = "mdstore.db.uri";
 		MD_DB_USERNAME = "mdstore.db.username";

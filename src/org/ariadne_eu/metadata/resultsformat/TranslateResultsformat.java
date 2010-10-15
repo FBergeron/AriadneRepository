@@ -27,7 +27,11 @@ public class TranslateResultsformat {
     public static final int ICJS = 9; //ICOPER COMPACT JSON
     public static final int ILCJS = 10; //ICOPER LOD COMPACT JSON
     public static final int IJS = 11; //ICOPER JSON
-    public static final int ARFJS = 13; //ARIADNE JS
+    public static final int ARFJS = 12; //ARIADNE JS
+    public static final int PRFM = 13; //RESEARCHFM PEOPLE
+    public static final int PARFM = 14; //RESEARCHFM PEOPLE ACCOUNTS
+    public static final int PPRFM = 15; //RESEARCHFM PEOPLE PUBLICATION
+    public static final int PLPRFM = 16; //RESEARCHFM PEOPLE LIST PUBLICATIONS
 
     public static boolean isPLRF(int rfId) {
         return rfId >= 1 && rfId <= 4;
@@ -61,6 +65,14 @@ public class TranslateResultsformat {
         	return IJS;
         else if (rf.equalsIgnoreCase("ariadne"))
         	return ARFJS;
+        else if (rf.equalsIgnoreCase("prfm"))
+        	return PRFM;
+        else if (rf.equalsIgnoreCase("parfm"))
+        	return PARFM;
+        else if (rf.equalsIgnoreCase("pprfm"))
+        	return PPRFM;
+        else if (rf.equalsIgnoreCase("plprfm"))
+        	return PLPRFM;
         return UNDEFINED;
     }
 

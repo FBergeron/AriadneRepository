@@ -75,7 +75,7 @@
 
   <head>
       <link media="all" href="<%=request.getContextPath()%>/style.css" type="text/css" rel="stylesheet">
-      <title>Obtain content</title>
+      <title>Obtain metadata</title>
 <%
       pageContext.include("/layout/headLinks.jsp");
 %>

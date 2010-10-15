@@ -167,7 +167,7 @@ public class Query {
 		}
 		for (int j=0;j<subject.size();j++){
 			String[] disjunction = new String[1];
-			disjunction[0] = "contents:"+subject.get(j);
+			disjunction[0] = "contents:\""+subject.get(j)+"\"";
 //			disjunction[0] = "subject:"+subject.get(j);
 			result.add(disjunction);
 		}
@@ -193,9 +193,18 @@ public class Query {
 				facet = "lom.general.language";
 			}else if (facet.equalsIgnoreCase("lrt")) {
 				facet = "lom.educational.learningresourcetype.value";
+			}else if (facet.equalsIgnoreCase("context")) {
+				facet = "lom.educational.context.value";
+			}else if (facet.equalsIgnoreCase("format")) {
+				facet = "lom.technical.format";
+			}else if (facet.equalsIgnoreCase("provider")) {
+				facet = "collection";
+			}else if (facet.equalsIgnoreCase("keyword")) {
+				facet = "lom.general.keyword.string";
 			}
+			
 				
-			parsedFacets.add(facet+":"+f.trim());
+			parsedFacets.add(facet+":\""+f.trim()+"\"");
 		}
 		String[] facetArray = new String[parsedFacets.size()];
 		parsedFacets.toArray(facetArray);

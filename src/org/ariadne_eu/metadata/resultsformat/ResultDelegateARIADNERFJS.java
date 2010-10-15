@@ -144,7 +144,8 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 			for (Iterator facetIterator = facetsFields.iterator(); facetIterator.hasNext();) {
 				JSONObject facetJson = new JSONObject();
 				facetField = (FacetField) facetIterator.next();
-				facetJson.put("field", facetField.getName());
+				facetJson.put("field", changeFacetName(facetField.getName()));
+				
 				facetValues = facetField.getValues();
 				if (facetValues != null) {
 					JSONArray valuesJson = new JSONArray();
@@ -170,5 +171,20 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		conn.close();
 
 		return facetsJson;
+    }
+    
+    private String changeFacetName(String internalName) {
+    	if (internalName.equalsIgnoreCase("lom.educational.learningresourcetype.value"))
+    		return "lrt";
+    	else if (internalName.equalsIgnoreCase("lom.educational.context.value"))
+    		return "context";
+    	else if (internalName.equalsIgnoreCase("lom.technical.format"))
+    		return "format";
+    	else if (internalName.equalsIgnoreCase("lom.general.language"))
+    		return "language";
+    	else if (internalName.equalsIgnoreCase("collection"))
+    		return "provider";
+    	else
+    		return internalName;
     }
 }

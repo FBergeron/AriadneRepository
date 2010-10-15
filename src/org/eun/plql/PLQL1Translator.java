@@ -59,10 +59,10 @@ public class PLQL1Translator {
 //		,
 //		"keyword1 and keyword2 and (lom.general.language = \"fr\") and (lom.educational.ageRange = \"10-12\")"
 //		,
-//		"keyword1 and keyword2 and (lom.general.language = en) and (lom.educational.ageRange=10-12)"
+		"keyword1 and keyword2 and (lom.general.language = en) and (lom.educational.ageRange=10-12)"
 //		,
 //		"protocol.identifier.catalog = \"ariadne-protocols-targets\""
-		"lom.general.identifier.entry = \"Perro\""
+//		"lom.general.identifier.entry = \"Perro\""
 		
 };
 

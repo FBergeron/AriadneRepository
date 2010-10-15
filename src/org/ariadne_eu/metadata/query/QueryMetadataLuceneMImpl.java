@@ -3,6 +3,7 @@ package org.ariadne_eu.metadata.query;
 import java.io.File;
 
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
+import net.sourceforge.minor.lucene.core.searcher.MemoryReaderManagement;
 import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 
 import org.apache.log4j.Logger;
@@ -39,32 +40,19 @@ import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
  * Time: 12:57:23
  * To change this template use File | Settings | File Templates.
  */
-public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
+public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
 
-    private static Logger log = Logger.getLogger(QueryMetadataLuceneImpl.class);
+    private static Logger log = Logger.getLogger(QueryMetadataLuceneMImpl.class);
     private File indexDir;
-    private IndexReader reader;
+    private IndexSearcher searcher;
 
 
     void initialize() {
         super.initialize();
-        try {
-            String indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + "." + getLanguage());
-            if (indexDirString == null)
-        	indexDirString = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR);
-            if (indexDirString == null)
-                log.error("initialize failed: no " + RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + " found");
-            indexDir = new File(indexDirString);
-            if (!indexDir.isDirectory())
-                log.error("initialize failed: " + RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR + " invalid directory");
-            //TODO: check for valid lucene index
-        } catch (Throwable t) {
-            log.error("initialize: ", t);
-        }
     }
     
     public synchronized String xQuery(String xQuery) throws QueryMetadataException {
-    	return null;
+    	throw new QueryMetadataException(new Exception("Not supported query language"));
     }
 
     public synchronized String query(String query, int start, int max, int resultsFormat) throws QueryTranslationException, QueryMetadataException {
@@ -80,8 +68,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 
     private synchronized String luceneQuery(String lQuery, int start, int max, int resultsFormat) {
         try {
-        	reader = null;
-        	reader = ReaderManagement.getInstance().getReader(indexDir);
+        	
         	Hits hits = getHits(lQuery);
 
 
@@ -128,42 +115,30 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         } catch (Exception e) {
         	log.error("Lucene query exception",e);
             return null;
-        } finally {
-			try {
-				ReaderManagement.getInstance().unRegister(indexDir, reader);
-			} catch (Exception e) {
-				log.error("Unable to un-register a lucene reader",e);
-			}
-		}
+        } 
     }
 
     private synchronized int luceneCount(String lQuery) {
         try {
-        	reader = null;
-        	reader = ReaderManagement.getInstance().getReader(indexDir);
+        	searcher = MemoryReaderManagement.getInstance().getSearcher();
             return getHits(lQuery).length();
         } catch (Exception e) {
         	log.error("Lucene query exception",e);
             return -1;
-        } finally {
-			try {
-				ReaderManagement.getInstance().unRegister(indexDir, reader);
-			} catch (Exception e) {
-				log.error("Unable to un-register a lucene reader",e);
-			}
-		}
+        } 
     }
 
     private synchronized Hits getHits(String lQuery) {
     	
         try {
-			IndexSearcher is = new IndexSearcher(reader);
+        	log.info("In Memory solution!");
+        	searcher = MemoryReaderManagement.getInstance().getSearcher();
 
 			//XXX Note that QueryParser is not thread-safe.
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
 			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);
 			
-			return is.search(query);
+			return searcher.search(query);
 		} catch (ParseException e) {
 			log.error("Lucene parse exception",e);
 		} catch (Exception e) {

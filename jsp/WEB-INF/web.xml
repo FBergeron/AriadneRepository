@@ -11,6 +11,7 @@
 			It is supposed to be in the WEB-INF directory.
       </description>
 	</context-param>
+	
 	<context-param>
 		<param-name>constantsClass</param-name>
 		<param-value>org.ariadne_eu.utils.config.RepositoryConstants</param-value>
@@ -94,7 +95,7 @@
 		<servlet-name>log4j-init</servlet-name>
 		<servlet-class>org.ariadne_eu.utils.config.servlets.Log4jInit
 		</servlet-class>
-		<load-on-startup>10</load-on-startup>
+		<load-on-startup>15</load-on-startup>
 		<init-param>
 			<param-name>log4j-init-file</param-name>
 			<param-value>log.properties</param-value>
@@ -144,7 +145,7 @@
 		<servlet-class>
 			com.sun.jersey.spi.container.servlet.ServletContainer
 		</servlet-class>
-		<load-on-startup>15</load-on-startup>
+		<load-on-startup>10</load-on-startup>
 	</servlet>
 
 	<!-- Servlet Mappings -->

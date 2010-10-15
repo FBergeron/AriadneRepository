@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.sf.vcard4j.java.type.FN;
 import net.sf.vcard4j.java.type.N;
 import net.sf.vcard4j.java.type.VERSION;
 import net.sf.vcard4j.parser.DomParser;
@@ -43,8 +44,9 @@ public class VCardUtils {
 		}
 	}
 	
-	public void parseVcard(String vcardString, boolean unescape) {
-		if (unescape) vcardString = unescapeEntity(vcardString);
+	private void parseVcard(String vcardString, boolean unescape) {
+		if (unescape)
+			vcardString = unescapeEntity(vcardString);
 		vCardParser.setConvertVersion(false);
 		Document vCardDocument;
 		vCardDocument = documentBuilder.newDocument();
@@ -56,26 +58,59 @@ public class VCardUtils {
 			throw pe;
 		}
 		org.w3c.dom.Element addressBookElement = vCardDocument.getDocumentElement();
-		org.w3c.dom.Element vCardElement = (org.w3c.dom.Element)addressBookElement.getElementsByTagNameNS(DomParser.VCARD4J_NAMESPACE,DomParser.XML_VCARD).item(0);
+		org.w3c.dom.Element vCardElement = (org.w3c.dom.Element) addressBookElement.getElementsByTagNameNS(DomParser.VCARD4J_NAMESPACE, DomParser.XML_VCARD).item(0);
 		net.sf.vcard4j.java.VCard vCard = new net.sf.vcard4j.java.VCard(vCardElement);
-		Iterator nIterator = vCard.getTypes("N");
-		N n = (nIterator.hasNext()) ? (N)nIterator.next() : null;
-		if (n == null) System.out.println("vCard has null N type");
+		Iterator nIterator = vCard.getTypes("FN");
+		FN fn = (nIterator.hasNext()) ? (FN) nIterator.next() : null;
+		if (fn == null) {
+			System.out.println("vCard has null FN type");
+		} else {
+			System.out.println((String) fn.getValue());
+		}
 		Iterator versionIterator = vCard.getTypes("VERSION");
-		VERSION version = (versionIterator.hasNext()) ? (VERSION)versionIterator.next() : null;
-		if ((version == null) || (version.get() == null)) System.out.println("vCard has null VERSION type");
+		VERSION version = (versionIterator.hasNext()) ? (VERSION) versionIterator.next() : null;
+		if ((version == null) || (version.get() == null))
+			System.out.println("vCard has null VERSION type");
 		int[] versionNum;
 		try {
 			versionNum = getVersion(version.get());
 			if (compareVersions(versionNum, VCARD_VERSION) < 0) {
 				String ver = version.get();
-				if (ver == null || ver.equals("")) ver = "empty";
+				if (ver == null || ver.equals(""))
+					ver = "empty";
 				System.out.println("Invalid vCard VERSION (version given was " + ver + ", must be " + parseVersion(VCARD_VERSION) + " or higher)");
 			}
 		} catch (NumberFormatException nfe) {
 			nfe.printStackTrace();
 		}
-		
+
+	}
+	
+	public String getFN(String vcardString, boolean unescape) {
+		if (unescape)
+			vcardString = unescapeEntity(vcardString);
+		vCardParser.setConvertVersion(false);
+		Document vCardDocument;
+		vCardDocument = documentBuilder.newDocument();
+		try {
+			vCardParser.parse(new StringReader(vcardString), vCardDocument);
+		} catch (IOException ioe) {
+			VCardException pe = new VCardException(ioe.getClass().getName() + ": " + ioe.getMessage());
+			pe.initCause(ioe);
+			throw pe;
+		}
+		org.w3c.dom.Element addressBookElement = vCardDocument.getDocumentElement();
+		org.w3c.dom.Element vCardElement = (org.w3c.dom.Element) addressBookElement.getElementsByTagNameNS(DomParser.VCARD4J_NAMESPACE, DomParser.XML_VCARD).item(0);
+		net.sf.vcard4j.java.VCard vCard = new net.sf.vcard4j.java.VCard(vCardElement);
+		Iterator nIterator = vCard.getTypes("FN");
+		FN fn = (nIterator.hasNext()) ? (FN) nIterator.next() : null;
+		if (fn == null) {
+			System.out.println("vCard has null FN type");
+			return null;
+		} else {
+			return ((String) fn.getValue());
+		}
+
 	}
 	
 	/**
@@ -139,6 +174,7 @@ public class VCardUtils {
 		String vcard = "BEGIN:VCARD\nFN:alba fuertes\nN:fuertes;alba;;;\nNICKNAME:alba\nVERSION:3.0\nEND:VCARD";
 		VCardUtils u = new VCardUtils();
 		u.parseVcard(vcard, false);
+		
 	}
 
 }

@@ -66,7 +66,7 @@ public class InsertMetadataFSImpl extends InsertMetadataImpl {
             File folder = new File (dirString + collection );
             folder.mkdir();
 		    writeStringToFileInEncodingUTF8(output, folder.getAbsolutePath() + File.separator + name + ".xml");
-
+		    log.info("insertMetadata:identifier:\"" + identifier + "\"");
 		} catch (JDOMException e) {
 			log.error("insertMetadata:id=" + identifier, e);
 			throw new InsertMetadataException(e);

@@ -71,11 +71,10 @@ public class ReIndexFSImpl extends ReIndexImpl {
 	
 	
 	public void reIndexMetadata() {
-		File mdFile, mdInnerFile;
+		File mdFile;
 		File dir = new File(dirString);
 		File[] files = dir.listFiles();
-		String xml = null;
-		// SAXBuilder builder;
+		
 
 		InsertMetadataImpl[] insertImpls = InsertMetadataFactory.getInsertImpl();
 		InsertMetadataLuceneImpl luceneImpl = null;
@@ -95,57 +94,44 @@ public class ReIndexFSImpl extends ReIndexImpl {
 
 			for (int i = 0; i < files.length; i++) {
 				mdFile = files[i];
-				if (!mdFile.getName().equalsIgnoreCase(".DS_Store")) {
-
-					if (mdFile.isDirectory()) {
-						File[] collection = mdFile.listFiles();
-
-						for (int j = 0; j < collection.length; j++) {
-							mdInnerFile = collection[j];
-							xml = readFile(mdInnerFile, "UTF-8");
-							String identifier = "";
-							try {
-								
-								Document doc = getDoc(xml);
-								identifier = getIdentifier(doc);
-
-								StringWriter out = new StringWriter();
-								XMLSerializer serializer = new XMLSerializer(out, new OutputFormat(doc));
-								serializer.serialize((Element) doc.getFirstChild());
-								String lom = out.toString();
-
-								if (identifier != null)
-									luceneImpl.insertMetadata(identifier, lom, mdFile.getName());
-							} catch (Exception e) {
-								log.error("reIndexMetadata :: file="+ mdInnerFile.getName(), e);
-							}
-
-						}
-					} else {
-						xml = readFile(mdFile, "UTF-8");
-						try {
-
-							Document doc = getDoc(xml);
-							String identifier = getIdentifier(doc);
-
-							StringWriter out = new StringWriter();
-							XMLSerializer serializer = new XMLSerializer(out, new OutputFormat(doc));
-							serializer.serialize((Element) doc.getFirstChild());
-							String lom = out.toString();
-
-							if (identifier != null)
-								luceneImpl.insertMetadata(identifier, lom, "ARIADNE");
-						} catch (Exception e) {
-							log.error("reIndexMetadata", e);
-						}
-
-					}
-
+				if (mdFile.isDirectory()) {
+					indexFile(mdFile, luceneImpl, mdFile.getName());
+				} else {
+					indexFile(mdFile, luceneImpl, "ARIADNE");
 				}
+				
 			}
 
 		}
 
+	}
+	
+	private static void indexFile (File mdFile, InsertMetadataLuceneImpl luceneImpl, String cName) {
+		String xml = null;
+		if (!mdFile.getName().equalsIgnoreCase(".DS_Store")) {
+			if (mdFile.isDirectory()) {
+				File[] collection = mdFile.listFiles();
+				for (int j = 0; j < collection.length; j++) 
+					indexFile(collection[j], luceneImpl, cName);
+			} else {
+				xml = readFile(mdFile, "UTF-8");
+				try {
+
+					Document doc = getDoc(xml);
+					String identifier = getIdentifier(doc);
+
+					StringWriter out = new StringWriter();
+					XMLSerializer serializer = new XMLSerializer(out, new OutputFormat(doc));
+					serializer.serialize((Element) doc.getFirstChild());
+					String lom = out.toString();
+					if (identifier != null)
+						luceneImpl.insertMetadata(identifier, lom, cName);
+				} catch (Exception e) {
+					log.error("indexFile: fileName=" + mdFile.getName(), e);
+				}
+
+			}
+		}
 	}
 	
 	private static String getIdentifier (Document doc) {
@@ -169,7 +155,7 @@ public class ReIndexFSImpl extends ReIndexImpl {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			doc = factory.newDocumentBuilder().parse(input);
 		} catch (Exception e) {
-			log.error("reIndexMetadata:",e);
+			log.error("getDoc:",e);
 		}
 		return doc;
 	}
@@ -184,7 +170,7 @@ public class ReIndexFSImpl extends ReIndexImpl {
 				content = content + line + "\n";
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("readFile: fileName=" + file.getName(),e);
 			return "";
 		}
 		LineIterator.closeQuietly(it);

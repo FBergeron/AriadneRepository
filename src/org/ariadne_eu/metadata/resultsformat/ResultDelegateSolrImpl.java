@@ -120,7 +120,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		}
 
 		QueryResponse rsp = server.query(solrQuery);
-		System.out.println(rsp.getResults().getNumFound());
+//		System.out.println(rsp.getResults().getNumFound());
 
 		List facetsFields = rsp.getFacetFields();
 		sBuild.append("<facets>\n");

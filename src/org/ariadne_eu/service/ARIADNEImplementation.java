@@ -25,45 +25,9 @@ public class ARIADNEImplementation {
 	
 	private static Logger log = Logger.getLogger(ARIADNEImplementation.class);
 	
-	/*@GET
-	@Produces("application/json")
-	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size) {
-
-		int startResult = 1;
-		int nbResults = 12;
-
-		if (start != null) { 
-			try {
-				startResult = Integer.parseInt(start);
-				if(startResult < 1) throw new Exception();
-			} catch (Exception e) {
-				log.error("setStartResult:Invalid Start Result", e);
-			}
-		}
-		
-		if (size != null) { 
-			try {
-				nbResults = Integer.parseInt(size);
-				if(nbResults < 1) throw new Exception();
-			} catch (Exception e) {
-				log.error("setNumberOfResults:Invalid Results Set Size", e);
-			}
-		}
-		
-		try {
-			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.PLQL1).query(query, startResult, nbResults, TranslateResultsformat.ARFJS);
-			return result;
-		} catch (QueryTranslationException e) {
-			log.error("synchronousQuery: QueryTranslationException", e);
-		} catch (QueryMetadataException e) {
-			log.error("synchronousQuery: QueryMetadataException", e);
-		}
-		return "";
-	}*/
-	
 	@GET
 	@Produces("application/json")
-	public String query(@QueryParam("json") String json, @QueryParam("engine") String engine) {
+	public String query(@QueryParam("json") String json) {
 		Stopwatch sw = new Stopwatch();
 		sw.start();
 		String query = "";
@@ -108,7 +72,7 @@ public class ARIADNEImplementation {
 			
 			if (qry.rankingTerms != null) {
 				for (int i = 0; i < qry.rankingTerms.length; i++) {
-//					System.out.println(qry.rankingTerms[i]);
+					System.out.println(qry.rankingTerms[i]);
 				}
 			}
 			

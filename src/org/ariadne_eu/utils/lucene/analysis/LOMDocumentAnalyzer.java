@@ -56,6 +56,7 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.metametadata.identifier.entry", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.metametadata.identifier.catalog", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.metametadata.contribute.entity.provider", new KeywordAnalyzer());
 		
 		pfanalyzer.addAnalyzer("lom.rights.description.string.language", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.rights.description.string", new SnowballAnalyzer("English"));

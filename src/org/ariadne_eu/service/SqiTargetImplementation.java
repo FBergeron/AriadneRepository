@@ -116,7 +116,6 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 	}
 
 	@GET
-	
 	@Produces({"application/xml", "application/json"})
 	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size, @QueryParam("lang") String queryLanguage, @QueryParam("format") String resultFormat) {
 		Ticket ticket = null;

@@ -156,7 +156,7 @@
 
 
     <target name="buildall_testing"
-            depends="clean, compile, makeJar, makeWar"
+            depends="clean, compile, makeWar"
             description="Build all for test version (compile, make jar without generating javadoc)." />
     <target name="allfresh_testing"
             depends="clean, buildall_testing, deploy"
