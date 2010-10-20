@@ -4,7 +4,6 @@
 package org.ariadne_eu.metadata.resultsformat;
 
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -18,6 +17,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.servlet.DirectSolrConnection;
@@ -43,8 +43,6 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 
 	static {
 		try {
-			// instanceDir =
-			// PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_INSTANCEDIR);
 			instanceDir = (PropertiesManager.getInstance().getPropFile()).replaceAll("install/ariadne.properties", "solr/");
 			dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_DATADIR);
 			loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
@@ -57,17 +55,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 				facetFields.add((String) object);
 			}
 
-			// while(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD
-			// + "." + i) != null) {
-			// facetFields.add(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD
-			// + "." + i));
-			// i++;
-			// }
-
 			if (instanceDir == null) {
-				// instanceDir = "db2-fn:xmlcolumn(\"METADATASTORE.LOMXML\")";
-				// log.error("initialize:property \""+
-				// RepositoryConstants.getInstance().SR_SOLR_INSTANCEDIR +"\" not defined");
 				log.error("Could not load Solr instance dir!");
 			} else if (dataDir == null) {
 				log.warn("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_DATADIR + "\" not defined");
@@ -98,21 +86,11 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		SolrCore core = SolrCore.getSolrCore();
 		SolrServer server = new EmbeddedSolrServer(core);
 
-		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(true);
+		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(FacetParams.FACET_SORT_COUNT).setParam("queryResultWindowSize", Integer.toString(max));
 
 		ModifiableSolrParams params = new ModifiableSolrParams();
 		params.set("queryResultWindowSize", Integer.toString(max));
 		solrQuery.add(params);
-
-		// System.out.println(solrQuery.get("query/queryResultWindowSize"));
-		// System.out.println(solrQuery.get("queryResultWindowSize"));
-
-		// ModifiableSolrParams params = new ModifiableSolrParams();
-		// System.out.println(params.get("query/queryResultWindowSize"));
-		// params.set("queryResultWindowSize", Integer.toString(max));
-
-		// QueryResponse response = solr.query(params);
-		// .setParam("queryResultWindowSize", Integer.toString(max))
 
 		for (Iterator iterator = facetFields.iterator(); iterator.hasNext();) {
 			String facetField = (String) iterator.next();
@@ -120,7 +98,6 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		}
 
 		QueryResponse rsp = server.query(solrQuery);
-//		System.out.println(rsp.getResults().getNumFound());
 
 		List facetsFields = rsp.getFacetFields();
 		sBuild.append("<facets>\n");

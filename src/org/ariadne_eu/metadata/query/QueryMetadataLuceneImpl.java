@@ -82,8 +82,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
         try {
         	reader = null;
         	reader = ReaderManagement.getInstance().getReader(indexDir);
-        	Hits hits = getHits(lQuery);
-
+        	
 
             IndexSearchDelegate result = null;
         	
@@ -122,6 +121,15 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);
             }
+            
+            if (resultsFormat == TranslateResultsformat.SOLR ||
+            		resultsFormat == TranslateResultsformat.ARFJS)  {
+            	Hits hits = null;
+            } else {
+            	Hits hits = getHits(lQuery);
+            }
+            
+            Hits hits = getHits(lQuery);
             String searchResult = result.result(hits);
 
             return searchResult;
