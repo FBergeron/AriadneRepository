@@ -29,7 +29,6 @@ public class MemoryReaderManagement {
 	}
 	
 	public static void initialize() {
-		System.out.println("initialize");
 		if ( instance == null ){
             synchronized( MemoryReaderManagement.class ){
                 if ( instance == null ){

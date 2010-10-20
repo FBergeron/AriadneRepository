@@ -13,17 +13,13 @@ import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 import org.apache.log4j.Logger;
 import org.apache.lucene.search.Hits;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
-import org.apache.solr.common.params.ModifiableSolrParams;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.servlet.DirectSolrConnection;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.QueryMetadataLuceneImpl;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.ariadne_eu.utils.solr.SolrServerManagement;
 
 /**
  * @author gonzalo
@@ -35,17 +31,10 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 	private int start;
 	private int max;
 	private String lQuery;
-	private static String instanceDir;
-	private static String dataDir;
-	private static String loggingPath;
-	private DirectSolrConnection conn;
 	private static Vector facetFields;
 
 	static {
 		try {
-			instanceDir = (PropertiesManager.getInstance().getPropFile()).replaceAll("install/ariadne.properties", "solr/");
-			dataDir = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_SOLR_DATADIR);
-			loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
 
 			facetFields = new Vector();
 			int i = 1;
@@ -55,13 +44,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 				facetFields.add((String) object);
 			}
 
-			if (instanceDir == null) {
-				log.error("Could not load Solr instance dir!");
-			} else if (dataDir == null) {
-				log.warn("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_DATADIR + "\" not defined");
-			} else if (loggingPath == null) {
-				log.warn("initialize:property \"" + RepositoryConstants.getInstance().REPO_LOG4J_DIR + "\" not defined");
-			} else if (!(facetFields.size() > 0)) {
+			if (!(facetFields.size() > 0)) {
 				log.error("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_FACETFIELD + ".n\" not defined");
 			}
 
@@ -75,29 +58,24 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		this.max = max;
 		this.lQuery = lQuery;
 
-		conn = new DirectSolrConnection(instanceDir, dataDir, loggingPath);
 	}
 
 	public String result(Hits hits) throws Exception {
-		log.debug(PropertiesManager.getInstance().getPropFile());
+		SolrServerManagement serverMgt = SolrServerManagement.getInstance();
+		
+		
 		StringBuilder sBuild = new StringBuilder();
-		sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response>\n");
+		sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response>\n");		
 
-		SolrCore core = SolrCore.getSolrCore();
-		SolrServer server = new EmbeddedSolrServer(core);
+		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(FacetParams.FACET_SORT_COUNT).setParam("rows", Integer.toString(max)).setParam("start", Integer.toString(start));
 
-		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(FacetParams.FACET_SORT_COUNT).setParam("queryResultWindowSize", Integer.toString(max));
-
-		ModifiableSolrParams params = new ModifiableSolrParams();
-		params.set("queryResultWindowSize", Integer.toString(max));
-		solrQuery.add(params);
 
 		for (Iterator iterator = facetFields.iterator(); iterator.hasNext();) {
 			String facetField = (String) iterator.next();
 			solrQuery.addFacetField(facetField);
 		}
 
-		QueryResponse rsp = server.query(solrQuery);
+		QueryResponse rsp = serverMgt.getServer().query(solrQuery);
 
 		List facetsFields = rsp.getFacetFields();
 		sBuild.append("<facets>\n");
@@ -121,8 +99,6 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 		}
 		sBuild.append("</facets>\n");
 		sBuild.append("</response>");
-
-		conn.close();
 
 		return sBuild.toString();
 	}

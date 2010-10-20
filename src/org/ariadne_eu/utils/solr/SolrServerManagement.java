@@ -27,7 +27,7 @@ public class SolrServerManagement {
 		loggingPath = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REPO_LOG4J_DIR);
 		
 		if (instanceDir == null) {
-			log.error("Could not load Solr instance dir!");
+			log.error("Could get Solr instance dir!");
 		} else if (dataDir == null) {
 			log.warn("initialize:property \"" + RepositoryConstants.getInstance().SR_SOLR_DATADIR + "\" not defined");
 		} else if (loggingPath == null) {
@@ -36,8 +36,8 @@ public class SolrServerManagement {
 		
 		conn = new DirectSolrConnection(instanceDir, dataDir, loggingPath);
 		
-		SolrCore core = SolrCore.getSolrCore();
-		SolrServer server = new EmbeddedSolrServer(core);
+		core = SolrCore.getSolrCore();
+		server = new EmbeddedSolrServer(core);
 		
 	}
 
