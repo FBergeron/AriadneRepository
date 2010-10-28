@@ -1,12 +1,6 @@
 package org.ariadne_eu.service;
 
 import javax.activation.DataHandler;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 import org.ariadne_eu.coi.COIFaultException;
@@ -28,6 +22,7 @@ import org.w3.www._2005._05.xmlmime.Base64Binary;
 
 public class COIImplementation extends COISkeleton {
     private static Logger log = Logger.getLogger(COIImplementation.class);
+    
 
     public GetResourceResponse getResource(GetResource getResource) throws COIFaultException {
         log.info("getResource:identifier="+getResource.getIdentifier()+",sessionID="+getResource.getTargetSessionID());

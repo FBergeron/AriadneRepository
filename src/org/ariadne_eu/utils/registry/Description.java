@@ -1,7 +1,7 @@
 package org.ariadne_eu.utils.registry;
 
-import org.jdom.Namespace;
 import org.jdom.Element;
+import org.jdom.Namespace;
 
 public class Description {
 	String _language;

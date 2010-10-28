@@ -171,13 +171,8 @@ public class LOMHandler extends DocumentHandler {
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
 				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
-				// for mace
-				if (taxonPathSource.length() > 30) {
-					taxonPathSource = null;
-				} else {
-					tpSourceFieldName = tmpBranche + ATT_SEPARATOR + ""
-							+ taxonPathSource;
-				}
+				doc.add(new Field(tmpBranche, taxonPathSource, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				
 				
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.id")) {

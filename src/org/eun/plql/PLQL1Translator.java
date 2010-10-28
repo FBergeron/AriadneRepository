@@ -18,9 +18,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package org.eun.plql ;
 
-import java.io.Reader ;
-import java.io.StringReader ;
-import org.eun.plql.layer1.* ;
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.eun.plql.layer1.PlqlLayer1Analyzer;
 
 public class PLQL1Translator {
 	

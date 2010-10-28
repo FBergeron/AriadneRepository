@@ -8,9 +8,6 @@ import net.sourceforge.minor.lucene.core.indexer.IndexHandler;
 import net.sourceforge.minor.lucene.core.indexer.IndexHandlerFactory;
 import net.sourceforge.minor.lucene.core.indexer.IndexInserterDelegate;
 import net.sourceforge.minor.lucene.core.indexer.IndexUpdaterDelegate;
-import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
-import net.sourceforge.minor.lucene.core.searcher.IndexTermSearchDelegate;
-import net.sourceforge.minor.lucene.core.searcher.Searcher;
 import net.sourceforge.minor.lucene.core.utils.Check;
 
 import org.apache.log4j.Logger;
@@ -46,7 +43,7 @@ public class IndexService {
 		log.info("Deleting took "+(end - start)+" ms");
 	}
 	
-	public static String search(File indexDir, String query, IndexSearchDelegate resultFormat) throws Exception{
+	/*public static String search(File indexDir, String query, IndexSearchDelegate resultFormat) throws Exception{
 		Check.checkObject(indexDir);
 		Check.checkString(query);
 		Check.checkObject(resultFormat);
@@ -58,7 +55,7 @@ public class IndexService {
 		Check.checkString(field);
 		Check.checkObject(resultFormat);
 		return Searcher.searchTerm(indexDir, field, resultFormat);
-	}
+	}*/
 	
 	public static void optimize(File indexDir) throws Exception{
 		Check.checkObject(indexDir);

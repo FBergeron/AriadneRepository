@@ -1,18 +1,19 @@
 package org.ariadne_eu.metadata.resultsformat;
 
-import java.io.File;
-import java.io.IOException;
 
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.utils.config.RepositoryConstants;
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 public class ResultDelegateLomImpl implements IndexSearchDelegate {
 	private static Logger log = Logger.getLogger(ResultDelegateLomImpl.class);
@@ -25,47 +26,82 @@ public class ResultDelegateLomImpl implements IndexSearchDelegate {
         this.max = max;
     }
 
-    public String result(Hits hits) throws Exception {
+    public String result(TopDocs topDocs, IndexSearcher searcher) throws Exception {
 	    Document doc;
 
 	    StringBuilder sBuild = new StringBuilder();
-	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
+	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\"" + topDocs.totalHits + "\">\n");
 	    
 	    String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_HANDLER);
 	    
-		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
-	    	doc = hits.doc(i);
-	    	log.debug(doc.get("key") + " = " + hits.score(i));
-	    	
+	    ScoreDoc[] hits = topDocs.scoreDocs;
+	    for (int i = start-1; i < topDocs.totalHits && (max < 0 || i < start-1+max); i++) {
+        	doc = searcher.doc(hits[i].doc);
+        	log.debug(doc.get("key") + " = " + hits[i].score);
 	    	if (!luceneHandler.equalsIgnoreCase("org.ariadne_eu.utils.lucene.document.LOMLiteHandler")) {
 	    		sBuild.append(doc.get("md"));
             } else {
-            	sBuild.append("<lom>")
-            		.append("<general>")
-            		.append("<identifier><entry>")
-            			.append(doc.get("lom.general.identifier.entry"))
-            		.append("</entry></identifier>")
-            		.append("<title><string>")
-            			.append(doc.get("lom.general.title.string"))
-            		.append("</string></title>")
-            		.append("<description><string>")
-            			.append(doc.get("lom.general.description.string"))
-            		.append("</string></description>")
-            		.append("<keyword><string>")
-            			.append(doc.get("lom.general.keyword.string"))
-            		.append("</string></keyword>")
-            		.append("</general>")
-            		.append("</technical></location>")
-            			.append(doc.get("lom.technical.location"))
-            		.append("</location></technical>")
-            		.append("</lom>")
-            		.append("\n");
+            	sBuild.append(createLOM (doc));
             }
-	    	
-	    }
+        }
+
 	    sBuild.append("</results>");
     	return sBuild.toString();
 	}
 
+    private String createLOM (Document doc) {
+		try {
+			Namespace lomNS = Namespace.getNamespace("","http://ltsc.ieee.org/xsd/LOM");
+			Namespace lomxsiNS = Namespace.getNamespace("xsi" , "http://www.w3.org/2001/XMLSchema-instance");
+			Element root = new Element("lom", lomNS);
+			root.addNamespaceDeclaration(lomxsiNS);
+			org.jdom.Document lomDocument = new org.jdom.Document();
+			
+			Element general = new Element("general", lomNS);
+			//identifier
+			Element identifier = new Element("identifier", lomNS);
+			Element identifierEntry = new Element("entry", lomNS).setText(doc.get("lom.general.identifier.entry"));
+			identifier.addContent(identifierEntry);
+			general.addContent(identifier);
+			//title
+			Element title = new Element("title", lomNS);
+			Element titleString = new Element("string", lomNS).setText(doc.get("lom.general.title.string"));
+			title.addContent(titleString);
+			general.addContent(title);
+			//description
+			Element description = new Element("description", lomNS);
+			Element descriptionString = new Element("string", lomNS).setText(doc.get("lom.general.description.string"));
+			description.addContent(descriptionString);
+			general.addContent(description);
+			//keywords
+			String keywords[] = doc.getValues("lom.general.keyword.string");
+			for (int i = 0; i < keywords.length; i++) {
+				Element keyword = new Element("keyword", lomNS);
+				Element keywordString = new Element("string", lomNS).setText(keywords[i]);
+				keyword.addContent(keywordString);
+				general.addContent(keyword);
+			}
+			
+			root.addContent(general);
+			
+			//location
+			Element technical = new Element("technical", lomNS);
+			Element location = new Element("location", lomNS).setText(doc.get("lom.technical.location"));
+			technical.addContent(location);
+			root.addContent(technical);
+
+			lomDocument.setRootElement(root);
+			
+			XMLOutputter outputter = new XMLOutputter();
+			Format format = Format.getPrettyFormat().setOmitDeclaration(true);
+			outputter.setFormat(format);
+			return (outputter.outputString(lomDocument));
+			
+		} catch (Exception e) {
+			log.error("createLOM: ", e);
+            e.printStackTrace();
+		} 
+		return null;
+	}
 
 }

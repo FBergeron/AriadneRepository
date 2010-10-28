@@ -12,30 +12,20 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import net.sf.vcard4j.parser.VCardParseException;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.xerces.dom.DocumentImpl;
 import org.ariadne_eu.utils.VCardUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.eun.lucene.core.indexer.document.DocumentHandler;
 import org.eun.lucene.core.indexer.document.DocumentHandlerException;
-import org.jdom.Element;
-import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -183,13 +173,7 @@ public class ICOPERLOMHandler extends DocumentHandler {
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.source.string")) {
 				taxonPathSource = elementBuffer.toString().trim().toLowerCase();
-				// for mace
-				if (taxonPathSource.length() > 30) {
-					taxonPathSource = null;
-				} else {
-					tpSourceFieldName = tmpBranche + ATT_SEPARATOR + ""
-							+ taxonPathSource;
-				}
+				doc.add(new Field(tmpBranche, taxonPathSource, Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 				
 				
 			} else if (tmpBranche.endsWith("classification.taxonpath.taxon.id")) {

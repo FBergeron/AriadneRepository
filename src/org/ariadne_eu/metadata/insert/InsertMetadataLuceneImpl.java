@@ -53,11 +53,9 @@ public class InsertMetadataLuceneImpl extends InsertMetadataImpl {
 	public synchronized void insertMetadata(String identifier, String metadata, String collection) throws InsertMetadataException{
 		try {
 			InsertDelegateSingleStringImpl indexInserterDelegate = new InsertDelegateSingleStringImpl(identifier, metadata,collection);
-//			DeleteDelegateSingleStringImpl indexDeleterDelegate = new DeleteDelegateSingleStringImpl(identifier);
 			
 			boolean create = createIndex(indexDir);
 			
-			//IndexService.delete(indexDir, indexDeleterDelegate);
 			IndexService.insert(indexDir, indexInserterDelegate, create);
 			log.info("insertMetadata:identifier:\"" + identifier + "\"");
 		} catch (Exception e) {
@@ -74,15 +72,15 @@ public class InsertMetadataLuceneImpl extends InsertMetadataImpl {
 		}
 	}
 	
-	public boolean createIndex(File indexDir) {
-		return !(IndexReader.indexExists(indexDir));
+	public boolean createIndex(File indexDir) throws IOException {
+		return !(IndexReader.indexExists(FSDirectory.open(indexDir)));
 	}
 
 	public void createLuceneIndex() {
 		IndexWriter writer = null;
 		try {
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-			writer = new IndexWriter(FSDirectory.getDirectory(indexDir), analyzer.getAnalyzer(), true);
+			writer = new IndexWriter(FSDirectory.open(indexDir), analyzer.getAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED);
 			writer.setUseCompoundFile(true);
 			writer.optimize();
 		} catch (IOException e) {

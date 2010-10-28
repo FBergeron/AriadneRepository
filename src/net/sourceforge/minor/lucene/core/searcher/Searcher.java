@@ -1,4 +1,4 @@
-package net.sourceforge.minor.lucene.core.searcher;
+/*package net.sourceforge.minor.lucene.core.searcher;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,10 +17,7 @@ import org.apache.lucene.search.Query;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
 
-/**
- * This code was originally written for
- * Erik's Lucene intro java.net article
- */
+
 public class Searcher {
 
 	private static Logger log =  Logger.getLogger(Searcher.class);
@@ -73,11 +70,11 @@ public class Searcher {
     			" milliseconds) that matched query '" + q + "':");
     
     
-    String searchResult = result.result(hits);
+    String searchResult = result.result(hits, is);
     
 //    ReaderManagement.getInstance().unRegister(indexDir, reader);
     
     return searchResult;
   }
   
-}
+}*/

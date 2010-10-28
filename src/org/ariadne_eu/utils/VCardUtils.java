@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sf.vcard4j.java.type.FN;
-import net.sf.vcard4j.java.type.N;
 import net.sf.vcard4j.java.type.VERSION;
 import net.sf.vcard4j.parser.DomParser;
 import net.sf.vcard4j.parser.VCardException;

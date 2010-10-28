@@ -31,7 +31,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
             try {
             	DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
             	
-    			writer = new IndexWriter(FSDirectory.getDirectory(this.getIndexDir()), analyzer.getAnalyzer(), create);
+    			writer = new IndexWriter(FSDirectory.open(this.getIndexDir()), analyzer.getAnalyzer(), create,IndexWriter.MaxFieldLength.UNLIMITED);
             	writer.setUseCompoundFile(true);
                 insert.insert(writer);
             } catch(Exception e) {
@@ -54,7 +54,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
             try {
             	DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
             	
-    			writer = new IndexWriter(FSDirectory.getDirectory(this.getIndexDir()), analyzer.getAnalyzer());
+    			writer = new IndexWriter(FSDirectory.open(this.getIndexDir()), analyzer.getAnalyzer(),IndexWriter.MaxFieldLength.UNLIMITED);
                 delete.delete(writer);
             } finally {
                 if (writer != null) {
@@ -72,7 +72,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
             try {
             	DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
     			
-    			writer = new IndexWriter(FSDirectory.getDirectory(this.getIndexDir()), analyzer.getAnalyzer());
+    			writer = new IndexWriter(FSDirectory.open(this.getIndexDir()), analyzer.getAnalyzer(),IndexWriter.MaxFieldLength.UNLIMITED);
                 writer.setUseCompoundFile(true);
                 update.update(writer);
                 //writer.optimize();
@@ -92,7 +92,7 @@ public class IndexHandler implements IndexInserter, IndexDeleter, IndexUpdater {
             try {
             	DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
     			
-    			writer = new IndexWriter(FSDirectory.getDirectory(this.getIndexDir()), analyzer.getAnalyzer());
+    			writer = new IndexWriter(FSDirectory.open(this.getIndexDir()), analyzer.getAnalyzer(),IndexWriter.MaxFieldLength.UNLIMITED);
                 writer.optimize();
             } finally {
                 if (writer != null) {

@@ -6,29 +6,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
+
 import org.apache.log4j.Logger;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.params.FacetParams;
 import org.ariadne.config.PropertiesManager;
-import org.ariadne.util.Stopwatch;
 import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.solr.SolrServerManagement;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.sun.corba.se.spi.activation.Server;
-
-import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
-import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 
 public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 	private static Logger log = Logger.getLogger(ResultDelegateARIADNERFJS.class);
@@ -36,12 +32,11 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 	private int start;
 	private int max;
 	private String lQuery;
-	private static Vector facetFields;
+	private static Vector<String> facetFields;
 
 	static {
 		try {
-			facetFields = new Vector();
-			int i = 1;
+			facetFields = new Vector<String>();
 
 			Collection solrs = PropertiesManager.getInstance().getPropertyStartingWith(RepositoryConstants.getInstance().SR_SOLR_FACETFIELD + ".").values();
 			for (Object object : solrs) {
@@ -63,7 +58,7 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		this.lQuery = lQuery;
 	}
 
-	public String result(Hits hits) throws JSONException, CorruptIndexException, IOException {
+	public String result(TopDocs topDocs, IndexSearcher searcher) throws JSONException, CorruptIndexException, IOException {
 		SolrDocument doc;
 
 		QueryResponse response = getSolrResponse();
@@ -95,7 +90,6 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 				log.error(ex);
 			}
 			metadataArrayJson.put(json);
-//			log.debug(doc.get("key") + " = " +hits.score(i));
 		}
 		resultJson.put("id", idArrayJson);
 		resultJson.put("metadata", metadataArrayJson);
@@ -112,7 +106,7 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		SolrQuery solrQuery = new SolrQuery().setQuery(lQuery).setFacet(true).setFacetLimit(-1).setFacetMinCount(0).setFacetSort(FacetParams.FACET_SORT_COUNT).setParam("rows", Integer.toString(max)).setParam("start", Integer.toString(start));
 
 
-		for (Iterator iterator = facetFields.iterator(); iterator.hasNext();) {
+		for (Iterator<String> iterator = facetFields.iterator(); iterator.hasNext();) {
 			String facetField = (String) iterator.next();
 			solrQuery.addFacetField(facetField);
 		}
@@ -131,7 +125,7 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		JSONArray facetsJson = new JSONArray();
 		try {
 			if (facetsFields.size() > 0) {
-				List facetValues;
+				List<Count> facetValues;
 				FacetField facetField;
 				FacetField.Count innerFacetField;
 				for (Iterator facetIterator = facetsFields.iterator(); facetIterator.hasNext();) {

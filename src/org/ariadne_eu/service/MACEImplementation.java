@@ -712,13 +712,13 @@ public class MACEImplementation extends MACESkeleton {
 			org.apache.lucene.document.Document doc = null;
 			
 			// first delete!
-            writer = new IndexWriter(FSDirectory.getDirectory(luceneImpl.getIndexDir()), analyzer.getAnalyzer());
+            writer = new IndexWriter(FSDirectory.open(luceneImpl.getIndexDir()), analyzer.getAnalyzer(),IndexWriter.MaxFieldLength.UNLIMITED);
             Term term = new Term("key", identifier);
     		writer.deleteDocuments(term);
     		writer.close();
     		
 			// now insert!
-            writer = new IndexWriter(FSDirectory.getDirectory(luceneImpl.getIndexDir()), analyzer.getAnalyzer(), create);
+            writer = new IndexWriter(FSDirectory.open(luceneImpl.getIndexDir()), analyzer.getAnalyzer(), create,IndexWriter.MaxFieldLength.UNLIMITED);
 
 			String insertMetadata = metadata;
 			if (metadata.startsWith("<?")) 

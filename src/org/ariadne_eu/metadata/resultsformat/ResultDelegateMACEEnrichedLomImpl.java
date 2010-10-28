@@ -3,7 +3,9 @@ package org.ariadne_eu.metadata.resultsformat;
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
 public class ResultDelegateMACEEnrichedLomImpl implements IndexSearchDelegate {
 
@@ -15,15 +17,17 @@ public class ResultDelegateMACEEnrichedLomImpl implements IndexSearchDelegate {
         this.max = max;
     }
 
-    public String result(Hits hits) throws Exception {
+    public String result(TopDocs topDocs, IndexSearcher searcher) throws Exception {
 	    Document doc;
 
 	    StringBuilder sBuild = new StringBuilder();
-	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
-		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
-	    	doc = hits.doc(i);
+	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+ topDocs.totalHits +"\">\n");
+		
+	    
+	    ScoreDoc[] hits = topDocs.scoreDocs;
+	    for (int i = start-1; i < topDocs.totalHits && (max < 0 || i < start-1+max); i++) {
+        	doc = searcher.doc(hits[i].doc);
 	    	sBuild.append(doc.get("maceenrichedlom")+"\n\n");
-	    	
 	    }
 	    sBuild.append("</results>");
 

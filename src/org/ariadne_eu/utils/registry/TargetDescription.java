@@ -10,8 +10,6 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
-import JFlex.Out;
-
 public class TargetDescription {
 	Identifier _identifier;
 	ProtocolIdentifier _protocolIdentifier;

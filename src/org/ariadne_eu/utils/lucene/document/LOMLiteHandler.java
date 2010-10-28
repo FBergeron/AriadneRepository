@@ -27,7 +27,6 @@ public class LOMLiteHandler extends DocumentHandler {
 	private static final String[] MIN_MAX = { "min", "max" };
 	/** A buffer for each XML element */
 	private StringBuffer elementBuffer = new StringBuffer();
-	private String purpose = "", taxonPathSource, purposeFieldName, tpSourceFieldName, taxonPathId, tpIdFieldName, source, catalog, identifier;
 	private HashMap<String, String> attributeMap = new HashMap<String, String>();
 	private String branche = "";
 	private Document doc;
@@ -121,7 +120,6 @@ public class LOMLiteHandler extends DocumentHandler {
 		// Classification ...
 		if (tmpBranche.matches(".*classification\\.((purpose)|(taxonpath)).*")) {
 			 if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
-				
 				doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
 			 }
 			 contents = contents.concat(" " + elementBuffer.toString().toLowerCase()); 
@@ -136,7 +134,6 @@ public class LOMLiteHandler extends DocumentHandler {
 		// Catalog + entry
 		else if (tmpBranche.matches(".*general.identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
-				catalog = elementBuffer.toString().trim();
 				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
@@ -183,7 +180,6 @@ public class LOMLiteHandler extends DocumentHandler {
 		
 		elementBuffer.setLength(0);
 	}
-	
 	
 
 	public static void main(String args[]) throws Exception {

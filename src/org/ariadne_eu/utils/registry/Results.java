@@ -9,7 +9,6 @@ import java.util.List;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
-
 import org.jdom.input.SAXBuilder;
 
 public class Results {

@@ -3,6 +3,7 @@
  */
 package org.ariadne_eu.utils.config;
 
+import org.apache.lucene.util.Version;
 import org.ariadne.config.Constants;
 
 /**
@@ -25,6 +26,7 @@ public class RepositoryConstants extends Constants {
 
 	public String REG_CATALOG = "registry.catalog";
 	
+	public Version SR_LUCENE_VERSION = Version.LUCENE_29;
 	public String SR_LUCENE_INDEXDIR = "search.lucene.indexdir";
 	public String SR_LUCENE_HANDLER = "search.lucene.handler";
 	public String SR_LUCENE_ANALYZER = "search.lucene.analyzer";

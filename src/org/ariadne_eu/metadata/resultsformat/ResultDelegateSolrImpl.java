@@ -11,7 +11,8 @@ import java.util.Vector;
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -60,7 +61,7 @@ public class ResultDelegateSolrImpl implements IndexSearchDelegate {
 
 	}
 
-	public String result(Hits hits) throws Exception {
+	public String result(TopDocs topDocs, IndexSearcher searcher) throws Exception {
 		SolrServerManagement serverMgt = SolrServerManagement.getInstance();
 		
 		

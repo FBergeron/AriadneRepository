@@ -11,7 +11,8 @@ import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
 import de.fit.cam.ranking.ServiceProvider;
 import de.fit.cam.ranking.domain.RankedLom;
@@ -33,28 +34,29 @@ public class ResultDelegateRLomImpl implements IndexSearchDelegate {
         this.max = max;
     }
 
-    public String result(Hits hits) throws Exception {
+    public String result(TopDocs topDocs, org.apache.lucene.search.IndexSearcher searcher) throws Exception {
     	
 	    Document doc;
-	    HashMap lRank = new HashMap();
+	    HashMap<String, Integer> lRank = new HashMap<String, Integer>();
 
 	    RankingService rankingService = ServiceProvider.getRankingService();
 		
 		List<RankedLom> loms = new ArrayList<RankedLom>();
 		
-		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
-    		doc = hits.doc(i);
-    		loms.add(new RankedLom(doc.get("key"),hits.score(i)));
+		ScoreDoc[] hits = topDocs.scoreDocs;
+	    for (int i = start-1; i < topDocs.totalHits && (max < 0 || i < start-1+max); i++) {
+        	doc = searcher.doc(hits[i].doc);
+    		loms.add(new RankedLom(doc.get("key"),hits[i].score));
     		lRank.put(doc.get("key"), i);
     	}
 		List<RankedLom> results = rankingService.getLomRanking(loms, 0.5);
 		
 		//build the resultset
     	StringBuilder sBuild = new StringBuilder();
-	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+hits.length()+"\">\n");
+	    sBuild.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results cardinality=\""+topDocs.totalHits+"\">\n");
 	    
 	    for (RankedLom rankedLom : results) {
-	    	sBuild.append((hits.doc((Integer)lRank.get(rankedLom.getId()))).get("md"));
+	    	sBuild.append((searcher.doc(hits[(Integer)lRank.get(rankedLom.getId())].doc)).get("md"));
 	    	log.debug(rankedLom.getId()+":"+rankedLom.getRankingValue());
 		}
 	    sBuild.append("</results>");

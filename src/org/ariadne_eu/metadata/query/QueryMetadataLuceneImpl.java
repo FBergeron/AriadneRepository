@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
@@ -44,6 +44,7 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
     private static Logger log = Logger.getLogger(QueryMetadataLuceneImpl.class);
     private File indexDir;
     private IndexReader reader;
+    private IndexSearcher searcher;
 
 
     void initialize() {
@@ -75,15 +76,16 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 
     public synchronized int count(String query) throws QueryTranslationException, QueryMetadataException {
         String lQuery = TranslateLanguage.translateToCount(query, getLanguage(), TranslateLanguage.LUCENE);
-        return luceneCount(lQuery);
+        return luceneCount(lQuery,1);
     }
 
     private synchronized String luceneQuery(String lQuery, int start, int max, int resultsFormat) {
         try {
+        	int n = start + max - 1;
         	reader = null;
         	reader = ReaderManagement.getInstance().getReader(indexDir);
         	
-
+        	TopDocs topDocs = null;
             IndexSearchDelegate result = null;
         	
             if (resultsFormat == TranslateResultsformat.LOM) {
@@ -124,13 +126,12 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
             
             if (resultsFormat == TranslateResultsformat.SOLR ||
             		resultsFormat == TranslateResultsformat.ARFJS)  {
-            	Hits hits = null;
+            	topDocs = null;
             } else {
-            	Hits hits = getHits(lQuery);
+            	topDocs = getDocs(lQuery, n);
             }
             
-            Hits hits = getHits(lQuery);
-            String searchResult = result.result(hits);
+            String searchResult = result.result(topDocs, searcher);
 
             return searchResult;
         } catch (Exception e) {
@@ -145,11 +146,11 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 		}
     }
 
-    private synchronized int luceneCount(String lQuery) {
+    private synchronized int luceneCount(String lQuery, int n) {
         try {
         	reader = null;
         	reader = ReaderManagement.getInstance().getReader(indexDir);
-            return getHits(lQuery).length();
+            return getDocs(lQuery, n).totalHits;
         } catch (Exception e) {
         	log.error("Lucene query exception",e);
             return -1;
@@ -162,16 +163,16 @@ public class QueryMetadataLuceneImpl extends QueryMetadataImpl {
 		}
     }
 
-    private synchronized Hits getHits(String lQuery) {
+    private synchronized TopDocs getDocs(String lQuery, int n) {
     	
         try {
-			IndexSearcher is = new IndexSearcher(reader);
+			searcher = new IndexSearcher(reader);
 
 			//XXX Note that QueryParser is not thread-safe.
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);
+			org.apache.lucene.search.Query query = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,"contents",  analyzer.getAnalyzer()).parse(lQuery);
 			
-			return is.search(query);
+			return searcher.search(query, n);
 		} catch (ParseException e) {
 			log.error("Lucene parse exception",e);
 		} catch (Exception e) {

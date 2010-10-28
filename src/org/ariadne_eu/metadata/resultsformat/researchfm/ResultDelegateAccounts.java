@@ -1,14 +1,12 @@
 package org.ariadne_eu.metadata.resultsformat.researchfm;
 
+import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Hits;
-import org.codehaus.jettison.json.JSONException;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TopDocs;
 import org.codehaus.jettison.json.JSONObject;
-
-
-
-import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 
 public class ResultDelegateAccounts implements IndexSearchDelegate {
 	private static Logger log = Logger.getLogger(ResultDelegateAccounts.class);
@@ -21,11 +19,11 @@ public class ResultDelegateAccounts implements IndexSearchDelegate {
         this.max = max;
     }
 
-    public String result(Hits hits) throws Exception {
+    public String result(TopDocs topDocs, IndexSearcher searcher) throws Exception {
 	    Document doc;
 	    JSONObject json = new JSONObject();
 	    
-		for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
+		/*for (int i = start-1; i < hits.length() && (max < 0 || i < start-1+max); i++) {
 			doc = hits.doc(i);
 			try {
 				String[] url = doc.getValues("person.holdsaccount.onlineaccount.accounthomepage.rdf:resource");
@@ -39,7 +37,7 @@ public class ResultDelegateAccounts implements IndexSearchDelegate {
 				log.error(e);
 			}
 	    	log.debug(doc.get("key") + " = " + hits.score(i));
-	    }
+	    }*/
 		return json.toString();
     	
 	}

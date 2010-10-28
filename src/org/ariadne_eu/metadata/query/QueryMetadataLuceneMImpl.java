@@ -4,15 +4,12 @@ import java.io.File;
 
 import net.sourceforge.minor.lucene.core.searcher.IndexSearchDelegate;
 import net.sourceforge.minor.lucene.core.searcher.MemoryReaderManagement;
-import net.sourceforge.minor.lucene.core.searcher.ReaderManagement;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.ariadne.config.PropertiesManager;
+import org.apache.lucene.search.TopDocs;
 import org.ariadne_eu.metadata.query.language.QueryTranslationException;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.ResultDelegateARIADNERFJS;
@@ -34,14 +31,9 @@ import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
 
 
-/**
- * Created by ben
- * Date: 25-aug-2007
- * Time: 12:57:23
- * To change this template use File | Settings | File Templates.
- */
-public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
 
+public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
+	
     private static Logger log = Logger.getLogger(QueryMetadataLuceneMImpl.class);
     private File indexDir;
     private IndexSearcher searcher;
@@ -63,17 +55,19 @@ public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
 
     public synchronized int count(String query) throws QueryTranslationException, QueryMetadataException {
         String lQuery = TranslateLanguage.translateToCount(query, getLanguage(), TranslateLanguage.LUCENE);
-        return luceneCount(lQuery);
+        return luceneCount(lQuery, 1);
     }
 
     private synchronized String luceneQuery(String lQuery, int start, int max, int resultsFormat) {
         try {
+        	int n = start + max - 1;
         	
-        	Hits hits = getHits(lQuery);
 
-
+        	TopDocs topDocs = null;
             IndexSearchDelegate result = null;
         	
+            topDocs = getDocs(lQuery,n);
+            
             if (resultsFormat == TranslateResultsformat.LOM) {
             	result = new ResultDelegateLomImpl(start, max);
             }else if (resultsFormat == TranslateResultsformat.RLOM) {
@@ -109,7 +103,7 @@ public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);
             }
-            String searchResult = result.result(hits);
+            String searchResult = result.result(topDocs, searcher);
 
             return searchResult;
         } catch (Exception e) {
@@ -118,27 +112,26 @@ public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
         } 
     }
 
-    private synchronized int luceneCount(String lQuery) {
+    private synchronized int luceneCount(String lQuery, int n) {
         try {
         	searcher = MemoryReaderManagement.getInstance().getSearcher();
-            return getHits(lQuery).length();
+            return getDocs(lQuery, n).totalHits;
         } catch (Exception e) {
         	log.error("Lucene query exception",e);
             return -1;
         } 
     }
 
-    private synchronized Hits getHits(String lQuery) {
+    private synchronized TopDocs getDocs(String lQuery, int n) {
     	
         try {
-        	log.info("In Memory solution!");
         	searcher = MemoryReaderManagement.getInstance().getSearcher();
 
 			//XXX Note that QueryParser is not thread-safe.
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-			org.apache.lucene.search.Query query = new QueryParser("contents",  analyzer.getAnalyzer()).parse(lQuery);
+			org.apache.lucene.search.Query query = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,"contents",  analyzer.getAnalyzer()).parse(lQuery);
 			
-			return searcher.search(query);
+			return searcher.search(query, n);
 		} catch (ParseException e) {
 			log.error("Lucene parse exception",e);
 		} catch (Exception e) {

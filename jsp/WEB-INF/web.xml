@@ -147,6 +147,13 @@
 		</servlet-class>
 		<load-on-startup>10</load-on-startup>
 	</servlet>
+	
+	<servlet>
+        <description>This is the description of my J2EE component</description>
+        <display-name>This is the display name of my J2EE component</display-name>
+        <servlet-name>DownloadResourceServlet</servlet-name>
+        <servlet-class>org.ariadne_eu.servlets.DownloadResourceServlet</servlet-class>
+    </servlet>
 
 	<!-- Servlet Mappings -->
 
@@ -175,6 +182,11 @@
 		<servlet-name>deposit</servlet-name>
 		<url-pattern>/deposit/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>DownloadResourceServlet</servlet-name>
+        <url-pattern>/download</url-pattern>
+    </servlet-mapping>
 
 	<session-config>
 		<session-timeout>30</session-timeout>    <!-- 30 minutes -->

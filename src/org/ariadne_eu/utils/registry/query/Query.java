@@ -1,26 +1,12 @@
 package org.ariadne_eu.utils.registry.query;
 
-import java.io.BufferedReader;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import oracle.sql.DATE;
 
 import org.apache.axis2.AxisFault;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
@@ -28,21 +14,10 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.store.FSDirectory;
-
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.apache.xpath.XPathAPI;
 import org.ariadne.config.PropertiesManager;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzer;
 import org.ariadne_eu.utils.lucene.analysis.DocumentAnalyzerFactory;
-import org.jdom.JDOMException;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-
 
 import be.cenorm.www.CreateAnonymousSession;
 import be.cenorm.www.CreateAnonymousSessionResponse;
@@ -162,7 +137,7 @@ public class Query {
 	public static String doQueryLucene(){
 		org.apache.lucene.document.Document doc;
 		try {
-			IndexReader reader = IndexReader.open(FSDirectory.getDirectory(PropertiesManager.getInstance().getProperty("search.lucene.indexdir")));
+			IndexReader reader = IndexReader.open(FSDirectory.open(new File(PropertiesManager.getInstance().getProperty("search.lucene.indexdir"))));
 			IndexSearcher is = new IndexSearcher(reader);
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 			Calendar now = Calendar.getInstance();
@@ -192,7 +167,7 @@ public class Query {
 	public static String doQueryLuceneDate(String lQuery){
 		org.apache.lucene.document.Document doc;
 		try {
-			IndexReader reader = IndexReader.open(FSDirectory.getDirectory(PropertiesManager.getInstance().getProperty("search.lucene.indexdir")));
+			IndexReader reader = IndexReader.open(FSDirectory.open(new File(PropertiesManager.getInstance().getProperty("search.lucene.indexdir"))));
 			IndexSearcher is = new IndexSearcher(reader);
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 			/*Calendar now = Calendar.getInstance();
@@ -201,7 +176,7 @@ public class Query {
 						
 			//RangeQuery query = new RangeQuery(new Term("date.insert", format.format(thePreviousWeekCalendar.getTime())), new Term("date.insert",format.format(now.getTime())), true);
 			DocumentAnalyzer analyzer = DocumentAnalyzerFactory.getDocumentAnalyzerImpl();
-			org.apache.lucene.search.Query query = new QueryParser("key",  analyzer.getAnalyzer()).parse(lQuery);
+			org.apache.lucene.search.Query query = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,"key",  analyzer.getAnalyzer()).parse(lQuery);
 			Hits hits;
 			hits = is.search(query);
 			StringBuilder sBuild = new StringBuilder();

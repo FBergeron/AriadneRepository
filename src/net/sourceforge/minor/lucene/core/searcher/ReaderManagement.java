@@ -83,7 +83,7 @@ public class ReaderManagement {
         	List<ReaderContainer> lReader;
         	if (!mReaders.containsKey(indexDir)){
         		lReader = new ArrayList<ReaderContainer>();
-        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
+        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.open(indexDir))));
         		mReaders.put(indexDir, lReader);
         	} else {
         		lReader = mReaders.get(indexDir);
@@ -100,7 +100,7 @@ public class ReaderManagement {
                     	}
 //        			}
             	}
-        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.getDirectory(indexDir))));
+        		lReader.add(new ReaderContainer(IndexReader.open(FSDirectory.open(indexDir))));
         		log.debug("setNewReader :: lReader.size() = " + lReader.size());
         	}
         	

@@ -7,7 +7,6 @@ import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
 import org.ariadne_eu.oai.utils.OaiUtils;
-import org.ariadne_eu.utils.Stopwatch;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;

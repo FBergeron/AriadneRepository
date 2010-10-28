@@ -203,7 +203,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		String localIdentifier = getRecordFactory().fromOAIIdentifier(identifier);
 
 
-		QueryParser parser = new QueryParser("field", docAnalyzer.getAnalyzer());
+		QueryParser parser = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,"field", docAnalyzer.getAnalyzer());
 		Query query = null;
 		TermQuery termQuery = new TermQuery(new Term(identifierField, localIdentifier));
 		try {
@@ -240,7 +240,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 		ArrayList headers = new ArrayList();
 		ArrayList identifiers = new ArrayList();
 
-		QueryParser parser = new QueryParser(dateField, docAnalyzer.getAnalyzer());
+		QueryParser parser = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,dateField, docAnalyzer.getAnalyzer());
 		Query query = null;
 		String fromDate = from.replaceAll("-", "");
 		fromDate = fromDate.replaceAll(":", "");
@@ -409,7 +409,7 @@ public class LuceneLomCatalog extends AbstractCatalog {
 			set = sets.get(set);
 		}
 
-		QueryParser parser = new QueryParser(dateField, docAnalyzer.getAnalyzer());
+		QueryParser parser = new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,dateField, docAnalyzer.getAnalyzer());
 		Query query = null;
 		String fromDate = from.replaceAll("-", "");
 		fromDate = fromDate.replaceAll(":", "");
@@ -704,16 +704,13 @@ public class LuceneLomCatalog extends AbstractCatalog {
 	public String getRecord(String oaiIdentifier, String metadataPrefix) throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError {
 		loadIndexReader(new File(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INDEXDIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
-		//		SingletonIndexSearcher sis = SingletonIndexSearcher.getSingletonIndexSearcher(reader);
-		//		String localIdentifier = getRecordFactory().fromOAIIdentifier(oaiIdentifier);
+
 		String localIdentifier = oaiIdentifier;
 		localIdentifier = localIdentifier.replaceAll("[:]", "\\\\:");
 
-		//TermQuery termQuery = new TermQuery(new Term(identifierField, localIdentifier)); 
 		Hits hits = null;
 		try {
-			hits = searcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
-			//			hits = SingletonIndexSearcher.search(new QueryParser("contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
+			hits = searcher.search(new QueryParser(RepositoryConstants.getInstance().SR_LUCENE_VERSION,"contents", docAnalyzer.getAnalyzer()).parse(identifierField + ":" + localIdentifier));
 		} catch (IOException e) {
 			throw new OAIInternalServerError(e.getMessage());
 		} catch (ParseException e) {

@@ -10,7 +10,6 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.TransportHeaders;
 import org.apache.log4j.Logger;
-import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
 import org.ariadne_eu.metadata.resultsformat.TranslateResultsformat;
@@ -120,6 +119,9 @@ public class SqiTargetImplementation extends SqiTargetSkeleton {
 	public String synchronousQuery(@QueryParam("query") String query, @QueryParam("start") String start, @QueryParam("size") String size, @QueryParam("lang") String queryLanguage, @QueryParam("format") String resultFormat) {
 		Ticket ticket = null;
 		ticket = Ticket.newTicket("http://www.ariadne-eu.org/metadatastore/");
+		
+		log.info("synchronousQuery:query="+query+",sessionID="+ticket.toString());
+		
 
 		int queryLang = getQueryLanguage(ticket.toString());
 		if(queryLanguage != null) {

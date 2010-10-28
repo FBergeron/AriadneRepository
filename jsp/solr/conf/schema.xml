@@ -473,12 +473,18 @@
       multiValued="true"/>
     <field name="lom.educational.context.value" type="string" indexed="true" stored="true"
       multiValued="true"/>
+	<field name="lom.educational.learningoutcome.identifier.entry" type="string" indexed="true" stored="true"
+      multiValued="true"/>
     <field name="lom.technical.format" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="lom.rights.cost.value" type="string" indexed="true" stored="true"
       multiValued="true"/>
     <field name="lom.rights.copyrightAndOtherRestrictions.value" type="string" indexed="true"
       stored="true" multiValued="true"/>
+	<field name="lom.classification.purpose.value" type="string" indexed="true" stored="true"
+      multiValued="true"/>
     <field name="lom.classification.taxonpath.taxon.id" type="string" indexed="true" stored="true"
+      multiValued="true"/>
+	<field name="lom.classification.taxonpath.source.string" type="string" indexed="true" stored="true"
       multiValued="true"/>
     <field name="lom.classification.taxonpath.taxon.id.competency" type="string" indexed="true"
       stored="true" multiValued="true"/>

@@ -28,7 +28,9 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("xmlns", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.solr", new KeywordAnalyzer());
 		
+		pfanalyzer.addAnalyzer("lom.classification.purpose.value", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.purpose.value.exact", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.classification.taxonpath.source.string", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.entry.string.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.id", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.classification.taxonpath.taxon.competency.eqf", new KeywordAnalyzer());
@@ -44,6 +46,7 @@ public class LOMDocumentAnalyzer extends DocumentAnalyzer{
 		pfanalyzer.addAnalyzer("lom.educational.semanticdensity.value", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.educational.typicalagerange.string", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.educational.learningresourcetype.value", new KeywordAnalyzer());
+		pfanalyzer.addAnalyzer("lom.educational.learningoutcome.identifier.entry", new KeywordAnalyzer());
 		
 		pfanalyzer.addAnalyzer("lom.general.identifier.entry.exact", new KeywordAnalyzer());
 		pfanalyzer.addAnalyzer("lom.general.identifier.entry", new KeywordAnalyzer());
