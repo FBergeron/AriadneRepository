@@ -62,7 +62,7 @@
 		select="substring-before(concat(substring-after(/oai:OAI-PMH/oai:request,'identifier='),'&amp;'),'&amp;')"/>
 
 	<xsl:variable name="defaultMetadataPrefix"
-		select="document('OAIHandler?verb=ListMetadataFormats')//oai:metadataPrefix"/>
+		select="document('services/oai?verb=ListMetadataFormats')//oai:metadataPrefix"/>
 	<xsl:variable name="variableMetadataPrefix" select="/oai:OAI-PMH/oai:request/@metadataPrefix"/>
 	<xsl:variable name="metadataPrefix">
 		<xsl:choose>
