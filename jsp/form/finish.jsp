@@ -131,7 +131,7 @@ else metadataCollection.getIdentifier().setCatalog(catalog);
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
 metadataCollection.getDescription().setString(description);
-metadataCollection.getResponsible().setVCard("BEGIN:VCARD\\nEMAIL\\;TYPE=INTERN\nET:"+email+"\\nEND:VCARD\\n");
+metadataCollection.getResponsible().setVCard("BEGIN:VCARD\\nEMAIL\\;TYPE=INTERNET:"+email+"\\nEND:VCARD\\n");
 
 Sqi sqi= null;
 
@@ -165,7 +165,7 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (resultFormatOther!=null){
 		String[] format = resultFormatOther.split(",");
 		for(int i=0; i<format.length;i++){
-			if (format[i].compareTo("")!=0) sqi.addQueryLanguage(format[i]);
+			if (format[i].compareTo("")!=0) sqi.addResultsFormat(format[i]);
 		}
 	}
 	
