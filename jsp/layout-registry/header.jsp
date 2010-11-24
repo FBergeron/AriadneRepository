@@ -72,8 +72,13 @@
 			_cmSplit,
 <%
 		}
-%>
-		[_cmNoAction, '<A HREF="http://ariadne.cs.kuleuven.be/trac/newticket?summary=Registry Service&version=1.0&priority=minor&component=registry" onClick="return popup(this,\'notes\')">Found a Bug ?</A>', null, null, null]
+%>			
+		[null, 'Utils', null, null, 'Utils',
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/rss.png" />','Last Targets Added','<%=request.getContextPath()%>/rss/LastTargetAdded.jsp',null,''],
+				['<img src="<%=request.getContextPath()%>/includes/js/ThemeOffice/rss.png" />','State of the targets','<%=request.getContextPath()%>/rss/reportState.xml',null,''],
+		],  
+			_cmSplit,		
+		[_cmNoAction, '<A HREF="http://ariadne.cs.kuleuven.be/trac/newticket?summary=Registry Service&version=1.0&priority=minor&component=registry" onClick="return popup(this,\'notes\')">Found a Bug ?</A>', null, null, null]		
 		];
 		cmDraw ('myMenuID', myMenu, 'hbr', cmThemeOffice, 'ThemeOffice');
 		</script>
