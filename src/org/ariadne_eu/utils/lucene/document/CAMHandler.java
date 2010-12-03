@@ -56,8 +56,8 @@ public class CAMHandler extends DocumentHandler {
 	}
 
 	public void endDocument() {
-		doc.add(new Field("contents", contents, Field.Store.YES, Field.Index.TOKENIZED));
-		doc.add(new Field("cam.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+		doc.add(new Field("contents", contents, Field.Store.YES, Field.Index.ANALYZED));
+		doc.add(new Field("group.solr", "all", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -83,9 +83,9 @@ public class CAMHandler extends DocumentHandler {
 				if (!atts.getQName(i).equals("uniqueElementName")) {
 					if (atts.getQName(i).equalsIgnoreCase("xmlns") || atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
 						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 
 					} else {
 						String tmpBranche = branche.substring(0, branche.length());
@@ -94,7 +94,7 @@ public class CAMHandler extends DocumentHandler {
 							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
 						}
 						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 
 					}
 				}
@@ -123,7 +123,7 @@ public class CAMHandler extends DocumentHandler {
 		}
 
 		// In all the other cases add a field !
-		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 
 		// to store the contents without metatags
 		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());

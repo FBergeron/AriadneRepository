@@ -58,8 +58,8 @@ public class LOMLiteHandler extends DocumentHandler {
 	}
 	
 	public void endDocument() {
-		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
-		doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.ANALYZED));
+		doc.add(new Field("lom.solr", "all", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -120,61 +120,59 @@ public class LOMLiteHandler extends DocumentHandler {
 		// Classification ...
 		if (tmpBranche.matches(".*classification\\.((purpose)|(taxonpath)).*")) {
 			 if (tmpBranche.endsWith("classification.taxonpath.taxon.entry.string")) {
-				doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche, elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.ANALYZED));// XXX
 			 }
 			 contents = contents.concat(" " + elementBuffer.toString().toLowerCase()); 
 		}
 		// Title
 		else if (tmpBranche.matches(".*title.*")) {
 			if (tmpBranche.endsWith("title.string")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.ANALYZED));// XXX
 			}
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		// Catalog + entry
 		else if (tmpBranche.matches(".*general.identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 			}
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		// technical.format
 		else if (tmpBranche.matches(".*technical.format.*")) {
 			String format = elementBuffer.toString().toLowerCase().trim();
-			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
-			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
+			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 		}
+		// technical.location
 		else if (tmpBranche.matches(".*technical.location.*")) {
-			String format = elementBuffer.toString().toLowerCase().trim();
-			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
-			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 		}
 		// general.description.string
 		else if (tmpBranche.matches(".*general.description.string")) {
 			String format = elementBuffer.toString().toLowerCase().trim();
-			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.ANALYZED));// XXX
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		// general.keyword.string
 		else if (tmpBranche.matches(".*general.keyword.string")) {
 			String format = elementBuffer.toString().toLowerCase().trim();
-			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.ANALYZED));// XXX
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		else if (tmpBranche.matches(".*learningresourcetype.value.*")) {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		else if (tmpBranche.matches(".*context.value.*")) {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		// language
 		else if (tmpBranche.matches(".*general.language")) {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES, Field.Index.NOT_ANALYZED));// XXX
 			contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		}
 		

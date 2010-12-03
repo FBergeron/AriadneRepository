@@ -62,11 +62,8 @@ public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
         try {
         	int n = start + max - 1;
         	
-
         	TopDocs topDocs = null;
             IndexSearchDelegate result = null;
-        	
-            topDocs = getDocs(lQuery,n);
             
             if (resultsFormat == TranslateResultsformat.LOM) {
             	result = new ResultDelegateLomImpl(start, max);
@@ -103,6 +100,14 @@ public class QueryMetadataLuceneMImpl extends QueryMetadataImpl {
             	//for the VsqlToLucene Implementation, when there is no resultformat defined!!
             	result = new ResultDelegateLomImpl(start, max);
             }
+            
+            if (resultsFormat == TranslateResultsformat.SOLR ||
+            		resultsFormat == TranslateResultsformat.ARFJS)  {
+            	topDocs = null;
+            } else {
+            	topDocs = getDocs(lQuery, n);
+            }
+            
             String searchResult = result.result(topDocs, searcher);
 
             return searchResult;

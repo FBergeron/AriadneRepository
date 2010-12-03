@@ -32,14 +32,14 @@ public class ICOPERImplementation {
 	@GET @Path("/getLearningOutcomeDefinitions")
     @Produces("application/json")
 	public String getLearningOutcomeDefinitions(@QueryParam("q") String query, @QueryParam("pn") int page_number, @QueryParam("ps") int page_size) {
+		int start = 1;
 		if (query.equalsIgnoreCase("")) {
 			query = "learningoutcome.solr = \"all\"";
 		}
 		if (page_size < 1) {
 			page_size = 10;
 		}
-			
-		int start = 1;
+		
 		if (page_number >= 1)
 			start = ((page_number-1) * page_size) + 1;
 			
@@ -233,7 +233,7 @@ public class ICOPERImplementation {
 		
 		log.info("getMetadata: objectIdentifier="+objectIdentifier+", metadataIdentifier="+metadataIdentifier);
 		try {
-			String fullquery = "lom.metametadata.identifier.entry : \"" + objectIdentifier + "\"";
+			String fullquery = "lom.metametadata.identifier.entry : \"" + objectIdentifier + "\" OR key : \"" + objectIdentifier + "\"";
 			String result = QueryMetadataFactory.getQueryImpl(TranslateLanguage.LUCENE).query(fullquery, 1, 1, TranslateResultsformat.IJS);
 			return result;
 		} catch (QueryTranslationException e) {

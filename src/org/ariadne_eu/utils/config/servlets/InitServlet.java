@@ -12,11 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sourceforge.minor.lucene.core.searcher.MemoryReaderManagement;
+
 import org.ariadne.config.Constants;
 import org.ariadne.config.PropertiesManager;
 import org.ariadne_eu.metadata.insert.InsertMetadataFactory;
 import org.ariadne_eu.metadata.query.QueryMetadataFactory;
 import org.ariadne_eu.metadata.query.language.TranslateLanguage;
+import org.ariadne_eu.utils.config.RepositoryConstants;
 
 /**
  * @author gonzalo
@@ -64,8 +67,11 @@ public class InitServlet extends HttpServlet {
 			PropertiesManager.getInstance().setPropertiesFile(getServletContext().getRealPath("install")+ File.separator + "ariadne.properties");
 			if (PropertiesManager.getInstance().getPropertiesFile().exists()){
 				PropertiesManager.getInstance().init();
+				boolean inMemory = new Boolean(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_INMEMORY));
+				if (inMemory)
+					MemoryReaderManagement.initialize();
 			}
-//			MemoryReaderManagement.initialize();
+			
 			
 		} catch (Exception e) {
 			throw new ServletException(e.getMessage());

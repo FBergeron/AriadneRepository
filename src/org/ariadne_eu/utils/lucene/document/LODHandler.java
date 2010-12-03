@@ -61,8 +61,8 @@ public class LODHandler extends DocumentHandler {
 	}
 	
 	public void endDocument() {
-		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
-		doc.add(new Field("md.solr", "all", Field.Store.YES, Field.Index.UN_TOKENIZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.ANALYZED));
+		doc.add(new Field("learningoutcome.solr", "all", Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 	}
 
 	/*
@@ -78,36 +78,7 @@ public class LODHandler extends DocumentHandler {
 		branche += qName.toLowerCase();
 
 		elementBuffer.setLength(0);
-		attributeMap.clear();// No need for a map :D
-		
-		
-
-		if (atts.getLength() > 0) {
-			attributeMap = new HashMap<String, String>();
-
-			for (int i = 0; i < atts.getLength(); i++) {
-				attributeMap.put(atts.getQName(i), atts.getValue(i));
-
-				if (!atts.getQName(i).equals("uniqueElementName")) {
-					if (atts.getQName(i).equalsIgnoreCase("xmlns")|| atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
-						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
-						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
-
-					} else {
-						String tmpBranche = branche.substring(0, branche.length());
-						//remove the NS+colons on any element		
-						if (tmpBranche.contains(":")) {
-							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
-						}
-						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
-
-					}
-				}
-			}
-		}
+		attributeMap.clear();
 		branche += BRANCH_SEPARATOR;
 	}
 
@@ -138,24 +109,29 @@ public class LODHandler extends DocumentHandler {
 		if (tmpBranche.matches(".*identifier\\.((catalog)|(entry))")) {
 			if (tmpBranche.endsWith("identifier.catalog")) {
 				catalog = elementBuffer.toString().trim();
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				if (catalog.equalsIgnoreCase("ICOPER"))
+					doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 
 			} else if (tmpBranche.endsWith("identifier.entry")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+				if (catalog.equalsIgnoreCase("ICOPER"))
+					doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
+
+				String fieldName = tmp2Branche + "" + BRANCH_SEPARATOR+ "catalog" + BRANCH_SEPARATOR + "entry";
+				doc.add(new Field(fieldName.toLowerCase(), catalog + ":"+ elementBuffer.toString().toLowerCase().trim(),Field.Store.YES, Field.Index.ANALYZED));
 			}
 		}
 		else if (tmpBranche.matches(".*title.*")) {
 			if (tmpBranche.endsWith("title.string")) {
-				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.TOKENIZED));
+				doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().trim().toLowerCase(), Field.Store.YES,Field.Index.ANALYZED));
 
 			}
 		}
 		else if (tmpBranche.matches(".*description.string")) {
 			String format = elementBuffer.toString().toLowerCase().trim();
-			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.TOKENIZED));// XXX
+			doc.add(new Field(tmpBranche.toLowerCase(), format, Field.Store.YES, Field.Index.ANALYZED));// XXX
 		}
 		else {
-			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));
+			doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 		}
 		
 		// to store the contents without metatags
@@ -166,8 +142,8 @@ public class LODHandler extends DocumentHandler {
 	
 
 	public static void main(String args[]) throws Exception {
-		GENERICHandler handler = new GENERICHandler();
-		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/temp/AriadneWS/mdstore/lre-collection-v4.xml")));
+		LODHandler handler = new LODHandler();
+		Document doc = handler.getDocument(new FileInputStream(new File("/Sandbox/temp/AriadneWS/mdstoreICOPERLOD/FF930DDDA2055C49A02D2DC0FFFF00F9.xml")));
 		List fields = doc.getFields();
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			Field field = (Field) iterator.next();

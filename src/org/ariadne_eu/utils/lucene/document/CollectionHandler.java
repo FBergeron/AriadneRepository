@@ -64,7 +64,7 @@ public class CollectionHandler extends DocumentHandler {
 	
 	public void endDocument() {
 		if (isProtocol == false)
-		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.TOKENIZED));
+		doc.add(new Field("contents", contents, Field.Store.YES,Field.Index.ANALYZED));
 		isProtocol = false;
 	}
 
@@ -93,9 +93,9 @@ public class CollectionHandler extends DocumentHandler {
 				if (!atts.getQName(i).equals("uniqueElementName")) {
 					if (atts.getQName(i).equalsIgnoreCase("xmlns")|| atts.getQName(i).equalsIgnoreCase("xsi:schemaLocation")) {
 						String fieldName = "untokenized." + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 						fieldName = atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 
 					} else {
 						String tmpBranche = branche.substring(0, branche.length());
@@ -104,7 +104,7 @@ public class CollectionHandler extends DocumentHandler {
 							tmpBranche = tmpBranche.replaceAll("(\\w+):", "");
 						}
 						String fieldName = tmpBranche + "" + ATT_SEPARATOR + "" + atts.getQName(i);
-						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+						doc.add(new Field(fieldName.toLowerCase(), atts.getValue(i).toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 
 					}
 				}
@@ -149,7 +149,7 @@ public class CollectionHandler extends DocumentHandler {
 		}
 
 		
-		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.UN_TOKENIZED));// XXX
+		doc.add(new Field(tmpBranche.toLowerCase(), elementBuffer.toString().toLowerCase(), Field.Store.YES,Field.Index.NOT_ANALYZED));// XXX
 		// to store the contents without metatags
 		contents = contents.concat(" " + elementBuffer.toString().toLowerCase());
 		elementBuffer.setLength(0);

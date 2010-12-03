@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="example" version="1.2">
+<schema name="lom" version="0.1">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -449,7 +449,7 @@
 
     <field name="key" type="string" indexed="true" stored="true" required="true"/>
     <field name="collection" type="string" indexed="true" stored="true" multiValued="true"/>
-    <field name="contents" type="textgen" indexed="true" stored="true"/>
+    <field name="contents" type="text" indexed="true" stored="true"/>
     <field name="md" type="string" indexed="true" stored="true"/>
     <field name="lom" type="string" indexed="true" stored="true"/>
     <field name="lom.general.identifier.entry" type="string" indexed="true" stored="true"
@@ -476,6 +476,7 @@
 	<field name="lom.educational.learningoutcome.identifier.entry" type="string" indexed="true" stored="true"
       multiValued="true"/>
     <field name="lom.technical.format" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="lom.technical.location" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="lom.rights.cost.value" type="string" indexed="true" stored="true"
       multiValued="true"/>
     <field name="lom.rights.copyrightAndOtherRestrictions.value" type="string" indexed="true"

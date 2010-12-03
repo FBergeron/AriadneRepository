@@ -76,7 +76,8 @@ public class ResultDelegateARIADNERFJS implements IndexSearchDelegate {
 		if (size == -1)
 			size = Integer.MAX_VALUE;
 		
-		for (int i = start; i < size && (max < 0 || i < start + max); i++) {
+//		for (int i = start; i < size && (max < 0 || i < start + max); i++) {
+		for (int i = 0; i < max && (max < 0 || i < size - start) ; i++) {
 			JSONObject json = new JSONObject();
 			doc = response.getResults().get(i);
 			try {

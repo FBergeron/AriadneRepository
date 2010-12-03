@@ -71,7 +71,6 @@ import be.cenorm.www.Ticket;
  */
 public class MACEImplementation extends MACESkeleton {
 	
-	
 	private static Logger log = Logger.getLogger(MACEImplementation.class);
 	
 
@@ -725,25 +724,25 @@ public class MACEImplementation extends MACESkeleton {
 				insertMetadata = metadata.substring(metadata.indexOf("?>") + 2);
 
 			doc = handler.getDocument(new ByteArrayInputStream(metadata.getBytes("UTF-8")));
-			doc.add(new Field("key", identifier, Field.Store.YES,Field.Index.UN_TOKENIZED));
-			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND),Field.Store.YES, Field.Index.UN_TOKENIZED));
-			doc.add(new Field("md", insertMetadata, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
-			doc.add(new Field("lom.solr", "all", Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("key", identifier, Field.Store.YES,Field.Index.NOT_ANALYZED));
+			doc.add(new Field("date.insert", DateTools.dateToString(new Date(), DateTools.Resolution.MILLISECOND),Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.add(new Field("md", insertMetadata, Field.Store.YES,Field.Index.NOT_ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+			doc.add(new Field("lom.solr", "all", Field.Store.YES,Field.Index.NOT_ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			
 			//keywords
 			for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
 				String keyword = (String) iterator.next();
-				doc.add(new Field("lom.general.keyword.string", keyword, Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
-				doc.add(new Field("contents", keyword, Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("lom.general.keyword.string", keyword, Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", keyword, Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			}
 			
 			//classifications
 			for (Iterator iterator = classifications.iterator(); iterator.hasNext();) {
 				List classification = (List) iterator.next();
-				doc.add(new Field("lom.classification.taxonPath.taxon.id", (String) classification.get(0), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
-				doc.add(new Field("lom.classification.taxonPath.taxon.entry.string", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
-				doc.add(new Field("contents", (String) classification.get(0), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
-				doc.add(new Field("contents", (String) classification.get(1), Field.Store.YES,Field.Index.TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("lom.classification.taxonPath.taxon.id", (String) classification.get(0), Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("lom.classification.taxonPath.taxon.entry.string", (String) classification.get(1), Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", (String) classification.get(0), Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("contents", (String) classification.get(1), Field.Store.YES,Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			}
 			
 			String luceneHandler = PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().SR_LUCENE_HANDLER);
@@ -751,7 +750,7 @@ public class MACEImplementation extends MACESkeleton {
 				MACEUtils.getClassification();
 				String exml = MACEUtils.enrichWClassification(insertMetadata);
 				exml = exml.substring(38);
-				doc.add(new Field("maceenrichedlom", exml, Field.Store.YES,Field.Index.UN_TOKENIZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
+				doc.add(new Field("maceenrichedlom", exml, Field.Store.YES,Field.Index.NOT_ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 			}
 			writer.addDocument(doc);
 			
