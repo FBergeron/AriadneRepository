@@ -21,12 +21,12 @@
 <%!
 
 boolean exists (String dir) {
-	File testfile = new File(dir);
+    File testfile = new File(dir);
     if (testfile.exists() && testfile.isDirectory()) {
         return true;
     }
     else{
-    	return false;
+        return false;
     }
 }
 
@@ -64,10 +64,10 @@ boolean exists (String dir) {
 <div class="install">
 <div id="stepbar">
 <div class="step-off">New Repository</div>
-			<div class="step-off">SQI Target</div>
-			<div class="step-off">OAI Target</div>
-			<div class="step-off">SPI Target</div>
-			<div class="step-on">Finish</div>
+            <div class="step-off">SQI Target</div>
+            <div class="step-off">OAI Target</div>
+            <div class="step-off">SPI Target</div>
+            <div class="step-on">Finish</div>
 
 </div>
 
@@ -115,13 +115,13 @@ int j = 0;
 
 String temp = id_repository;
 do{
-	
-	try{
-		result = QueryOnId.getMACEquery().getMetadataCollectionInstance(temp);
-		temp = id_repository + "_" + j++;
-	}catch(Exception e){
-		result=null;
-	}	
+    
+    try{
+        result = QueryOnId.getMACEquery().getMetadataCollectionInstance(temp);
+        temp = id_repository + "_" + j++;
+    }catch(Exception e){
+        result=null;
+    }   
 }while (result!=null);
 
 MetadataCollection metadataCollection = new MetadataCollection();
@@ -135,139 +135,139 @@ metadataCollection.getResponsible().setVCard("BEGIN:VCARD\\nEMAIL\\;TYPE=INTERNE
 Sqi sqi= null;
 
 if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcodePLQL!=null)||(langcodeVSQL!=null)||(langcodeQEL!=null)||(langcodeOther.compareTo("")!=0))&&((synchronous!=null)||(asynchronous!=null))){
-	sqi = new Sqi();
-	if (targetURLSqi!=null){
-		sqi.setQueryService(targetURLSqi);
-	}
-	if ((sessionAuthSqi!=null)&&((sessionAuthSqi).compareTo("auth")==0)) sqi.setRequiredIdentification();
-	else sqi.setAnnonymousIdentification();
-	if (sessionURLSqi!=null) sqi.setSessionService(sessionURLSqi);
-	
-	if (langcodePLQL!=null){
-		sqi.addQueryLanguage("plql0");
-		sqi.addQueryLanguage("plql1");
-	}
-	if (langcodeVSQL!=null) sqi.addQueryLanguage("vsql");
-	if (langcodeQEL!=null) sqi.addQueryLanguage("qel");
-	if (langcodeOther!=null){
-		String[] langcode = langcodeOther.split(",");
-		for(int i=0; i<langcode.length;i++){
-			if (langcode[i].compareTo("")!=0) sqi.addQueryLanguage(langcode[i]);
-		}
-	}
-	if (resultFormatLOM!=null){
-		sqi.addResultsFormat("lom");
-	}
-	if (resultFormatRDF!=null){
-		sqi.addResultsFormat("rdf");
-	}
-	if (resultFormatOther!=null){
-		String[] format = resultFormatOther.split(",");
-		for(int i=0; i<format.length;i++){
-			if (format[i].compareTo("")!=0) sqi.addResultsFormat(format[i]);
-		}
-	}
-	
-	
-	if (synchronous!=null) sqi.setModeSynchronous();
-	if (asynchronous!=null) sqi.setModeAsynchronous();
-	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
-	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
-	targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
-	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
-	targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
-	targetDescription.setLocation(targetURLSqi);
-	targetDescription.getProtocolImplementationDescription().setSqi(sqi);
-	metadataCollection.addTarget(targetDescription);
-	
+    sqi = new Sqi();
+    if (targetURLSqi!=null){
+        sqi.setQueryService(targetURLSqi);
+    }
+    if ((sessionAuthSqi!=null)&&((sessionAuthSqi).compareTo("auth")==0)) sqi.setRequiredIdentification();
+    else sqi.setAnnonymousIdentification();
+    if (sessionURLSqi!=null) sqi.setSessionService(sessionURLSqi);
+    
+    if (langcodePLQL!=null){
+        sqi.addQueryLanguage("plql0");
+        sqi.addQueryLanguage("plql1");
+    }
+    if (langcodeVSQL!=null) sqi.addQueryLanguage("vsql");
+    if (langcodeQEL!=null) sqi.addQueryLanguage("qel");
+    if (langcodeOther!=null){
+        String[] langcode = langcodeOther.split(",");
+        for(int i=0; i<langcode.length;i++){
+            if (langcode[i].compareTo("")!=0) sqi.addQueryLanguage(langcode[i]);
+        }
+    }
+    if (resultFormatLOM!=null){
+        sqi.addResultsFormat("lom");
+    }
+    if (resultFormatRDF!=null){
+        sqi.addResultsFormat("rdf");
+    }
+    if (resultFormatOther!=null){
+        String[] format = resultFormatOther.split(",");
+        for(int i=0; i<format.length;i++){
+            if (format[i].compareTo("")!=0) sqi.addResultsFormat(format[i]);
+        }
+    }
+    
+    
+    if (synchronous!=null) sqi.setModeSynchronous();
+    if (asynchronous!=null) sqi.setModeAsynchronous();
+    TargetDescription targetDescription = new TargetDescription();
+    if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
+    else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
+    targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
+    if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
+    else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
+    targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
+    targetDescription.setLocation(targetURLSqi);
+    targetDescription.getProtocolImplementationDescription().setSqi(sqi);
+    metadataCollection.addTarget(targetDescription);
+    
 }
 
 OAIRepository oairepository = null;
 if (targetURLOai.compareTo("")!=0) {
-	try{
-		oairepository = new OAIRepository();
-		oairepository.setBaseURL(targetURLOai);
-		OaiPmh oaiPmh = new OaiPmh();
-		OAIMetadataFormatList metadataFormatList = oairepository.listMetadataFormats();
-		for (int i=0; i<metadataFormatList.getCompleteSize(); i++){
-			try{
-			MetadataFormat metadataFormat = new MetadataFormat();
-			OAIMetadataFormat oaiMetadataFormat = metadataFormatList.getCurrentItem();
-			metadataFormat.setMetadataPrefix(oaiMetadataFormat.getMetadataPrefix());
-			metadataFormat.setMetadataNameSpace(oaiMetadataFormat.getMetadataNamespace());
-			metadataFormat.setSchema(oaiMetadataFormat.getSchema());
-			oaiPmh.addMetadataFormat(metadataFormat);
-			metadataFormatList.moveNext();
-			}catch(NullPointerException e){
-				MetadataFormat metadataFormat = new MetadataFormat();			
-				metadataFormat.setMetadataPrefix("null");
-				metadataFormat.setMetadataNameSpace("null");
-				metadataFormat.setSchema("null");
-				oaiPmh.addMetadataFormat(metadataFormat);
-				metadataFormatList.moveNext();
-			}
-		}
-		OAISetList oaiSetList = oairepository.listSets();
-		for (int i=0; i<oaiSetList.getCompleteSize(); i++){
-			try{
-				oaiPmh.addSets(oaiSetList.getCurrentItem().getSetSpec());
-				oaiSetList.moveNext();
-			}catch(NullPointerException e){
-				oaiPmh.addSets("null");
-				oaiSetList.moveNext();
-			}
-		}
-		oaiPmh.setDeletedRecord(oairepository.getDeletedRecord());
-		oaiPmh.setGranularuty(oairepository.getGranularity());
-		oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
-		TargetDescription targetDescription = new TargetDescription();
-		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
-		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
-		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
-		targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
-		targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
-		targetDescription.setLocation(targetURLOai);
-		targetDescription.getProtocolImplementationDescription().setOaiPmh(oaiPmh);
-		metadataCollection.addTarget(targetDescription);
-	}catch(Exception e){
-		e.printStackTrace();
-		out.println(e);
-		oairepository=null;
-	}	
+    try{
+        oairepository = new OAIRepository();
+        oairepository.setBaseURL(targetURLOai);
+        OaiPmh oaiPmh = new OaiPmh();
+        OAIMetadataFormatList metadataFormatList = oairepository.listMetadataFormats();
+        for (int i=0; i<metadataFormatList.getCompleteSize(); i++){
+            try{
+            MetadataFormat metadataFormat = new MetadataFormat();
+            OAIMetadataFormat oaiMetadataFormat = metadataFormatList.getCurrentItem();
+            metadataFormat.setMetadataPrefix(oaiMetadataFormat.getMetadataPrefix());
+            metadataFormat.setMetadataNameSpace(oaiMetadataFormat.getMetadataNamespace());
+            metadataFormat.setSchema(oaiMetadataFormat.getSchema());
+            oaiPmh.addMetadataFormat(metadataFormat);
+            metadataFormatList.moveNext();
+            }catch(NullPointerException e){
+                MetadataFormat metadataFormat = new MetadataFormat();           
+                metadataFormat.setMetadataPrefix("null");
+                metadataFormat.setMetadataNameSpace("null");
+                metadataFormat.setSchema("null");
+                oaiPmh.addMetadataFormat(metadataFormat);
+                metadataFormatList.moveNext();
+            }
+        }
+        OAISetList oaiSetList = oairepository.listSets();
+        for (int i=0; i<oaiSetList.getCompleteSize(); i++){
+            try{
+                oaiPmh.addSets(oaiSetList.getCurrentItem().getSetSpec());
+                oaiSetList.moveNext();
+            }catch(NullPointerException e){
+                oaiPmh.addSets("null");
+                oaiSetList.moveNext();
+            }
+        }
+        oaiPmh.setDeletedRecord(oairepository.getDeletedRecord());
+        oaiPmh.setGranularuty(oairepository.getGranularity());
+        oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
+        TargetDescription targetDescription = new TargetDescription();
+        if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
+        else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
+        targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
+        targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
+        targetDescription.getProtocolIdentifier().setEntry("oai-pmh-v2");
+        targetDescription.setLocation(targetURLOai);
+        targetDescription.getProtocolImplementationDescription().setOaiPmh(oaiPmh);
+        metadataCollection.addTarget(targetDescription);
+    }catch(Exception e){
+        e.printStackTrace();
+        out.println(e);
+        oairepository=null;
+    }   
 }
 
 if (targetURLSpi.compareTo("")!=0){
-	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
-	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
-	targetDescription.getIdentifier().setEntry("target-spi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
-	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
-	targetDescription.getProtocolIdentifier().setEntry("spi");
-	targetDescription.setLocation(targetURLSpi);
-	metadataCollection.addTarget(targetDescription);
+    TargetDescription targetDescription = new TargetDescription();
+    if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
+    else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
+    targetDescription.getIdentifier().setEntry("target-spi-"+temp);
+    if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
+    else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
+    targetDescription.getProtocolIdentifier().setEntry("spi");
+    targetDescription.setLocation(targetURLSpi);
+    metadataCollection.addTarget(targetDescription);
 }
 
 if (metadataCollection.getTarget().size()==0){
-	out.println("<h1>Please, introduce correct data</h1>");
-	
+    out.println("<h1>Please, introduce correct data</h1>");
+    
 }else{
 
-	try{
-		UpdateMetadataCollection.getInstance().publishMetadata(metadataCollection.getXMLMetadataCollection().trim());
-		out.println("<h1>Target published successfully!</h1>");
-		out.println("<a href=\"../search/index.jsp?query=metadatacollection.identifier.entry="+temp+"\">Consult your target published</a>");
-		
-	}catch(Exception e){
-		out.println(e); 
-		out.println(metadataCollection.getXMLMetadataCollection());
-	}
+    try{
+        UpdateMetadataCollection.getInstance().publishMetadata(metadataCollection.getXMLMetadataCollection().trim());
+        out.println("<h1>Target published successfully!</h1>");
+        out.println("<a href=\"../search/index.jsp?query=metadatacollection.identifier.entry="+temp+"\">Consult your target published</a>");
+        
+    }catch(Exception e){
+        out.println(e); 
+        out.println(metadataCollection.getXMLMetadataCollection());
+    }
 }
 
-	
-	%>
+    
+    %>
 
 <div class="clr"></div>
 </div>
