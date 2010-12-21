@@ -12,7 +12,6 @@
 <%@page import="org.ariadne.util.ClientHttpRequest"%>
 <%@page import="uiuc.oai.OAIRepository"%>
 <%@page import="org.ariadne_eu.utils.registry.*"%>
-
 <%@page import="uiuc.oai.OAIMetadataFormat"%>
 <%@page import="uiuc.oai.OAIMetadataFormatList"%>
 <%@page import="uiuc.oai.OAISetList"%>
@@ -126,7 +125,7 @@ do{
 }while (result!=null);
 
 MetadataCollection metadataCollection = new MetadataCollection();
-if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG));
+if (catalog.compareTo("")==0) metadataCollection.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG));
 else metadataCollection.getIdentifier().setCatalog(catalog);
 metadataCollection.getIdentifier().setEntry(temp);
 metadataCollection.getDescription().setLanguage("en");
@@ -173,10 +172,10 @@ if ((targetURLSqi.compareTo("")!=0)&&(sessionURLSqi.compareTo("")!=0)&&((langcod
 	if (synchronous!=null) sqi.setModeSynchronous();
 	if (asynchronous!=null) sqi.setModeAsynchronous();
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-sqi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("sqi-v1");
 	targetDescription.setLocation(targetURLSqi);
@@ -224,7 +223,7 @@ if (targetURLOai.compareTo("")!=0) {
 		oaiPmh.setGranularuty(oairepository.getGranularity());
 		oaiPmh.setEarliestDateStamp(oairepository.getEarliestDatestamp());
 		TargetDescription targetDescription = new TargetDescription();
-		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
+		if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
 		else targetDescription.getIdentifier().setCatalog(catalog+ "_targets");
 		targetDescription.getIdentifier().setEntry("target-oai-pmh-"+temp);
 		targetDescription.getProtocolIdentifier().setCatalog("ariadne-protocols-targets");
@@ -241,10 +240,10 @@ if (targetURLOai.compareTo("")!=0) {
 
 if (targetURLSpi.compareTo("")!=0){
 	TargetDescription targetDescription = new TargetDescription();
-	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"_targets");
+	if (catalog.compareTo("")==0) targetDescription.getIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"_targets");
 	else targetDescription.getIdentifier().setCatalog(catalog+"_targets");
 	targetDescription.getIdentifier().setEntry("target-spi-"+temp);
-	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.REG_CATALOG)+"-protocols-targets");
+	if (catalog.compareTo("")==0) targetDescription.getProtocolIdentifier().setCatalog(PropertiesManager.getInstance().getProperty(RepositoryConstants.getInstance().REG_CATALOG)+"-protocols-targets");
 	else targetDescription.getProtocolIdentifier().setCatalog(catalog+"-protocols-targets");
 	targetDescription.getProtocolIdentifier().setEntry("spi");
 	targetDescription.setLocation(targetURLSpi);
